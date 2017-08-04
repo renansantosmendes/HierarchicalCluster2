@@ -1,4 +1,4 @@
-package VRPDRTSD;
+package ProblemRepresentation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ public class Route {
         this.sequenceOfAttendedRequests = sequenceOfServedRequests;
     }
 
-    Route() {
+    public Route() {
        this.notServedRequests = new HashSet<>();
        this.nodesSequence = new ArrayList<>();
        this.sequenceOfAttendedRequests = new ArrayList<>();

@@ -5,7 +5,7 @@
  */
 package InstanceReaderWithMySQL;
 
-import VRPDRTSD.Node;
+import ProblemRepresentation.Node;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

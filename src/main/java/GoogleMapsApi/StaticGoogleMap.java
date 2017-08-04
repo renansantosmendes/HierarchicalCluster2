@@ -8,7 +8,7 @@ package GoogleMapsApi;
 //import static GoogleMapsApi.GoogleMapsRoute.FileExtension.json;
 //import static GoogleMapsApi.GoogleMapsRoute.TravelMode.driving;
 import InstanceReaderWithMySQL.NodeDAO;
-import VRPDRTSD.Node;
+import ProblemRepresentation.Node;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

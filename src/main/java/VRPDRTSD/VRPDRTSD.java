@@ -1,6 +1,11 @@
 package VRPDRTSD;
 
+import ProblemRepresentation.Solution;
+import ProblemRepresentation.Request;
+import ProblemRepresentation.ProblemData;
+import ProblemRepresentation.Node;
 import Algorithms.Algorithm;
+import ProblemRepresentation.Route;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,6 +23,8 @@ public class VRPDRTSD implements Algorithm {
     private String instanceName;
     private String nodesInstanceName;
     private String adjacenciesInstanceName;
+    private int numberOfVehicles;
+    private int vehicleCapacity;
     double maxDistance;
     double minDistance;
     int minTimeWindowLower;
@@ -31,12 +38,17 @@ public class VRPDRTSD implements Algorithm {
     Solution solution;
     List<Request> candidates = new ArrayList<>();
     Request candidate;
+    Route actualRoute;
 
-    public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName) {
+    public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName, 
+            int numberOfVehicles, int vehicleCapacity) {
         this.instanceName = instanceName;
         this.nodesInstanceName = nodesInstanceName;
         this.adjacenciesInstanceName = adjacenciesInstanceName;
+        this.numberOfVehicles = numberOfVehicles;
+        this.vehicleCapacity = vehicleCapacity;
         this.readInstance();
+        
     }
 
     public ProblemData getData() {
@@ -110,17 +122,18 @@ public class VRPDRTSD implements Algorithm {
 
     @Override
     public void readInstance() {
-        data = new ProblemData(instanceName, nodesInstanceName, adjacenciesInstanceName);
+        data = new ProblemData(instanceName, nodesInstanceName, adjacenciesInstanceName, numberOfVehicles, vehicleCapacity);
     }
 
     @Override
     public void buildGreedySolution() {
         initializeSolution();
-        initializeCandidatesElementsSet();
+        initializeCandidatesSet();
         while (stoppingCriterionIsFalse()) {
+            startNewRoute();
             findBestCandidate();
-            addCandidateIntoSolution();
-            actualizeCandidatesElementsSet();
+            addCandidateIntoRoute();//pesquisar se há outro passageiro que possa desembarcar no mesmo nó, se sim, inserí-lo
+            actualizeCandidatesSet();
         }
     }
 
@@ -128,7 +141,7 @@ public class VRPDRTSD implements Algorithm {
         solution = new Solution();
     }
 
-    public void initializeCandidatesElementsSet() {
+    public void initializeCandidatesSet() {
         requestsFeasibilityAnalysis();
         prepareAndSetRequestsData();
         setRequestFeasibilityParameters();
@@ -165,11 +178,11 @@ public class VRPDRTSD implements Algorithm {
         data.getRequests().forEach(System.out::println);
     }
 
-    public void addCandidateIntoSolution() {
-
+    public void addCandidateIntoRoute() {
+        scheduleDeliveryTime();
     }
 
-    public void actualizeCandidatesElementsSet() {
+    public void actualizeCandidatesSet() {
         data.setLastPassengerAddedToRoute(data.getRequests().get(0));
         candidates.remove(0);
         data.setCurrentNode(data.getLastPassengerAddedToRoute().getPassengerOrigin());
@@ -177,6 +190,14 @@ public class VRPDRTSD implements Algorithm {
 
     private boolean stoppingCriterionIsFalse() {
         return !candidates.isEmpty();
+    }
+
+    private void startNewRoute() {
+        this.actualRoute = new Route();
+    }
+
+    private void scheduleDeliveryTime() {
+
     }
 
 }

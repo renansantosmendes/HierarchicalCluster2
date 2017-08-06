@@ -116,8 +116,8 @@ public class DataUpdaterUsingGoogleMapsApi {
         String sql = "insert into " + this.adjacenciesTableInDataBase + " values (?,?,?,?)";
         try {
             PreparedStatement statement = this.connection.prepareStatement(sql);
-            statement.setString(1, origin.getNodeId().toString());
-            statement.setString(2, destination.getNodeId().toString());
+            statement.setString(1, origin.getId().toString());
+            statement.setString(2, destination.getId().toString());
             statement.setString(3, Long.toString(totalTravelTime));
             statement.setString(4, Double.toString(totalDistance));
             statement.execute();
@@ -132,8 +132,8 @@ public class DataUpdaterUsingGoogleMapsApi {
         String sql = "insert into " + this.adjacenciesTableInDataBase + " values (?,?,?,?,?)";
         try {
             PreparedStatement statement = this.connection.prepareStatement(sql);
-            statement.setString(1, origin.getNodeId().toString());
-            statement.setString(2, destination.getNodeId().toString());
+            statement.setString(1, origin.getId().toString());
+            statement.setString(2, destination.getId().toString());
             statement.setString(3, Long.toString(totalTravelTime));
             statement.setString(4, Double.toString(totalDistance));
             statement.setString(5, polyline);

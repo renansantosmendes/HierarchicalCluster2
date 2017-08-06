@@ -37,10 +37,11 @@ public class VRPDRTSD implements Algorithm {
     int minLoadIndex;
     Solution solution;
     List<Request> candidates = new ArrayList<>();
+    List<Request> feasibleRequests = new ArrayList<>();
     Request candidate;
     Route actualRoute;
 
-    public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName, 
+    public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
             int numberOfVehicles, int vehicleCapacity) {
         this.instanceName = instanceName;
         this.nodesInstanceName = nodesInstanceName;
@@ -48,7 +49,7 @@ public class VRPDRTSD implements Algorithm {
         this.numberOfVehicles = numberOfVehicles;
         this.vehicleCapacity = vehicleCapacity;
         this.readInstance();
-        
+
     }
 
     public ProblemData getData() {
@@ -131,9 +132,13 @@ public class VRPDRTSD implements Algorithm {
         initializeCandidatesSet();
         while (stoppingCriterionIsFalse()) {
             startNewRoute();
-            findBestCandidate();
-            addCandidateIntoRoute();//pesquisar se há outro passageiro que possa desembarcar no mesmo nó, se sim, inserí-lo
-            actualizeCandidatesSet();
+            while (hasFeasibleRequests()) {
+                findBestCandidate();
+                addCandidateIntoRoute();//pesquisar se há outro passageiro que possa desembarcar no mesmo nó, se sim, inserí-lo
+                actualizeCandidatesSet();//não usar RRF, deve-se priorizar a janela de tempo
+                //evaluateRequestsFeasibility???? ou achar outras solicitações que possam ser atendidas
+            }
+            addRouteInSolution();
         }
     }
 
@@ -170,33 +175,44 @@ public class VRPDRTSD implements Algorithm {
     }
 
     private void initializeCandidates() {
+        data.getRequests().sort(Comparator.comparing(Request::getRequestRankingFunction).reversed());
         this.candidates.addAll(data.getRequests());
     }
 
     public void findBestCandidate() {
-        data.getRequests().sort(Comparator.comparing(Request::getRequestRankingFunction).reversed());
-        data.getRequests().forEach(System.out::println);
+        candidate = candidates.get(0);
+        //data.getRequests().forEach(System.out::println);
     }
 
     public void addCandidateIntoRoute() {
+        this.actualRoute.addValueInIntegerRepresentation(candidate.getId());
         scheduleDeliveryTime();
     }
 
     public void actualizeCandidatesSet() {
         data.setLastPassengerAddedToRoute(data.getRequests().get(0));
         candidates.remove(0);
-        data.setCurrentNode(data.getLastPassengerAddedToRoute().getPassengerOrigin());
+        data.setCurrentNode(data.getLastPassengerAddedToRoute().getPassengerDestination());
     }
 
     private boolean stoppingCriterionIsFalse() {
-        return !candidates.isEmpty();
+        return !candidates.isEmpty() && !data.getAvaibleVehicles().isEmpty();
     }
 
     private void startNewRoute() {
         this.actualRoute = new Route();
     }
+    
+    private boolean hasFeasibleRequests(){
+        return true;
+    }
 
     private void scheduleDeliveryTime() {
+        this.actualRoute.addValueInIntegerRepresentation(-1*candidate.getDeliveryTimeWindowLowerInMinutes());
+        this.data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
+    }
+
+    private void addRouteInSolution() {
 
     }
 

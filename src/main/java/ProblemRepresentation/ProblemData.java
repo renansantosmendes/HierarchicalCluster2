@@ -33,7 +33,7 @@ public class ProblemData {
     private String nodesInstanceName;
     private String adjacenciesInstanceName;
     private LocalDateTime currentTime = LocalDateTime.of(2017, 1, 1, 0, 0, 0);
-    private Node currentNode = new Node(0, 40.7143528, -74.0059731, "Av. do Contorno, 340 - Santa Efigênia, Belo Horizonte - MG, 30110-017");
+    private Node currentNode = new Node();//= new Node(0, 40.7143528, -74.0059731, "Av. do Contorno, 340 - Santa Efigênia, Belo Horizonte - MG, 30110-017");
     private Request lastPassengerAddedToRoute;
     private int numberOfVehicles;
     private int vehicleCapacity;
@@ -170,6 +170,7 @@ public class ProblemData {
         this.duration = new AdjacenciesDAO(this.adjacenciesInstanceName, this.nodesInstanceName).getDurationBetweenNodes(this.numberOfNodes);
         this.distance = new AdjacenciesDAO(this.adjacenciesInstanceName, this.nodesInstanceName).getDistanceBetweenNodes(this.numberOfNodes);
         this.instanceRequests.addAll(this.requests);
+        this.currentNode.setNode(this.nodes.get(0));
     }
 
     public void startVehiclesData() {

@@ -46,8 +46,8 @@ public class RequestDAO {
             PreparedStatement statement = this.connection.prepareStatement(sql);
 
             statement.setString(1, request.getId().toString());
-            statement.setString(2, request.getPassengerOrigin().getNodeId().toString());
-            statement.setString(3, request.getPassengerDestination().getNodeId().toString());
+            statement.setString(2, request.getPassengerOrigin().getId().toString());
+            statement.setString(3, request.getPassengerDestination().getId().toString());
             statement.setString(4, request.getDayRequestWasMade().toString());
             statement.setString(5, request.getPickUpTime().toLocalTime().toString());
             statement.setString(6, request.getDeliveryTimeWindowLower().toLocalTime().toString());
@@ -126,8 +126,8 @@ public class RequestDAO {
                 LocalDateTime deliveryTimeWindowLower = LocalDateTime.of(requestDay, resultSetForRequests.getTime("deliveryTimeWindowLower").toLocalTime());
                 LocalDateTime deliveryTimeWindowUpper = LocalDateTime.of(requestDay, resultSetForRequests.getTime("deliveryTimeWindowUpper").toLocalTime());
 
-                Request request = new Request(requestId, nodes.stream().filter(u -> u.getNodeId() == passengerOriginId).collect(Collectors.toList()).get(0),
-                        nodes.stream().filter(u -> u.getNodeId() == passengerDestinationId).collect(Collectors.toList()).get(0), requestDayConverted,
+                Request request = new Request(requestId, nodes.stream().filter(u -> u.getId() == passengerOriginId).collect(Collectors.toList()).get(0),
+                        nodes.stream().filter(u -> u.getId() == passengerDestinationId).collect(Collectors.toList()).get(0), requestDayConverted,
                         pickUpTime, deliveryTimeWindowLower, deliveryTimeWindowUpper);
 
                 listOfRequests.add(request);

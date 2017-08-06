@@ -92,8 +92,8 @@ public class Request {
     }
 
     public void setDistanceToAttendThisRequest(Node currentNode, long distanceMatrix[][]) {
-        this.distanceToAttendThisRequest = distanceMatrix[currentNode.getNodeId()][this.getPassengerOrigin().getNodeId()]
-                + distanceMatrix[this.getPassengerOrigin().getNodeId()][this.getPassengerDestination().getNodeId()];
+        this.distanceToAttendThisRequest = distanceMatrix[currentNode.getId()][this.getPassengerOrigin().getId()]
+                + distanceMatrix[this.getPassengerOrigin().getId()][this.getPassengerDestination().getId()];
     }
 
     public void setDeliveryTimeWindowLowerRankingFunction(int maxTimeWindowLower, int minTimeWindowLower) {
@@ -194,8 +194,8 @@ public class Request {
 
     public void determineFeasibility(LocalDateTime currentTime, Node currentNode, Duration timeMatrix[][]) {
 
-        Duration durationUntilVehicleArrivesPickUpNode = timeMatrix[currentNode.getNodeId()][this.getPassengerOrigin().getNodeId()];
-        Duration durationBetweenOriginAndDestination = timeMatrix[this.getPassengerOrigin().getNodeId()][this.getPassengerDestination().getNodeId()];
+        Duration durationUntilVehicleArrivesPickUpNode = timeMatrix[currentNode.getId()][this.getPassengerOrigin().getId()];
+        Duration durationBetweenOriginAndDestination = timeMatrix[this.getPassengerOrigin().getId()][this.getPassengerDestination().getId()];
 
         Duration totalDuration = durationUntilVehicleArrivesPickUpNode.plus(durationBetweenOriginAndDestination);
 
@@ -204,9 +204,14 @@ public class Request {
         }
     }
 
+    
+    public void setRequest(Request request){
+        
+    }
+    
     public String toString() {
-        return "Request: id = " + this.id + " Passenger Origin = " + this.passengerOrigin.getNodeId()
-                + " Passenger Destination = " + this.passengerDestination.getNodeId()
+        return "Request: id = " + this.id + " Passenger Origin = " + this.passengerOrigin.getId()
+                + " Passenger Destination = " + this.passengerDestination.getId()
                 + "\nTime Window Lower = " + this.deliveryTimeWindowLower
                 + "\nTime Window Upper = " + this.deliveryTimeWindowUpper + "\nRRF = " + this.requestRankingFunction + "\n";
     }

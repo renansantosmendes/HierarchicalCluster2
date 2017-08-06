@@ -82,6 +82,10 @@ public class Route {
     }
     
     
+    public void addValueInIntegerRepresentation(int value){
+        this.integerRouteRepresetation.add(value);
+    }
+    
     
     public void calculateTotalRouteDistance(){
         

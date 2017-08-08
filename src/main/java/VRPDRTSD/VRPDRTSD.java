@@ -31,8 +31,8 @@ public class VRPDRTSD implements Algorithm {
     int maxTimeWindowLower;
     int minTimeWindowUpper;
     int maxTimeWindowUpper;
-    Map<Node, List<Request>> requestsWichBoardsInNode;
-    Map<Node, List<Request>> requestsWichLeavesInNode;
+    Map<Node, List<Request>> requestsThatBoardsInNode;
+    Map<Node, List<Request>> requestsThatLeavesInNode;
     int maxLoadIndex;
     int minLoadIndex;
     Solution solution;
@@ -98,14 +98,14 @@ public class VRPDRTSD implements Algorithm {
     }
 
     private void separateRequestsWhichBoardsAndLeavesInNodes() {
-        requestsWichBoardsInNode = data.getRequests().stream()
+        requestsThatBoardsInNode = data.getRequests().stream()
                 .collect(Collectors.groupingBy(Request::getPassengerOrigin));
-        requestsWichLeavesInNode = data.getRequests().stream()
+        requestsThatLeavesInNode = data.getRequests().stream()
                 .collect(Collectors.groupingBy(Request::getPassengerDestination));
     }
 
     private void setLoadIndexForEveryNode() {
-        data.getNodes().forEach(n -> n.setLoadIndex(requestsWichBoardsInNode, requestsWichLeavesInNode));
+        data.getNodes().forEach(n -> n.setLoadIndex(requestsThatBoardsInNode, requestsThatLeavesInNode));
     }
 
     private void findMaxAndMinLoadIndex() {
@@ -131,15 +131,18 @@ public class VRPDRTSD implements Algorithm {
         initializeSolution();
         initializeCandidatesSet();
         while (stoppingCriterionIsFalse()) {
-            startNewRoute();
+            startNewRoute();//alocar um veículo para a rota
             while (hasFeasibleRequests()) {
-                findBestCandidate();
+                findBestCandidateUsingRRF();
                 addCandidateIntoRoute();//pesquisar se há outro passageiro que possa desembarcar no mesmo nó, se sim, inserí-lo
                 actualizeCandidatesSet();//não usar RRF, deve-se priorizar a janela de tempo
-                //evaluateRequestsFeasibility???? ou achar outras solicitações que possam ser atendidas
+                //findRequestsThatCan
+                requestsFeasibilityAnalysis();
             }
+            finalizeRoute();
             addRouteInSolution();
         }
+        //finalizeSolution();
     }
 
     public void initializeSolution() {
@@ -179,7 +182,8 @@ public class VRPDRTSD implements Algorithm {
         this.candidates.addAll(data.getRequests());
     }
 
-    public void findBestCandidate() {
+    public void findBestCandidateUsingRRF() {
+        candidates.sort(Comparator.comparing(Request::getRequestRankingFunction).reversed());
         candidate = candidates.get(0);
         //data.getRequests().forEach(System.out::println);
     }
@@ -193,6 +197,7 @@ public class VRPDRTSD implements Algorithm {
         data.setLastPassengerAddedToRoute(data.getRequests().get(0));
         candidates.remove(0);
         data.setCurrentNode(data.getLastPassengerAddedToRoute().getPassengerDestination());
+        requestsThatLeavesInNode.get(data.getCurrentNode()).forEach(System.out::println);
     }
 
     private boolean stoppingCriterionIsFalse() {
@@ -211,9 +216,17 @@ public class VRPDRTSD implements Algorithm {
         this.actualRoute.addValueInIntegerRepresentation(-1*candidate.getDeliveryTimeWindowLowerInMinutes());
         this.data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
     }
+    
+    private void schedulePickUpTime() {
+        
+    }
 
     private void addRouteInSolution() {
 
+    }
+
+    private void finalizeRoute() {
+        schedulePickUpTime();
     }
 
 }

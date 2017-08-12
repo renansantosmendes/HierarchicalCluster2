@@ -6,6 +6,7 @@ import ProblemRepresentation.ProblemData;
 import ProblemRepresentation.Node;
 import Algorithms.Algorithm;
 import ProblemRepresentation.Route;
+import ProblemRepresentation.Vehicle;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -39,7 +40,7 @@ public class VRPDRTSD implements Algorithm {
     List<Request> candidates = new ArrayList<>();
     List<Request> feasibleRequests = new ArrayList<>();
     Request candidate;
-    Route actualRoute;
+    Route currentRoute;
 
     public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
             int numberOfVehicles, int vehicleCapacity) {
@@ -60,17 +61,17 @@ public class VRPDRTSD implements Algorithm {
         this.data = data;
     }
 
-    private void requestsFeasibilityAnalysis() {
-        for (Request request : data.getRequests()) {
+    public void requestsFeasibilityAnalysis() {
+        for (Request request : candidates) {
             request.determineFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }
     }
 
-    private void setDistanceToAttendEveryRequest() {
+    public void setDistanceToAttendEveryRequest() {
         data.getRequests().forEach(r -> r.setDistanceToAttendThisRequest(data.getCurrentNode(), data.getDistance()));
     }
 
-    private void findMaxAndMinDistance() {
+    public void findMaxAndMinDistance() {
         maxDistance = data.getRequests().stream()
                 .mapToDouble(Request::getDistanceToAttendThisRequest)
                 .max().getAsDouble();
@@ -79,7 +80,7 @@ public class VRPDRTSD implements Algorithm {
                 .min().getAsDouble();
     }
 
-    private void findMaxAndMinTimeWindowLower() {
+    public void findMaxAndMinTimeWindowLower() {
         minTimeWindowLower = data.getRequests().stream()
                 .mapToInt(Request::getDeliveryTimeWindowLowerInMinutes)
                 .min().getAsInt();
@@ -88,7 +89,7 @@ public class VRPDRTSD implements Algorithm {
                 .max().getAsInt();
     }
 
-    private void findMaxAndMinTimeWindowUpper() {
+    public void findMaxAndMinTimeWindowUpper() {
         minTimeWindowUpper = data.getRequests().stream()
                 .mapToInt(Request::getDeliveryTimeWindowUpperInMinutes)
                 .min().getAsInt();
@@ -97,18 +98,18 @@ public class VRPDRTSD implements Algorithm {
                 .max().getAsInt();
     }
 
-    private void separateRequestsWhichBoardsAndLeavesInNodes() {
+    public void separateRequestsWhichBoardsAndLeavesInNodes() {
         requestsThatBoardsInNode = data.getRequests().stream()
                 .collect(Collectors.groupingBy(Request::getPassengerOrigin));
         requestsThatLeavesInNode = data.getRequests().stream()
                 .collect(Collectors.groupingBy(Request::getPassengerDestination));
     }
 
-    private void setLoadIndexForEveryNode() {
+    public void setLoadIndexForEveryNode() {
         data.getNodes().forEach(n -> n.setLoadIndex(requestsThatBoardsInNode, requestsThatLeavesInNode));
     }
 
-    private void findMaxAndMinLoadIndex() {
+    public void findMaxAndMinLoadIndex() {
         maxLoadIndex = data.getNodes().stream()
                 .mapToInt(Node::getLoadIndex)
                 .max().getAsInt();
@@ -117,7 +118,7 @@ public class VRPDRTSD implements Algorithm {
                 .min().getAsInt();
     }
 
-    private ArrayList<Request> getListOfFeasibleRequests() {
+    public ArrayList<Request> getListOfFeasibleRequests() {
         return data.getRequests().stream().filter(Request::isFeasible).collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -131,12 +132,12 @@ public class VRPDRTSD implements Algorithm {
         initializeSolution();
         initializeCandidatesSet();
         while (stoppingCriterionIsFalse()) {
-            startNewRoute();//alocar um veículo para a rota
+            startNewRoute();
             while (hasFeasibleRequests()) {
                 findBestCandidateUsingRRF();
-                addCandidateIntoRoute();//pesquisar se há outro passageiro que possa desembarcar no mesmo nó, se sim, inserí-lo
-                actualizeCandidatesSet();//não usar RRF, deve-se priorizar a janela de tempo
-                //findRequestsThatCan
+                addCandidateIntoRoute();
+                actualizeCandidatesSet();
+                findOtherRequestsThatCanBeAttended();
                 requestsFeasibilityAnalysis();
             }
             finalizeRoute();
@@ -156,7 +157,7 @@ public class VRPDRTSD implements Algorithm {
         initializeCandidates();
     }
 
-    private void prepareAndSetRequestsData() {
+    public void prepareAndSetRequestsData() {
         setDistanceToAttendEveryRequest();
         findMaxAndMinDistance();
         findMaxAndMinTimeWindowLower();
@@ -166,7 +167,7 @@ public class VRPDRTSD implements Algorithm {
         findMaxAndMinLoadIndex();
     }
 
-    private void setRequestFeasibilityParameters() {
+    public void setRequestFeasibilityParameters() {
         for (Request request : data.getRequests()) {
             request.setDistanceRankingFunction(maxDistance, minDistance);
             request.setDeliveryTimeWindowLowerRankingFunction(maxTimeWindowLower, minTimeWindowLower);
@@ -177,19 +178,18 @@ public class VRPDRTSD implements Algorithm {
         }
     }
 
-    private void initializeCandidates() {
+    public void initializeCandidates() {
         data.getRequests().sort(Comparator.comparing(Request::getRequestRankingFunction).reversed());
-        this.candidates.addAll(data.getRequests());
+        candidates.addAll(data.getRequests());
     }
 
     public void findBestCandidateUsingRRF() {
         candidates.sort(Comparator.comparing(Request::getRequestRankingFunction).reversed());
         candidate = candidates.get(0);
-        //data.getRequests().forEach(System.out::println);
     }
 
     public void addCandidateIntoRoute() {
-        this.actualRoute.addValueInIntegerRepresentation(candidate.getId());
+        currentRoute.addValueInIntegerRepresentation(candidate.getId());
         scheduleDeliveryTime();
     }
 
@@ -197,36 +197,70 @@ public class VRPDRTSD implements Algorithm {
         data.setLastPassengerAddedToRoute(data.getRequests().get(0));
         candidates.remove(0);
         data.setCurrentNode(data.getLastPassengerAddedToRoute().getPassengerDestination());
-        requestsThatLeavesInNode.get(data.getCurrentNode()).forEach(System.out::println);
+        data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
+        requestsThatLeavesInNode.get(data.getCurrentNode()).remove(candidate);
+
     }
 
-    private boolean stoppingCriterionIsFalse() {
+    public boolean stoppingCriterionIsFalse() {
         return !candidates.isEmpty() && !data.getAvaibleVehicles().isEmpty();
     }
 
-    private void startNewRoute() {
-        this.actualRoute = new Route();
+    public void startNewRoute() {
+        currentRoute = new Route();
+        data.setCurrentVehicle(new Vehicle(data.getAvaibleVehicles().get(0)));
     }
-    
-    private boolean hasFeasibleRequests(){
+
+    public boolean hasFeasibleRequests() {
         return true;
     }
 
-    private void scheduleDeliveryTime() {
-        this.actualRoute.addValueInIntegerRepresentation(-1*candidate.getDeliveryTimeWindowLowerInMinutes());
-        this.data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
+    public void scheduleDeliveryTime() {
+        currentRoute.addValueInIntegerRepresentation(-1 * candidate.getDeliveryTimeWindowLowerInMinutes());
     }
     
-    private void schedulePickUpTime() {
-        
+    public void scheduleDeliveryTime(Request request) {
+        currentRoute.addValueInIntegerRepresentation(-1 * request.getDeliveryTimeWindowLowerInMinutes());
     }
 
-    private void addRouteInSolution() {
+    public void schedulePickUpTime() {
 
     }
 
-    private void finalizeRoute() {
+    public void addRouteInSolution() {
+
+    }
+
+    public void finalizeRoute() {
         schedulePickUpTime();
+    }
+
+    public void findOtherRequestsThatCanBeAttended() {
+        List<Request> otherRequestsToAdd = new ArrayList<>();
+        for (Request request : requestsThatLeavesInNode.get(data.getCurrentNode())) {
+            if (currentTimeIsWithInDeliveryTimeWindow(request)) {
+                otherRequestsToAdd.add(request);
+            }
+        }
+
+        //requestsThatLeavesInNode.get(data.getCurrentNode()).forEach(System.out::println);
+
+        //System.out.println("requests to add");
+        //otherRequestsToAdd.forEach(System.out::println);
+        otherRequestsToAdd.sort(Comparator.comparing(Request::getDeliveryTimeWindowLower));
+        
+        while(otherRequestsToAdd.size() != 0){
+            currentRoute.addValueInIntegerRepresentation(otherRequestsToAdd.get(0).getId());
+            scheduleDeliveryTime(otherRequestsToAdd.get(0));
+            otherRequestsToAdd.remove(0);
+        }
+    }
+
+    private boolean currentTimeIsWithInDeliveryTimeWindow(Request request) {
+        return (data.getCurrentTime().isAfter(request.getDeliveryTimeWindowLower())
+                || data.getCurrentTime().isEqual(request.getDeliveryTimeWindowLower()))
+                && (data.getCurrentTime().isBefore(request.getDeliveryTimeWindowUpper())
+                || data.getCurrentTime().isEqual(request.getDeliveryTimeWindowUpper()));
     }
 
 }

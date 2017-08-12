@@ -39,6 +39,7 @@ public class ProblemData {
     private int vehicleCapacity;
     private List<Vehicle> avaibleVehicles;
     private List<Vehicle> allocatedVehicles;
+    private Vehicle currentVehicle = new Vehicle();
 
     public ProblemData(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
             int numberOfVehicles, int vehicleCapacity) {
@@ -139,6 +140,14 @@ public class ProblemData {
         this.currentNode = currentNode;
     }
 
+    public void setCurrentVehicle(Vehicle currentVehicle) {
+        this.currentVehicle.setVehicle(currentVehicle);
+    }
+
+    public Vehicle getCurrentVehicle() {
+        return currentVehicle;
+    }
+
     public Request getLastPassengerAddedToRoute() {
         return lastPassengerAddedToRoute;
     }
@@ -162,7 +171,7 @@ public class ProblemData {
     public List<Vehicle> getAllocatedVehicles() {
         return allocatedVehicles;
     }
-    
+
     public void readInstance() {
         this.numberOfNodes = new NumberOfNodesDAO().getNumberOfNodes(this.nodesInstanceName);
         this.nodes = new NodeDAO(this.nodesInstanceName).getListOfNodes();
@@ -176,7 +185,7 @@ public class ProblemData {
     public void startVehiclesData() {
         avaibleVehicles = new LinkedList<>();
         allocatedVehicles = new LinkedList<>();
-        
+
         for (int i = 0; i < this.numberOfVehicles; i++) {
             Vehicle vehicle = new Vehicle(i + 1, "VPL2017", this.vehicleCapacity);
             avaibleVehicles.add(vehicle);

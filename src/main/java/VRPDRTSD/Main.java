@@ -16,7 +16,7 @@ public class Main {
         
         problem.buildGreedySolution();
         //problem.getData().getInstanceRequests().forEach(System.out::println);
-        problem.getData().getAllocatedVehicles().forEach(System.out::println);
+       // problem.getData().getAllocatedVehicles().forEach(System.out::println);
     }
 
 }

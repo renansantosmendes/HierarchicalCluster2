@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package InstanceReaderWithMySQL;
+package InstanceReader;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -105,8 +105,8 @@ public class AdjacenciesDAO {
             while (resultSet.next()) {
                 int originNode = resultSet.getInt("originNode");
                 int destinationNode = resultSet.getInt("destinationNode");
-                Duration durationTo = Duration.ofMinutes(resultSet.getInt("timeTo"));
-                Double distanceTo = resultSet.getDouble("distanceTo");
+//                Duration durationTo = Duration.ofMinutes(resultSet.getInt("timeTo"));
+                Duration durationTo = Duration.ofSeconds(resultSet.getInt("timeTo"));
                 durationBetweenNodes[i][j] = durationTo;
                 j++;
                 if(j == numberOfNodes){

@@ -5,10 +5,10 @@
  */
 package ProblemRepresentation;
 
-import InstanceReaderWithMySQL.AdjacenciesDAO;
-import InstanceReaderWithMySQL.NodeDAO;
-import InstanceReaderWithMySQL.NumberOfNodesDAO;
-import InstanceReaderWithMySQL.RequestDAO;
+import InstanceReader.AdjacenciesDAO;
+import InstanceReader.NodeDAO;
+import InstanceReader.NumberOfNodesDAO;
+import InstanceReader.RequestDAO;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package InstanceReaderWithMySQL;
+package InstanceReader;
 
-import InstanceReaderWithMySQL.ConnectionFactory;
+import InstanceReader.ConnectionFactory;
 import ProblemRepresentation.Node;
 import ProblemRepresentation.Node;
 import ProblemRepresentation.Node;

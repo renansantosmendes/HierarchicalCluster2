@@ -61,6 +61,12 @@ public class VRPDRTSD implements Algorithm {
         this.data = data;
     }
 
+    public void originalRequestsFeasibilityAnalysis() {
+        for (Request request : data.getRequests()) {
+            request.determineFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
+        }
+    }
+
     public void requestsFeasibilityAnalysis() {
         for (Request request : candidates) {
             request.determineFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
@@ -136,12 +142,17 @@ public class VRPDRTSD implements Algorithm {
             while (hasFeasibleRequests()) {
                 findBestCandidateUsingRRF();
                 addCandidateIntoRoute();
-                actualizeCandidatesSet();
+                actualizeRequestsData();
                 findOtherRequestsThatCanBeAttended();
                 requestsFeasibilityAnalysis();
             }
             finalizeRoute();
             addRouteInSolution();
+
+//            System.out.println(currentRoute.getIntegerRouteRepresetation().stream()
+//                    .filter(u -> u.intValue() > 0).collect(Collectors.toCollection(ArrayList::new)));
+            System.out.println(currentRoute.getIntegerRouteRepresetation());
+
         }
         //finalizeSolution();
     }
@@ -151,7 +162,7 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void initializeCandidatesSet() {
-        requestsFeasibilityAnalysis();
+        originalRequestsFeasibilityAnalysis();
         prepareAndSetRequestsData();
         setRequestFeasibilityParameters();
         initializeCandidates();
@@ -193,13 +204,12 @@ public class VRPDRTSD implements Algorithm {
         scheduleDeliveryTime();
     }
 
-    public void actualizeCandidatesSet() {
+    public void actualizeRequestsData() {
         data.setLastPassengerAddedToRoute(data.getRequests().get(0));
         candidates.remove(0);
         data.setCurrentNode(data.getLastPassengerAddedToRoute().getPassengerDestination());
         data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
         requestsThatLeavesInNode.get(data.getCurrentNode()).remove(candidate);
-
     }
 
     public boolean stoppingCriterionIsFalse() {
@@ -212,13 +222,16 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public boolean hasFeasibleRequests() {
-        return true;
+        return candidates.stream()
+                .filter(r -> r.isFeasible())
+                .collect(Collectors.toCollection(ArrayList::new)).size() != 0;
+        //return true;
     }
 
     public void scheduleDeliveryTime() {
         currentRoute.addValueInIntegerRepresentation(-1 * candidate.getDeliveryTimeWindowLowerInMinutes());
     }
-    
+
     public void scheduleDeliveryTime(Request request) {
         currentRoute.addValueInIntegerRepresentation(-1 * request.getDeliveryTimeWindowLowerInMinutes());
     }
@@ -233,6 +246,8 @@ public class VRPDRTSD implements Algorithm {
 
     public void finalizeRoute() {
         schedulePickUpTime();
+        currentRoute.buildNodesSequence(data);
+        currentRoute.buildSequenceOfAttendedRequests(data);
     }
 
     public void findOtherRequestsThatCanBeAttended() {
@@ -243,17 +258,16 @@ public class VRPDRTSD implements Algorithm {
             }
         }
 
-        //requestsThatLeavesInNode.get(data.getCurrentNode()).forEach(System.out::println);
-
-        //System.out.println("requests to add");
-        //otherRequestsToAdd.forEach(System.out::println);
         otherRequestsToAdd.sort(Comparator.comparing(Request::getDeliveryTimeWindowLower));
-        
-        while(otherRequestsToAdd.size() != 0){
+
+        while (otherRequestsToAdd.size() != 0) {
             currentRoute.addValueInIntegerRepresentation(otherRequestsToAdd.get(0).getId());
+            data.setCurrentTime(otherRequestsToAdd.get(0).getDeliveryTimeWindowLower());
+            candidates.remove(otherRequestsToAdd.get(0));
             scheduleDeliveryTime(otherRequestsToAdd.get(0));
             otherRequestsToAdd.remove(0);
         }
+
     }
 
     private boolean currentTimeIsWithInDeliveryTimeWindow(Request request) {

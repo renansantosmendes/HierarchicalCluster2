@@ -6,7 +6,9 @@
  */
 package VRPDRTSD;
 
+import ProblemRepresentation.Node;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -63,5 +65,22 @@ public class VRPDRTSDTest {
                 .stream().filter(r -> r.isFeasible())
                 .collect(Collectors.toCollection(ArrayList::new)).size());
     }
+    
+    @Test
+    public void actualizeDataTest(){
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+        
+        Node node = new Node(0, -19.914106,  -43.941739, "Av do Contorno, 340 - Santa Efigênia Belo Horizonte - MG");
+        List<Node> nodes = new ArrayList<>();
+        nodes.addAll(problem.getData().getNodes());
+        nodes.remove(node);
+        assertEquals(false, nodes.contains(node));
+        nodes.forEach(System.out::println);
 
+    }
 }

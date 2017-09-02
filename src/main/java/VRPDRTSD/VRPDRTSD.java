@@ -63,13 +63,20 @@ public class VRPDRTSD implements Algorithm {
 
     public void originalRequestsFeasibilityAnalysis() {
         for (Request request : data.getRequests()) {
-            request.determineFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
+            request.determineInicialFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }
     }
 
     public void requestsFeasibilityAnalysis() {
         for (Request request : candidates) {
-            request.determineFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
+            request.determineInicialFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
+        }
+    }
+
+    public void requestsFeasibilityAnalysisInConstructionFase() {
+        for (Request request : candidates) {
+            request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getLastPassengerAddedToRoute(),
+                    data.getCurrentNode(), data.getDuration());
         }
     }
 
@@ -144,15 +151,11 @@ public class VRPDRTSD implements Algorithm {
                 addCandidateIntoRoute();
                 actualizeRequestsData();
                 findOtherRequestsThatCanBeAttended();
-                requestsFeasibilityAnalysis();
+                requestsFeasibilityAnalysisInConstructionFase();
             }
             finalizeRoute();
             addRouteInSolution();
-
-//            System.out.println(currentRoute.getIntegerRouteRepresetation().stream()
-//                    .filter(u -> u.intValue() > 0).collect(Collectors.toCollection(ArrayList::new)));
             System.out.println(currentRoute.getIntegerRouteRepresetation());
-
         }
         //finalizeSolution();
     }
@@ -205,8 +208,9 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void actualizeRequestsData() {
-        data.setLastPassengerAddedToRoute(data.getRequests().get(0));
-        candidates.remove(0);
+        int indexOfCandidate = candidates.indexOf(candidate);
+        data.setLastPassengerAddedToRoute(candidates.get(indexOfCandidate));
+        candidates.remove(candidate);
         data.setCurrentNode(data.getLastPassengerAddedToRoute().getPassengerDestination());
         data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
         requestsThatLeavesInNode.get(data.getCurrentNode()).remove(candidate);
@@ -225,7 +229,6 @@ public class VRPDRTSD implements Algorithm {
         return candidates.stream()
                 .filter(r -> r.isFeasible())
                 .collect(Collectors.toCollection(ArrayList::new)).size() != 0;
-        //return true;
     }
 
     public void scheduleDeliveryTime() {
@@ -246,8 +249,8 @@ public class VRPDRTSD implements Algorithm {
 
     public void finalizeRoute() {
         schedulePickUpTime();
-        currentRoute.buildNodesSequence(data);
-        currentRoute.buildSequenceOfAttendedRequests(data);
+        //currentRoute.buildNodesSequence(data);
+        //currentRoute.buildSequenceOfAttendedRequests(data);
     }
 
     public void findOtherRequestsThatCanBeAttended() {
@@ -263,6 +266,7 @@ public class VRPDRTSD implements Algorithm {
         while (otherRequestsToAdd.size() != 0) {
             currentRoute.addValueInIntegerRepresentation(otherRequestsToAdd.get(0).getId());
             data.setCurrentTime(otherRequestsToAdd.get(0).getDeliveryTimeWindowLower());
+            data.setLastPassengerAddedToRoute(otherRequestsToAdd.get(0));
             candidates.remove(otherRequestsToAdd.get(0));
             scheduleDeliveryTime(otherRequestsToAdd.get(0));
             otherRequestsToAdd.remove(0);

@@ -59,7 +59,7 @@ public class Request {
     public void setDeliveryTime(LocalDateTime deliveryTime) {
         this.deliveryTime = deliveryTime;
     }
-    
+
     public void setDeliveryTimeWindowLower(LocalDateTime deliveryTimeWindowLower) {
         this.deliveryTimeWindowLower = deliveryTimeWindowLower;
     }
@@ -139,7 +139,7 @@ public class Request {
     public LocalDateTime getDeliveryTime() {
         return deliveryTime;
     }
-    
+
     public LocalDateTime getDeliveryTimeWindowLower() {
         return deliveryTimeWindowLower;
     }
@@ -192,7 +192,7 @@ public class Request {
         return destinationNodeRankingFunction;
     }
 
-    public void determineFeasibility(LocalDateTime currentTime, Node currentNode, Duration timeMatrix[][]) {
+    public void determineInicialFeasibility(LocalDateTime currentTime, Node currentNode, Duration timeMatrix[][]) {
 
         Duration durationUntilVehicleArrivesPickUpNode = timeMatrix[currentNode.getId()][this.getPassengerOrigin().getId()];
         Duration durationBetweenOriginAndDestination = timeMatrix[this.getPassengerOrigin().getId()][this.getPassengerDestination().getId()];
@@ -204,11 +204,27 @@ public class Request {
         }
     }
 
-    
-    public void setRequest(Request request){
-        
+    public void determineFeasibilityInConstructionFase(LocalDateTime currentTime, Request lastRequestAdded,
+            Node currentNode, Duration timeMatrix[][]) {
+
+        Duration durationUntilNextDelivery = timeMatrix[currentNode.getId()][this.getPassengerDestination().getId()];
+        Duration durationToDepot = timeMatrix[currentNode.getId()][0];
+        LocalDateTime totalDuration = currentTime.plus(durationUntilNextDelivery);
+        Duration durationBetweenLastRequestAndThis = Duration.between(lastRequestAdded.getDeliveryTimeWindowUpper(),
+                this.deliveryTimeWindowLower);
+        //Duration durationBetweenTimeWindows = Duration.between(durationToDepot, durationBetweenLastRequestAndThis);
+        //durationToDepot.
+        if (totalDuration.isBefore(this.getDeliveryTimeWindowUpper())
+                && durationToDepot.minus(durationBetweenLastRequestAndThis).toMinutes() >= 0)  {
+            this.setFeasible(true);
+
+        }
     }
-    
+
+    public void setRequest(Request request) {
+
+    }
+
     public String toString() {
         return "Request: id = " + this.id + " Passenger Origin = " + this.passengerOrigin.getId()
                 + " Passenger Destination = " + this.passengerDestination.getId()

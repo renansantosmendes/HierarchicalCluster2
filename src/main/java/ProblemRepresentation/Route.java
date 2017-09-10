@@ -136,10 +136,10 @@ public class Route {
             if(idSequence.get(id) == 0){
                 this.nodesSequence.add(data.getNodes().stream().filter(u -> u.getId() == 0).findAny().get());
             } else if(occurrenceInSequence.get(id) == 0 ){
-                this.nodesSequence.add(request.getPassengerOrigin());
+                this.nodesSequence.add(request.getOrigin());
                 occurrenceInSequence.replace(id, 1);
             } else if(occurrenceInSequence.get(id) == 1 ){
-                this.nodesSequence.add(request.getPassengerDestination());
+                this.nodesSequence.add(request.getDestination());
             }
         }
         

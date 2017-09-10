@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 public class Request {
 
     private final Integer id;
-    private final Node passengerOrigin;
-    private final Node passengerDestination;
+    private final Node origin;
+    private final Node destination;
     private LocalDateTime dayRequestWasMade;
     private LocalDateTime pickUpTime;
     private LocalDateTime deliveryTime;
@@ -31,8 +31,8 @@ public class Request {
     public Request(Integer requestId, Node passengerOrigin, Node passengerDestination, LocalDateTime dayRequestWasMade,
             LocalDateTime pickUpTime, LocalDateTime deliveryTimeWindowLower, LocalDateTime deliveryTimeWindowUpper) {
         this.id = requestId;
-        this.passengerOrigin = passengerOrigin;
-        this.passengerDestination = passengerDestination;
+        this.origin = passengerOrigin;
+        this.destination = passengerDestination;
         this.dayRequestWasMade = dayRequestWasMade;
         this.pickUpTime = pickUpTime;
         this.deliveryTimeWindowLower = deliveryTimeWindowLower;
@@ -92,8 +92,8 @@ public class Request {
     }
 
     public void setDistanceToAttendThisRequest(Node currentNode, long distanceMatrix[][]) {
-        this.distanceToAttendThisRequest = distanceMatrix[currentNode.getId()][this.getPassengerOrigin().getId()]
-                + distanceMatrix[this.getPassengerOrigin().getId()][this.getPassengerDestination().getId()];
+        this.distanceToAttendThisRequest = distanceMatrix[currentNode.getId()][this.getOrigin().getId()]
+                + distanceMatrix[this.getOrigin().getId()][this.getDestination().getId()];
     }
 
     public void setDeliveryTimeWindowLowerRankingFunction(int maxTimeWindowLower, int minTimeWindowLower) {
@@ -108,24 +108,24 @@ public class Request {
 
     public void setOriginNodeRankingFunction(int maxLoadIndex, int minLoadIndex) {
         this.originNodeRankingFunction
-                = (double) (this.getPassengerOrigin().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);
+                = (double) (this.getOrigin().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);
     }
 
     public void setDestinationNodeRankingFunction(int maxLoadIndex, int minLoadIndex) {
         this.destinationNodeRankingFunction
-                = (double) (this.getPassengerDestination().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);;
+                = (double) (this.getDestination().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public Node getPassengerOrigin() {
-        return passengerOrigin;
+    public Node getOrigin() {
+        return origin;
     }
 
-    public Node getPassengerDestination() {
-        return passengerDestination;
+    public Node getDestination() {
+        return destination;
     }
 
     public LocalDateTime getDayRequestWasMade() {
@@ -138,6 +138,10 @@ public class Request {
 
     public LocalDateTime getDeliveryTime() {
         return deliveryTime;
+    }
+    
+    public Integer getDeliveryTimeInMinutes() {
+        return deliveryTime.getHour()*60 + deliveryTime.getMinute() ;
     }
 
     public LocalDateTime getDeliveryTimeWindowLower() {
@@ -194,8 +198,8 @@ public class Request {
 
     public void determineInicialFeasibility(LocalDateTime currentTime, Node currentNode, Duration timeMatrix[][]) {
 
-        Duration durationUntilVehicleArrivesPickUpNode = timeMatrix[currentNode.getId()][this.getPassengerOrigin().getId()];
-        Duration durationBetweenOriginAndDestination = timeMatrix[this.getPassengerOrigin().getId()][this.getPassengerDestination().getId()];
+        Duration durationUntilVehicleArrivesPickUpNode = timeMatrix[currentNode.getId()][this.getOrigin().getId()];
+        Duration durationBetweenOriginAndDestination = timeMatrix[this.getOrigin().getId()][this.getDestination().getId()];
 
         Duration totalDuration = durationUntilVehicleArrivesPickUpNode.plus(durationBetweenOriginAndDestination);
 
@@ -204,20 +208,50 @@ public class Request {
         }
     }
 
-    public void determineFeasibilityInConstructionFase(LocalDateTime currentTime, Request lastRequestAdded,
-            Node currentNode, Duration timeMatrix[][]) {
+//    public void determineFeasibilityInConstructionFase(LocalDateTime currentTime, Request lastRequestAdded,
+//            Node currentNode, Duration timeMatrix[][]) {
+//
+//        Duration durationUntilNextDelivery = timeMatrix[currentNode.getId()][this.getPassengerDestination().getId()];
+//        Duration durationToDepot = timeMatrix[currentNode.getId()][0];
+//        LocalDateTime totalDuration = currentTime.plus(durationUntilNextDelivery);
+//        Duration durationBetweenLastRequestAndThis = Duration.between(lastRequestAdded.getDeliveryTimeWindowUpper(),
+//                this.deliveryTimeWindowLower);
+//        
+//        Duration delta = Duration.between(lastRequestAdded.getDeliveryTimeWindowUpper(), this.getDeliveryTimeWindowLower());
+//        //Duration durationBetweenTimeWindows = Duration.between(durationToDepot, durationBetweenLastRequestAndThis);
+//        //durationToDepot.
+//
+//        //System.out.println("testing = " + durationToDepot.minus(durationBetweenLastRequestAndThis).toMinutes());
+////        System.out.println("duration to depot = " + durationToDepot.getSeconds()
+////                + " delta = " + Duration.between(lastRequestAdded.getDeliveryTimeWindowUpper(),
+////                        this.getDeliveryTimeWindowLower()).getSeconds());
+////        System.out.println(this);
+////        if (totalDuration.isBefore(this.getDeliveryTimeWindowUpper())
+////                && durationToDepot.minus(durationBetweenLastRequestAndThis).toMinutes() >= 0) {
+////            this.setFeasible(true);
+////
+////        }
+//        if (totalDuration.isBefore(this.getDeliveryTimeWindowUpper())
+//                && delta.getSeconds() < durationToDepot.getSeconds()) {
+//            this.setFeasible(true);
+//        }else{
+//            this.setFeasible(false);
+//        }
+//    }
+    
+    public void determineFeasibilityInConstructionFase(LocalDateTime currentTime, Node currentNode, Duration timeMatrix[][]) {
 
-        Duration durationUntilNextDelivery = timeMatrix[currentNode.getId()][this.getPassengerDestination().getId()];
-        Duration durationToDepot = timeMatrix[currentNode.getId()][0];
-        LocalDateTime totalDuration = currentTime.plus(durationUntilNextDelivery);
-        Duration durationBetweenLastRequestAndThis = Duration.between(lastRequestAdded.getDeliveryTimeWindowUpper(),
-                this.deliveryTimeWindowLower);
-        //Duration durationBetweenTimeWindows = Duration.between(durationToDepot, durationBetweenLastRequestAndThis);
-        //durationToDepot.
-        if (totalDuration.isBefore(this.getDeliveryTimeWindowUpper())
-                && durationToDepot.minus(durationBetweenLastRequestAndThis).toMinutes() >= 0)  {
+        //repensar nesse valores coletados
+        Duration durationFromCurrentNodeToThisDeliveryNode = timeMatrix[currentNode.getId()][this.getDestination().getId()];
+        Duration durationFromCurrentNodeToOrigin = timeMatrix[currentNode.getId()][0];
+
+        Duration totalDuration = null;
+
+        if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())
+                && (durationFromCurrentNodeToThisDeliveryNode.getSeconds() < durationFromCurrentNodeToOrigin.getSeconds())) {
             this.setFeasible(true);
-
+        }else{
+            this.setFeasible(false);
         }
     }
 
@@ -226,10 +260,11 @@ public class Request {
     }
 
     public String toString() {
-        return "Request: id = " + this.id + " Passenger Origin = " + this.passengerOrigin.getId()
-                + " Passenger Destination = " + this.passengerDestination.getId()
+        return "Request: id = " + this.id + " Passenger Origin = " + this.origin.getId()
+                + " Passenger Destination = " + this.destination.getId()
                 + "\nTime Window Lower = " + this.deliveryTimeWindowLower
-                + "\nTime Window Upper = " + this.deliveryTimeWindowUpper + "\nRRF = " + this.requestRankingFunction + "\n";
+                + "\nTime Window Upper = " + this.deliveryTimeWindowUpper + "\nRRF = " + this.requestRankingFunction +
+                "\nIs Feasible = " + this.feasible;
     }
 
 }

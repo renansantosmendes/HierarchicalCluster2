@@ -46,8 +46,8 @@ public class RequestDAO {
             PreparedStatement statement = this.connection.prepareStatement(sql);
 
             statement.setString(1, request.getId().toString());
-            statement.setString(2, request.getPassengerOrigin().getId().toString());
-            statement.setString(3, request.getPassengerDestination().getId().toString());
+            statement.setString(2, request.getOrigin().getId().toString());
+            statement.setString(3, request.getDestination().getId().toString());
             statement.setString(4, request.getDayRequestWasMade().toString());
             statement.setString(5, request.getPickUpTime().toLocalTime().toString());
             statement.setString(6, request.getDeliveryTimeWindowLower().toLocalTime().toString());

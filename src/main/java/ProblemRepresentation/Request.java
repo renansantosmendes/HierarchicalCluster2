@@ -139,9 +139,9 @@ public class Request {
     public LocalDateTime getDeliveryTime() {
         return deliveryTime;
     }
-    
+
     public Integer getDeliveryTimeInMinutes() {
-        return deliveryTime.getHour()*60 + deliveryTime.getMinute() ;
+        return deliveryTime.getHour() * 60 + deliveryTime.getMinute();
     }
 
     public LocalDateTime getDeliveryTimeWindowLower() {
@@ -238,19 +238,31 @@ public class Request {
 //            this.setFeasible(false);
 //        }
 //    }
-    
-    public void determineFeasibilityInConstructionFase(LocalDateTime currentTime, Node currentNode, Duration timeMatrix[][]) {
+    public void determineFeasibilityInConstructionFase(LocalDateTime currentTime, Request lastRequestAdded, Node currentNode, Duration timeMatrix[][]) {
 
         //repensar nesse valores coletados
         Duration durationFromCurrentNodeToThisDeliveryNode = timeMatrix[currentNode.getId()][this.getDestination().getId()];
-        Duration durationFromCurrentNodeToOrigin = timeMatrix[currentNode.getId()][0];
+        //Duration durationFromCurrentNodeToOrigin = timeMatrix[currentNode.getId()][0];
+        Duration durationFromCurrentNodeToOrigin = timeMatrix[this.getDestination().getId()][0];
 
-        Duration totalDuration = null;
+        Duration durationBetweenTimeWindows = Duration.between(this.deliveryTimeWindowLower, lastRequestAdded.getDeliveryTimeWindowUpper());
 
-        if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())
-                && (durationFromCurrentNodeToThisDeliveryNode.getSeconds() < durationFromCurrentNodeToOrigin.getSeconds())) {
-            this.setFeasible(true);
-        }else{
+//        if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())
+//                && (Math.abs(durationBetweenTimeWindows.getSeconds()) < durationFromCurrentNodeToOrigin.getSeconds()) 
+//                && durationBetweenTimeWindows.getSeconds() >= 0) {
+//            this.setFeasible(true);
+//        } else {
+//            this.setFeasible(false);
+//        }
+        if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())) {
+            if (durationBetweenTimeWindows.getSeconds() <= 0) {
+                this.setFeasible(true);
+            } else if (durationBetweenTimeWindows.getSeconds() < durationFromCurrentNodeToOrigin.getSeconds()) {
+                this.setFeasible(true);
+            } else {
+                this.setFeasible(false);
+            }
+        } else {
             this.setFeasible(false);
         }
     }
@@ -263,8 +275,8 @@ public class Request {
         return "Request: id = " + this.id + " Passenger Origin = " + this.origin.getId()
                 + " Passenger Destination = " + this.destination.getId()
                 + "\nTime Window Lower = " + this.deliveryTimeWindowLower
-                + "\nTime Window Upper = " + this.deliveryTimeWindowUpper + "\nRRF = " + this.requestRankingFunction +
-                "\nIs Feasible = " + this.feasible;
+                + "\nTime Window Upper = " + this.deliveryTimeWindowUpper + "\nRRF = " + this.requestRankingFunction
+                + "\nIs Feasible = " + this.feasible;
     }
 
 }

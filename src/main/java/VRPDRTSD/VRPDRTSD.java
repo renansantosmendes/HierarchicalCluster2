@@ -8,6 +8,7 @@ import Algorithms.Algorithm;
 import ProblemRepresentation.Route;
 import ProblemRepresentation.Vehicle;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -68,6 +69,7 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void requestsFeasibilityAnalysis() {
+        data.setCurrentNode(data.getNodes().get(0));
         for (Request request : candidates) {
             request.determineInicialFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }
@@ -75,9 +77,9 @@ public class VRPDRTSD implements Algorithm {
 
     public void requestsFeasibilityAnalysisInConstructionFase() {
         for (Request request : candidates) {
-//            request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getLastPassengerAddedToRoute(),
-//                    data.getCurrentNode(), data.getDuration());
-            request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
+            request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getLastPassengerAddedToRoute(),
+                    data.getCurrentNode(), data.getDuration());
+//            request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }
         //System.out.println(candidates.stream().filter(Request::isFeasible).collect(Collectors.toCollection(ArrayList::new)));
     }
@@ -147,8 +149,8 @@ public class VRPDRTSD implements Algorithm {
         initializeSolution();
         initializeCandidatesSet();
         while (stoppingCriterionIsFalse()) {
-            requestsFeasibilityAnalysis();
             startNewRoute();
+            requestsFeasibilityAnalysis();
             while (hasFeasibleRequests()) {
                 findBestCandidateUsingRRF();
                 addCandidateIntoRoute();
@@ -243,6 +245,8 @@ public class VRPDRTSD implements Algorithm {
     public void startNewRoute() {
         currentRoute = new Route();
         data.setCurrentVehicle(new Vehicle(data.getAvaibleVehicles().get(0)));
+        data.setCurrentNode(data.getNodes().get(0));
+        data.setCurrentTime(LocalDateTime.of(2017, 1, 1, 0, 0, 0));
     }
 
     public boolean hasFeasibleRequests() {

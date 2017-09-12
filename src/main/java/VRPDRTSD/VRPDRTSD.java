@@ -161,7 +161,6 @@ public class VRPDRTSD implements Algorithm {
             finalizeRoute();
             addRouteInSolution();
             List<Integer> list = currentRoute.getIntegerRouteRepresetation();
-            //list.sort(Comparator.naturalOrder());
             System.out.println(list);
         }
         //finalizeSolution();
@@ -214,22 +213,21 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void addCandidateIntoRoute() {
-                
-        if(currentRoute.getIntegerRouteRepresetation().size() == 0){
+
+        if (currentRoute.getIntegerRouteRepresetation().size() == 0) {
             data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
         } else {
-            Duration displacementTime = data.getDuration()[data.getLastPassengerAddedToRoute().getDestination().getId()]
-                    [candidate.getDestination().getId()];
+            Duration displacementTime = data.getDuration()[data.getLastPassengerAddedToRoute().getDestination().getId()][candidate.getDestination().getId()];
             data.setCurrentTime(data.getCurrentTime().plus(displacementTime));
         }
-        
+
         int indexOfCandidate = candidates.indexOf(candidate);
         data.setLastPassengerAddedToRoute(candidates.get(indexOfCandidate));
         data.setCurrentNode(data.getLastPassengerAddedToRoute().getDestination());
-        
+
         candidate.setDeliveryTime(data.getCurrentTime());
         currentRoute.addValueInIntegerRepresentation(candidate.getId());
-        
+
         scheduleDeliveryTimeInRouteRepresentation();
     }
 
@@ -265,7 +263,27 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void schedulePickUpTime() {
+        List<Integer> pickupSequence = currentRoute.getIntegerRouteRepresetation()
+                .stream().filter(u -> u.intValue() > 0)
+                .collect(Collectors.toCollection(ArrayList::new));
+        int startDeliveryTimeInteger = currentRoute.getIntegerRouteRepresetation().get(1);
+        for (int i = currentRoute.getIntegerRouteRepresetation().size() - 1; i >= 0; i--) {
 
+            if (currentRoute.getIntegerRouteRepresetation().get(i) < 0) {
+                i--;
+            }
+
+            //não está pegando a solicitação corretamente -> corrigir essa parte 
+            //está pegando a solicitação nas posições i e i- 2, mas é preciso pegar
+            //a que tem o id que esta nas posições i e i - 2 da lista de valores inteiros
+            System.out.println(data.getRequests().get(i - 2));
+            System.out.println(data.getRequests().get(i));
+
+            Duration timeBetweenRequests = data.getDuration()[data.getRequests().get(i - 2).getId()][data.getRequests().get(i).getId()];
+            int j = 0;
+        }
+
+        System.out.println(pickupSequence);
     }
 
     public void addRouteInSolution() {

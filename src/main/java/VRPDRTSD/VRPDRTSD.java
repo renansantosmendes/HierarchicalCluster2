@@ -151,12 +151,17 @@ public class VRPDRTSD implements Algorithm {
         while (stoppingCriterionIsFalse()) {
             startNewRoute();
             requestsFeasibilityAnalysis();
-            while (hasFeasibleRequests()) {
+            while (hasFeasibleRequests() && hasEmptySeatInVehicle()) {
+                //System.out.println(data.getCurrentVehicle().getBusySeats());
                 findBestCandidateUsingRRF();
                 addCandidateIntoRoute();
                 actualizeRequestsData();
-                findOtherRequestsThatCanBeAttended();
+                if (hasEmptySeatInVehicle()) {
+                    findOtherRequestsThatCanBeAttended();
+                }
+
                 requestsFeasibilityAnalysisInConstructionFase();
+
             }
             finalizeRoute();
             addRouteInSolution();
@@ -228,6 +233,7 @@ public class VRPDRTSD implements Algorithm {
         candidate.setDeliveryTime(data.getCurrentTime());
         currentRoute.addValueInIntegerRepresentation(candidate.getId());
 
+        data.getCurrentVehicle().boardPassenger();
         scheduleDeliveryTimeInRouteRepresentation();
     }
 
@@ -243,6 +249,7 @@ public class VRPDRTSD implements Algorithm {
     public void startNewRoute() {
         currentRoute = new Route();
         data.setCurrentVehicle(new Vehicle(data.getAvaibleVehicles().get(0)));
+        data.getAvaibleVehicles().remove(0);
         data.setCurrentNode(data.getNodes().get(0));
         data.setCurrentTime(LocalDateTime.of(2017, 1, 1, 0, 0, 0));
     }
@@ -251,6 +258,10 @@ public class VRPDRTSD implements Algorithm {
         return candidates.stream()
                 .filter(r -> r.isFeasible())
                 .collect(Collectors.toCollection(ArrayList::new)).size() != 0;
+    }
+
+    public boolean hasEmptySeatInVehicle() {
+        return data.getCurrentVehicle().getBusySeats() < data.getCurrentVehicle().getCapacity();
     }
 
     public void scheduleDeliveryTimeInRouteRepresentation() {
@@ -266,24 +277,57 @@ public class VRPDRTSD implements Algorithm {
         List<Integer> pickupSequence = currentRoute.getIntegerRouteRepresetation()
                 .stream().filter(u -> u.intValue() > 0)
                 .collect(Collectors.toCollection(ArrayList::new));
+
+        List<Integer> pickupTimes = new ArrayList<>();
         int startDeliveryTimeInteger = currentRoute.getIntegerRouteRepresetation().get(1);
-        for (int i = currentRoute.getIntegerRouteRepresetation().size() - 1; i >= 0; i--) {
+        int currentTime;
+        for (int i = currentRoute.getIntegerRouteRepresetation().size() - 1; i >= 2; i--) {
 
             if (currentRoute.getIntegerRouteRepresetation().get(i) < 0) {
                 i--;
             }
 
-            //não está pegando a solicitação corretamente -> corrigir essa parte 
-            //está pegando a solicitação nas posições i e i- 2, mas é preciso pegar
-            //a que tem o id que esta nas posições i e i - 2 da lista de valores inteiros
-            System.out.println(data.getRequests().get(i - 2));
-            System.out.println(data.getRequests().get(i));
+            int originRequestId = currentRoute.getIntegerRouteRepresetation().get(i - 2);
+            int destinationRequestId = currentRoute.getIntegerRouteRepresetation().get(i);
 
-            Duration timeBetweenRequests = data.getDuration()[data.getRequests().get(i - 2).getId()][data.getRequests().get(i).getId()];
-            int j = 0;
+            System.out.println("Origin = " + originRequestId);
+            System.out.println("Destination = " + destinationRequestId);
+
+            Request passengerOrigin = null, passengerDestination = null;
+            for (Request request : data.getRequests()) {
+                if (i == currentRoute.getIntegerRouteRepresetation().size() - 1) {
+                    if (request.getId() == pickupSequence.get(pickupSequence.size() - 1)) {
+                        passengerOrigin = request;
+                    }
+                    if (request.getId() == pickupSequence.get(0)) {
+                        passengerDestination = request;
+                    }
+                } else {
+                    if (request.getId() == originRequestId) {
+                        passengerOrigin = request;
+                    }
+                    if (request.getId() == destinationRequestId) {
+                        passengerDestination = request;
+                    }
+                }
+            }
+
+            Duration timeBetweenRequests = null;
+            if (i == currentRoute.getIntegerRouteRepresetation().size() - 1) {
+                timeBetweenRequests = data
+                        .getDuration()[passengerOrigin.getDestination().getId()][passengerDestination.getDestination().getId()];
+            } else {
+                timeBetweenRequests = data
+                        .getDuration()[passengerOrigin.getDestination().getId()][passengerDestination.getDestination().getId()];
+            }
+            int timeBetweenRequestsInMinutes = (int) timeBetweenRequests.toHours() + (int) timeBetweenRequests.toMinutes();
+
+            currentTime = startDeliveryTimeInteger + timeBetweenRequestsInMinutes;
+            pickupTimes.add(currentTime);
         }
 
         System.out.println(pickupSequence);
+        System.out.println(pickupTimes);
     }
 
     public void addRouteInSolution() {
@@ -292,8 +336,11 @@ public class VRPDRTSD implements Algorithm {
 
     public void finalizeRoute() {
         schedulePickUpTime();
+
         //currentRoute.buildNodesSequence(data);
         //currentRoute.buildSequenceOfAttendedRequests(data);
+        //depois de fazer todo planejamento de embarque e desembarque, fazer um 
+        //Log com as atividades feitas pelo veículo
     }
 
     public void findOtherRequestsThatCanBeAttended() {
@@ -310,6 +357,7 @@ public class VRPDRTSD implements Algorithm {
             currentRoute.addValueInIntegerRepresentation(otherRequestsToAdd.get(0).getId());
             data.setCurrentTime(otherRequestsToAdd.get(0).getDeliveryTimeWindowLower());
             data.setLastPassengerAddedToRoute(otherRequestsToAdd.get(0));
+            data.getCurrentVehicle().boardPassenger();
             candidates.remove(otherRequestsToAdd.get(0));
             scheduleDeliveryTime(otherRequestsToAdd.get(0));
             otherRequestsToAdd.remove(0);

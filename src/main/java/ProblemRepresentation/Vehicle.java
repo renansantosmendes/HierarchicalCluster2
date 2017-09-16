@@ -14,6 +14,7 @@ public class Vehicle {
     private int id;
     private String licensePlate;
     private int capacity;
+    private int busySeats = 0;
 
     public Vehicle() {
 
@@ -23,12 +24,14 @@ public class Vehicle {
         this.id = id;
         this.licensePlate = licensePlate;
         this.capacity = capacity;
+        this.busySeats = 0;
     }
 
     public Vehicle(Vehicle vehicle) {
         this.setId(vehicle.getId());
         this.setLicensePlate(vehicle.getLicensePlate());
         this.setCapacity(vehicle.getCapacity());
+        
     }
 
     public int getId() {
@@ -59,8 +62,26 @@ public class Vehicle {
         this.setId(vehicle.getId());
         this.setLicensePlate(vehicle.getLicensePlate());
         this.setCapacity(vehicle.getCapacity());
+        this.setBusySeats(vehicle.getBusySeats());
     }
 
+    public void setBusySeats(int busySeats) {
+        this.busySeats = busySeats;
+    }
+
+    
+    public int getBusySeats() {
+        return busySeats;
+    }
+    
+    public void boardPassenger(){
+        this.busySeats++;
+    }
+    
+    public void deliveryPassenger(){
+        this.busySeats--;
+    }
+    
     public String toString() {
         return "Vehicle = " + this.id + "\t License Plate = " + this.licensePlate + "\t Capacity = " + this.capacity;
     }

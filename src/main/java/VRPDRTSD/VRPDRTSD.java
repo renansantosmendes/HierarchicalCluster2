@@ -279,55 +279,41 @@ public class VRPDRTSD implements Algorithm {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         List<Integer> pickupTimes = new ArrayList<>();
-        int startDeliveryTimeInteger = currentRoute.getIntegerRouteRepresetation().get(1);
-        int currentTime;
-        for (int i = currentRoute.getIntegerRouteRepresetation().size() - 1; i >= 2; i--) {
+        List<Integer> timesBetween = new ArrayList<>();
+        int startDeliveryTimeInteger = getFirstDeliveryTime();
+        int startDeliveryPassenger = getFirstDeliveryPassengerId();
+        int currentTime = startDeliveryTimeInteger;
+        pickupSequence.add(startDeliveryPassenger);
+        Request passengerOrigin = null, passengerDestination = null;
 
-            if (currentRoute.getIntegerRouteRepresetation().get(i) < 0) {
-                i--;
-            }
+        for (int i = 0; i < pickupSequence.size() - 1; i++) {
 
-            int originRequestId = currentRoute.getIntegerRouteRepresetation().get(i - 2);
-            int destinationRequestId = currentRoute.getIntegerRouteRepresetation().get(i);
-
-            System.out.println("Origin = " + originRequestId);
-            System.out.println("Destination = " + destinationRequestId);
-
-            Request passengerOrigin = null, passengerDestination = null;
             for (Request request : data.getRequests()) {
-                if (i == currentRoute.getIntegerRouteRepresetation().size() - 1) {
-                    if (request.getId() == pickupSequence.get(pickupSequence.size() - 1)) {
-                        passengerOrigin = request;
-                    }
-                    if (request.getId() == pickupSequence.get(0)) {
-                        passengerDestination = request;
-                    }
-                } else {
-                    if (request.getId() == originRequestId) {
-                        passengerOrigin = request;
-                    }
-                    if (request.getId() == destinationRequestId) {
-                        passengerDestination = request;
-                    }
+                if (request.getId() == pickupSequence.get(i)) {
+                    passengerOrigin = request;
+                }
+                if (request.getId() == pickupSequence.get(i + 1)) {
+                    passengerDestination = request;
                 }
             }
 
-            Duration timeBetweenRequests = null;
-            if (i == currentRoute.getIntegerRouteRepresetation().size() - 1) {
-                timeBetweenRequests = data
-                        .getDuration()[passengerOrigin.getDestination().getId()][passengerDestination.getDestination().getId()];
-            } else {
-                timeBetweenRequests = data
-                        .getDuration()[passengerOrigin.getDestination().getId()][passengerDestination.getDestination().getId()];
-            }
-            int timeBetweenRequestsInMinutes = (int) timeBetweenRequests.toHours() + (int) timeBetweenRequests.toMinutes();
+            Duration timeBetween = data
+                    .getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getOrigin().getId()];
 
-            currentTime = startDeliveryTimeInteger + timeBetweenRequestsInMinutes;
-            pickupTimes.add(currentTime);
+            int integerTimeBetween = (int) timeBetween.toHours() * 60 + (int) timeBetween.toMinutes();
+            currentTime = currentTime + integerTimeBetween;
+            timesBetween.add(currentTime);
+
         }
+        System.out.println(timesBetween);
+    }
 
-        System.out.println(pickupSequence);
-        System.out.println(pickupTimes);
+    private Integer getFirstDeliveryTime() {
+        return currentRoute.getIntegerRouteRepresetation().get(1);
+    }
+
+    private Integer getFirstDeliveryPassengerId() {
+        return currentRoute.getIntegerRouteRepresetation().get(0);
     }
 
     public void addRouteInSolution() {

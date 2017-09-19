@@ -1,7 +1,9 @@
 package ProblemRepresentation;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  *
@@ -54,6 +56,19 @@ public class Request {
 
     public void setPickUpTime(LocalDateTime pickUpTime) {
         this.pickUpTime = pickUpTime;
+    }
+
+    public void setPickUpTime(Integer pickUpTime) {
+        if (pickUpTime < 0) {
+            pickUpTime = -pickUpTime;
+            int hour = pickUpTime / 60;
+            int minute = pickUpTime % 60;
+            LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+        } else {
+            int hour = pickUpTime / 60;
+            int minute = pickUpTime % 60;
+            LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+        }
     }
 
     public void setDeliveryTime(LocalDateTime deliveryTime) {
@@ -275,7 +290,9 @@ public class Request {
         return "Request: id = " + this.id + " Passenger Origin = " + this.origin.getId()
                 + " Passenger Destination = " + this.destination.getId()
                 + "\nTime Window Lower = " + this.deliveryTimeWindowLower
-                + "\nTime Window Upper = " + this.deliveryTimeWindowUpper + "\nRRF = " + this.requestRankingFunction
+                + "\nTime Window Upper = " + this.deliveryTimeWindowUpper
+                + "\nPickup Time = " + this.pickUpTime
+                + "\nRRF = " + this.requestRankingFunction
                 + "\nIs Feasible = " + this.feasible;
     }
 

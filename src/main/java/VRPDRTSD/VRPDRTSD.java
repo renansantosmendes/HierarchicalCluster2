@@ -10,6 +10,7 @@ import ProblemRepresentation.Vehicle;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -301,11 +302,38 @@ public class VRPDRTSD implements Algorithm {
                     .getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getOrigin().getId()];
 
             int integerTimeBetween = (int) timeBetween.toHours() * 60 + (int) timeBetween.toMinutes();
-            currentTime = currentTime + integerTimeBetween;
-            timesBetween.add(currentTime);
+            timesBetween.add(integerTimeBetween);
 
         }
-        System.out.println(timesBetween);
+
+        for (int i = timesBetween.size() - 1; i >= 0; i--) {
+            currentTime = currentTime + timesBetween.get(i);
+            pickupTimes.add(currentTime);
+
+        }
+
+        Collections.reverse(pickupTimes);
+
+        List<Integer> pickupScheduledSequence = new ArrayList<>();
+
+        for (int i = 0; i < pickupSequence.size() - 1; i++) {
+            pickupScheduledSequence.add(pickupSequence.get(i));
+            pickupScheduledSequence.add(pickupTimes.get(i));
+        }
+        pickupScheduledSequence.addAll(currentRoute.getIntegerRouteRepresetation());
+        currentRoute.getIntegerRouteRepresetation().clear();
+        currentRoute.getIntegerRouteRepresetation().addAll(pickupScheduledSequence);
+        
+        
+        //Parei nessa parte aqui -> setar a hora de embarque dos passageiros no proprio objeto com base na 
+        //representação da rota com numeros inteiros
+        for(int i = 0; i < pickupScheduledSequence.size()/2 - 2; i = i + 2){
+            for(Request request : data.getRequests()){
+                if(request.getId() == pickupScheduledSequence.get(i)){
+                    request.setPickUpTime(pickupScheduledSequence.get(i + 1));
+                }
+            }
+        }
     }
 
     private Integer getFirstDeliveryTime() {
@@ -322,9 +350,11 @@ public class VRPDRTSD implements Algorithm {
 
     public void finalizeRoute() {
         schedulePickUpTime();
-
+        currentRoute.buildSequenceOfAttendedRequests(data);
+        System.out.println(currentRoute.getSequenceOfAttendedRequests());
         //currentRoute.buildNodesSequence(data);
-        //currentRoute.buildSequenceOfAttendedRequests(data);
+        
+
         //depois de fazer todo planejamento de embarque e desembarque, fazer um 
         //Log com as atividades feitas pelo veículo
     }

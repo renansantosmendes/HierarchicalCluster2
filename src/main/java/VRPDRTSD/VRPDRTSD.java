@@ -323,13 +323,12 @@ public class VRPDRTSD implements Algorithm {
         pickupScheduledSequence.addAll(currentRoute.getIntegerRouteRepresetation());
         currentRoute.getIntegerRouteRepresetation().clear();
         currentRoute.getIntegerRouteRepresetation().addAll(pickupScheduledSequence);
-        
-        
+
         //Parei nessa parte aqui -> setar a hora de embarque dos passageiros no proprio objeto com base na 
         //representação da rota com numeros inteiros
-        for(int i = 0; i < pickupScheduledSequence.size()/2 - 2; i = i + 2){
-            for(Request request : data.getRequests()){
-                if(request.getId() == pickupScheduledSequence.get(i)){
+        for (int i = 0; i < pickupScheduledSequence.size() / 2 - 1; i = i + 2) {
+            for (Request request : data.getRequests()) {
+                if (request.getId() == pickupScheduledSequence.get(i)) {
                     request.setPickUpTime(pickupScheduledSequence.get(i + 1));
                 }
             }
@@ -350,10 +349,9 @@ public class VRPDRTSD implements Algorithm {
 
     public void finalizeRoute() {
         schedulePickUpTime();
-        currentRoute.buildSequenceOfAttendedRequests(data);
-        System.out.println(currentRoute.getSequenceOfAttendedRequests());
+        //currentRoute.buildSequenceOfAttendedRequests(data);
+        //System.out.println(currentRoute.getSequenceOfAttendedRequests());
         //currentRoute.buildNodesSequence(data);
-        
 
         //depois de fazer todo planejamento de embarque e desembarque, fazer um 
         //Log com as atividades feitas pelo veículo

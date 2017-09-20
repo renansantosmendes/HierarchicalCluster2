@@ -63,11 +63,13 @@ public class Request {
             pickUpTime = -pickUpTime;
             int hour = pickUpTime / 60;
             int minute = pickUpTime % 60;
-            LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            //LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            this.pickUpTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
         } else {
             int hour = pickUpTime / 60;
             int minute = pickUpTime % 60;
-            LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            //LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            this.pickUpTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
         }
     }
 

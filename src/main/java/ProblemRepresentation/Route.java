@@ -124,62 +124,55 @@ public class Route {
         }
         this.nodesSequence.clear();
 
-        Map<Integer, Integer> occurrenceInSequence = new HashMap<>();
+        Set<Integer> idCrossed = new HashSet<>();
 
-        for (int i = 0; i < idSequence.size(); i++) {
-            occurrenceInSequence.put(idSequence.get(i), 0);
-        }
-        
-        for (int i = 0; i < idSequence.size(); i++) {
-            Integer id = idSequence.get(i);
-            Request request = data.getRequests().stream().filter(u -> u.getId() == id).findAny().get();
-            if(idSequence.get(id) == 0){
-                this.nodesSequence.add(data.getNodes().stream().filter(u -> u.getId() == 0).findAny().get());
-            } else if(occurrenceInSequence.get(id) == 0 ){
-                this.nodesSequence.add(request.getOrigin());
-                occurrenceInSequence.replace(id, 1);
-            } else if(occurrenceInSequence.get(id) == 1 ){
-                this.nodesSequence.add(request.getDestination());
+        for (Integer id : idSequence) {
+            if (!id.equals(0)) {
+                Request request = data.getRequests().stream().filter(u -> u.getId() == id).findAny().get();
+                if (idCrossed.contains(id)) {
+                    this.nodesSequence.add(request.getDestination());
+                } else {
+                    this.nodesSequence.add(request.getOrigin());
+                }
+                idCrossed.add(id);
+            }else{
+                this.nodesSequence.add(data.getNodes().get(0));
             }
         }
         
-        System.out.println("idSequence"+idSequence);
-        //this.nodesSequence.add(data.getNodes().stream().filter(u -> u.getId() == 0).findAny().get());
-        //int positionCounter = 0;
-//        for (Integer id : idSequence) {
-//            Request request = data.getRequests().stream().filter(u -> u.getId() == id).findAny().get();
-//            if (occurrenceInSequence.get(id) == 0) {
-//                if (idSequence.get(positionCounter) != request.getPassengerOrigin().getId()) {
-//                    this.nodesSequence.add(request.getPassengerOrigin());
-//                }
-//                occurrenceInSequence.replace(id, 1);
-//                positionCounter++;
-//            } else if (occurrenceInSequence.get(id) == 1) {
-//                if (idSequence.get(positionCounter) != request.getPassengerDestination().getId()) {
-//                    this.nodesSequence.add(request.getPassengerDestination());
-//                }
-//                positionCounter++;
-//            }
-//        }
-
-//        for (int i = 0; i < idSequence.size(); i++) {
-//            int id = idSequence.get(i);
-//            Request request = data.getRequests().stream().filter(u -> u.getId() == id).findAny().get();
-//            if (occurrenceInSequence.get(id) == 0) {
-//                if (idSequence.get(i) != request.getPassengerOrigin().getId()) {
-//                    this.nodesSequence.add(request.getPassengerOrigin());
-//                }
-//                occurrenceInSequence.replace(id, 1);
-//                positionCounter++;
-//            } else if (occurrenceInSequence.get(id) == 1) {
-//                if (idSequence.get(positionCounter) != request.getPassengerDestination().getId()) {
-//                    this.nodesSequence.add(request.getPassengerDestination());
-//                }
-//                positionCounter++;
-//            }
-//        }
-//        this.nodesSequence.add(data.getNodes().stream().filter(u -> u.getId() == 0).findAny().get());
-
+        this.nodesSequence.forEach(n -> System.out.println(n.getId()));
     }
 
+//    public void buildNodesSequence(ProblemData data) {
+//        List<Integer> idSequence = new ArrayList<>();
+//        idSequence = this.integerRouteRepresetation.stream().filter(u -> u.longValue() > 0)
+//                .collect(Collectors.toCollection(ArrayList::new));
+//
+//        if (this.nodesSequence == null) {
+//            this.nodesSequence = new ArrayList<>();
+//        }
+//        this.nodesSequence.clear();
+//
+//        Map<Integer, Integer> occurrenceInSequence = new HashMap<>();
+//
+//        for (int i = 0; i < idSequence.size(); i++) {
+//            occurrenceInSequence.put(idSequence.get(i), 0);
+//        }
+//        
+//        for (int i = 0; i < idSequence.size(); i++) {
+//            Integer id = idSequence.get(i);
+//            Request request = data.getRequests().stream().filter(u -> u.getId() == id).findAny().get();
+//            if(idSequence.get(id) == 0){
+//                this.nodesSequence.add(data.getNodes().stream().filter(u -> u.getId() == 0).findAny().get());
+//            } else if(occurrenceInSequence.get(id) == 0 ){
+//                this.nodesSequence.add(request.getOrigin());
+//                occurrenceInSequence.replace(id, 1);
+//            } else if(occurrenceInSequence.get(id) == 1 ){
+//                this.nodesSequence.add(request.getDestination());
+//            }
+//        }
+//        
+//        System.out.println("idSequence"+idSequence);
+//
+//    }
 }

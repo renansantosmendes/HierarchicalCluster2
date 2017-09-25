@@ -167,8 +167,6 @@ public class VRPDRTSD implements Algorithm {
             List<Integer> list = currentRoute.getIntegerRouteRepresetation();
             System.out.println(list);
         }
-
-        System.out.println(candidates);
         //finalizeSolution();
     }
 
@@ -307,13 +305,11 @@ public class VRPDRTSD implements Algorithm {
 
             int integerTimeBetween = (int) timeBetween.toHours() * 60 + (int) timeBetween.toMinutes();
             timesBetween.add(integerTimeBetween);
-
         }
 
         for (int i = timesBetween.size() - 1; i >= 0; i--) {
             currentTime = currentTime + timesBetween.get(i);
             pickupTimes.add(currentTime);
-
         }
 
         Collections.reverse(pickupTimes);
@@ -353,11 +349,9 @@ public class VRPDRTSD implements Algorithm {
 
     public void finalizeRoute() {
         schedulePickUpTime();
-        //System.out.println("Current Route = " + currentRoute.getIntegerRouteRepresetation());
+        addDepotInRoute();
         //currentRoute.buildSequenceOfAttendedRequests(data);
-        //System.out.println(currentRoute.getSequenceOfAttendedRequests());
-
-        //currentRoute.buildNodesSequence(data);
+        currentRoute.buildNodesSequence(data);
         //depois de fazer todo planejamento de embarque e desembarque, fazer um 
         //Log com as atividades feitas pelo veículo
     }
@@ -392,6 +386,11 @@ public class VRPDRTSD implements Algorithm {
                 || data.getCurrentTime().isEqual(request.getDeliveryTimeWindowLower()))
                 && (data.getCurrentTime().isBefore(request.getDeliveryTimeWindowUpper())
                 || data.getCurrentTime().isEqual(request.getDeliveryTimeWindowUpper()));
+    }
+
+    private void addDepotInRoute() {
+        this.currentRoute.getIntegerRouteRepresetation().add(0);
+        this.currentRoute.getIntegerRouteRepresetation().add(0, 0);
     }
 
 }

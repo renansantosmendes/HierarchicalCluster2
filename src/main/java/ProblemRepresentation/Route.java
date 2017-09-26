@@ -116,7 +116,7 @@ public class Route {
 
     public void buildNodesSequence(ProblemData data) {
         List<Integer> idSequence = new ArrayList<>();
-        idSequence = this.integerRouteRepresetation.stream().filter(u -> u.longValue() > 0)
+        idSequence = this.integerRouteRepresetation.stream().filter(u -> u.longValue() >= 0)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         if (this.nodesSequence == null) {
@@ -125,22 +125,32 @@ public class Route {
         this.nodesSequence.clear();
 
         Set<Integer> idCrossed = new HashSet<>();
-
-        for (Integer id : idSequence) {
+        int currentPosition = 0;
+        for (int i = 0; i < idSequence.size(); i++) {
+            Integer id = idSequence.get(i);
             if (!id.equals(0)) {
-                Request request = data.getRequests().stream().filter(u -> u.getId() == id).findAny().get();
+                Request passenger = null;
+                passenger = findRequestWithIdentification(data, id, passenger);
+                
                 if (idCrossed.contains(id)) {
-                    this.nodesSequence.add(request.getDestination());
-                } else {
-                    this.nodesSequence.add(request.getOrigin());
+                    if (!this.nodesSequence.get(currentPosition - 1).getId().equals(passenger.getDestination().getId())) {
+                        this.nodesSequence.add(passenger.getDestination());
+                        currentPosition++;
+                    }
+
+                } else if (!this.nodesSequence.get(currentPosition - 1).getId().equals(passenger.getOrigin().getId())) {
+                    this.nodesSequence.add(passenger.getOrigin());
+                    currentPosition++;
                 }
                 idCrossed.add(id);
-            }else{
+            } else {
                 this.nodesSequence.add(data.getNodes().get(0));
+                currentPosition++;
             }
         }
-        
-        this.nodesSequence.forEach(n -> System.out.println(n.getId()));
+
+        this.nodesSequence.forEach(n -> System.out.print(n.getId() + " "));
+        System.out.println();
     }
 
 //    public void buildNodesSequence(ProblemData data) {
@@ -175,4 +185,13 @@ public class Route {
 //        System.out.println("idSequence"+idSequence);
 //
 //    }
+
+    private Request findRequestWithIdentification(ProblemData data, Integer id, Request passenger) {
+        for(Request request: data.getRequests()){
+            if(request.getId().equals(id)){
+                passenger = request;
+            }
+        }
+        return passenger;
+    }
 }

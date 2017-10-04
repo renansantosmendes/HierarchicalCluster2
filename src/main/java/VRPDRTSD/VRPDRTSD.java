@@ -299,9 +299,14 @@ public class VRPDRTSD implements Algorithm {
                     passengerDestination = request;
                 }
             }
-
-            Duration timeBetween = data
-                    .getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getOrigin().getId()];
+            
+            Duration timeBetween = null;
+            if(passengerOrigin.getId() == passengerDestination.getId()){
+               timeBetween = data.getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getDestination().getId()];
+            }else{
+               timeBetween = data.getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getOrigin().getId()];
+            }
+            
 
             int integerTimeBetween = (int) timeBetween.toHours() * 60 + (int) timeBetween.toMinutes();
             timesBetween.add(integerTimeBetween);

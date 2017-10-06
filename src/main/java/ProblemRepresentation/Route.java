@@ -204,6 +204,16 @@ public class Route {
         //System.out.println(this.totalTimeWindowViolation/60);
     }
 
+    
+    public List<Integer> getNodesVisitationInIntegerRepresentation(){
+        List<Integer> nodesSequence = new ArrayList<>();
+        
+        for(Node node: this.nodesSequence){
+            nodesSequence.add(node.getId());
+        }
+        return nodesSequence;
+    }
+    
     @Override
     public String toString() {
         return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime +

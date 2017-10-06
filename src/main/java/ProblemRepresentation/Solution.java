@@ -1,5 +1,7 @@
 package ProblemRepresentation;
 
+import GoogleMapsApi.GoogleStaticMap;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +42,32 @@ public class Solution {
         this.totalDistanceTraveled += route.getTotalRouteDistance();
         this.totalTravelTime += route.getRouteTravelTime();
         this.totalTimeWindowViolation += route.getTotalTimeWindowViolation();
+    }
+    
+    public Set<List<Integer>> getRoutesForMap() {
+        Set<List<Integer>> routes = new HashSet<>();
+        for (Route route : this.routes) {
+            routes.add(route.getNodesVisitationInIntegerRepresentation());
+        }
+        return routes;
+    }
+
+    public List<List<Integer>> getRoutesListForMap() {
+        List<List<Integer>> routes = new ArrayList<>();
+        for (Route route : this.routes) {
+            routes.add(new ArrayList<>(route.getNodesVisitationInIntegerRepresentation()));
+        }
+        return routes;
+    }
+
+    public void getStaticMapWithAllRoutes(List<Node> nodesList, String adjacenciesTable, String nodesTable) throws IOException {
+        new GoogleStaticMap(nodesList, this.getRoutesForMap(), adjacenciesTable, nodesTable);
+    }
+
+    public void getStaticMapForEveryRoute(List<Node> nodesList, String adjacenciesTable, String nodesTable) throws IOException {
+        for (List<Integer> route : this.getRoutesListForMap()) {
+            new GoogleStaticMap(nodesList, route, adjacenciesTable, nodesTable);
+        }
     }
     
     @Override

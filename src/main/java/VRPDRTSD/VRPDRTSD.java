@@ -28,21 +28,21 @@ public class VRPDRTSD implements Algorithm {
     private String adjacenciesInstanceName;
     private int numberOfVehicles;
     private int vehicleCapacity;
-    double maxDistance;
-    double minDistance;
-    int minTimeWindowLower;
-    int maxTimeWindowLower;
-    int minTimeWindowUpper;
-    int maxTimeWindowUpper;
-    Map<Node, List<Request>> requestsThatBoardsInNode;
-    Map<Node, List<Request>> requestsThatLeavesInNode;
-    int maxLoadIndex;
-    int minLoadIndex;
-    Solution solution;
-    List<Request> candidates = new ArrayList<>();
-    List<Request> feasibleRequests = new ArrayList<>();
-    Request candidate;
-    Route currentRoute;
+    private double maxDistance;
+    private double minDistance;
+    private int minTimeWindowLower;
+    private int maxTimeWindowLower;
+    private int minTimeWindowUpper;
+    private int maxTimeWindowUpper;
+    private Map<Node, List<Request>> requestsThatBoardsInNode;
+    private Map<Node, List<Request>> requestsThatLeavesInNode;
+    private int maxLoadIndex;
+    private int minLoadIndex;
+    private Solution solution;
+    private List<Request> candidates = new ArrayList<>();
+    private List<Request> feasibleRequests = new ArrayList<>();
+    private Request candidate;
+    private Route currentRoute;
 
     public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
             int numberOfVehicles, int vehicleCapacity) {
@@ -61,6 +61,10 @@ public class VRPDRTSD implements Algorithm {
 
     public void setData(ProblemData data) {
         this.data = data;
+    }
+    
+    public Solution getSolution(){
+        return solution;
     }
 
     public void originalRequestsFeasibilityAnalysis() {
@@ -82,7 +86,6 @@ public class VRPDRTSD implements Algorithm {
                     data.getCurrentNode(), data.getDuration());
 //            request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }
-        //System.out.println(candidates.stream().filter(Request::isFeasible).collect(Collectors.toCollection(ArrayList::new)));
     }
 
     public void setDistanceToAttendEveryRequest() {
@@ -163,8 +166,6 @@ public class VRPDRTSD implements Algorithm {
             }
             finalizeRoute();
             addRouteInSolution();
-            List<Integer> list = currentRoute.getIntegerRouteRepresetation();
-            //System.out.println(list);
             System.out.println(currentRoute);
         }
         //finalizeSolution();
@@ -263,7 +264,6 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void scheduleDeliveryTimeInRouteRepresentation() {
-        //currentRoute.addValueInIntegerRepresentation(-1 * candidate.getDeliveryTimeWindowLowerInMinutes());
         currentRoute.addValueInIntegerRepresentation(-1 * candidate.getDeliveryTimeInMinutes());
     }
 
@@ -327,8 +327,6 @@ public class VRPDRTSD implements Algorithm {
         currentRoute.getIntegerRouteRepresetation().clear();
         currentRoute.getIntegerRouteRepresetation().addAll(pickupScheduledSequence);
 
-        //Parei nessa parte aqui -> setar a hora de embarque dos passageiros no proprio objeto com base na 
-        //representação da rota com numeros inteiros
         for (int i = 0; i < pickupScheduledSequence.size() / 2 - 1; i = i + 2) {
             for (Request request : data.getRequests()) {
                 if (request.getId().equals(pickupScheduledSequence.get(i))) {
@@ -347,7 +345,7 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void addRouteInSolution() {
-
+        solution.addRoute(currentRoute);
     }
 
     public void finalizeRoute() {

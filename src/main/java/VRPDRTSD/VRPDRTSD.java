@@ -153,7 +153,6 @@ public class VRPDRTSD implements Algorithm {
             startNewRoute();
             requestsFeasibilityAnalysis();
             while (hasFeasibleRequests() && hasEmptySeatInVehicle()) {
-                //System.out.println(data.getCurrentVehicle().getBusySeats());
                 findBestCandidateUsingRRF();
                 addCandidateIntoRoute();
                 actualizeRequestsData();
@@ -165,7 +164,8 @@ public class VRPDRTSD implements Algorithm {
             finalizeRoute();
             addRouteInSolution();
             List<Integer> list = currentRoute.getIntegerRouteRepresetation();
-            System.out.println(list);
+            //System.out.println(list);
+            System.out.println(currentRoute.getSequenceOfAttendedRequests());
         }
         //finalizeSolution();
     }
@@ -217,7 +217,6 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void addCandidateIntoRoute() {
-
         if (currentRoute.getIntegerRouteRepresetation().size() == 0) {
             data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
         } else {
@@ -299,14 +298,13 @@ public class VRPDRTSD implements Algorithm {
                     passengerDestination = request;
                 }
             }
-            
+
             Duration timeBetween = null;
-            if(passengerOrigin.getId() == passengerDestination.getId()){
-               timeBetween = data.getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getDestination().getId()];
-            }else{
-               timeBetween = data.getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getOrigin().getId()];
+            if (passengerOrigin.getId() == passengerDestination.getId()) {
+                timeBetween = data.getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getDestination().getId()];
+            } else {
+                timeBetween = data.getDuration()[passengerOrigin.getOrigin().getId()][passengerDestination.getOrigin().getId()];
             }
-            
 
             int integerTimeBetween = (int) timeBetween.toHours() * 60 + (int) timeBetween.toMinutes();
             timesBetween.add(integerTimeBetween);
@@ -355,10 +353,28 @@ public class VRPDRTSD implements Algorithm {
     public void finalizeRoute() {
         schedulePickUpTime();
         addDepotInRoute();
-        //currentRoute.buildSequenceOfAttendedRequests(data);
+        currentRoute.buildSequenceOfAttendedRequests(data);
+        buildNodesSequence();
+        calculateDistanceTraveled();
+        calculateTravelTime();
+        calculateTotalViolationOfTheDeliveryTimeWindow();
+
+    }
+
+    private void calculateTotalViolationOfTheDeliveryTimeWindow() {
+        currentRoute.calculateTotalViolationOfTheDeliveryTimeWindow();
+    }
+
+    private void calculateTravelTime() {
+        currentRoute.calculateTravelTime(data);
+    }
+
+    private void calculateDistanceTraveled() {
+        currentRoute.calculateDistanceTraveled(data);
+    }
+
+    private void buildNodesSequence() {
         currentRoute.buildNodesSequence(data);
-        //depois de fazer todo planejamento de embarque e desembarque, fazer um 
-        //Log com as atividades feitas pelo veículo
     }
 
     public void findOtherRequestsThatCanBeAttended() {
@@ -375,6 +391,7 @@ public class VRPDRTSD implements Algorithm {
 
         while (otherRequestsToAdd.size() != 0) {
             candidate = otherRequestsToAdd.get(0);
+            candidate.setDeliveryTime(data.getCurrentTime());
             currentRoute.addValueInIntegerRepresentation(otherRequestsToAdd.get(0).getId());
             data.setLastPassengerAddedToRoute(otherRequestsToAdd.get(0));
             data.getCurrentVehicle().boardPassenger();

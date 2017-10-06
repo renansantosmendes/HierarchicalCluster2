@@ -294,6 +294,7 @@ public class Request {
                 + "\nTime Window Lower = " + this.deliveryTimeWindowLower
                 + "\nTime Window Upper = " + this.deliveryTimeWindowUpper
                 + "\nPickup Time = " + this.pickUpTime
+                + "\nDelivery Time = " + this.deliveryTime
                 + "\nRRF = " + this.requestRankingFunction
                 + "\nIs Feasible = " + this.feasible;
     }

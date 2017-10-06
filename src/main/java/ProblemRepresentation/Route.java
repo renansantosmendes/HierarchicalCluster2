@@ -1,5 +1,6 @@
 package ProblemRepresentation;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,17 +16,19 @@ import java.util.stream.Collectors;
  */
 public class Route {
 
-    private long totalRouteDistance;
+    private long totalDistanceTraveled;
     private long routeTravelTime;
+    private long totalTimeWindowViolation;
     private Set<Request> notServedRequests;
     private List<Node> nodesSequence;
     private List<Request> sequenceOfAttendedRequests;
     private List<Integer> integerRouteRepresetation;
 
-    public Route(long totalRouteDistance, long routeTravelTime, Set<Request> notServedRequests, List<Node> nodesSequence,
-            List<Request> sequenceOfServedRequests) {
-        this.totalRouteDistance = totalRouteDistance;
+    public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowViolation, Set<Request> notServedRequests,
+            List<Node> nodesSequence, List<Request> sequenceOfServedRequests) {
+        this.totalDistanceTraveled = totalRouteDistance;
         this.routeTravelTime = routeTravelTime;
+        this.totalTimeWindowViolation = totalTimeWindowViolation;
         this.notServedRequests = notServedRequests;
         this.nodesSequence = nodesSequence;
         this.sequenceOfAttendedRequests = sequenceOfServedRequests;
@@ -39,11 +42,11 @@ public class Route {
     }
 
     public double getTotalRouteDistance() {
-        return totalRouteDistance;
+        return totalDistanceTraveled;
     }
 
-    public void setTotalRouteDistance(long totalRouteDistance) {
-        this.totalRouteDistance = totalRouteDistance;
+    public void setTotalDistanceTraveled(long totalDistanceTraveled) {
+        this.totalDistanceTraveled = totalDistanceTraveled;
     }
 
     public long getRouteTravelTime() {
@@ -52,6 +55,14 @@ public class Route {
 
     public void setRouteTravelTime(int routeTravelTime) {
         this.routeTravelTime = routeTravelTime;
+    }
+
+    public long getTotalTimeWindowViolation() {
+        return totalTimeWindowViolation;
+    }
+
+    public void setTotalTimeWindowViolation(long totalTimeWindowViolation) {
+        this.totalTimeWindowViolation = totalTimeWindowViolation;
     }
 
     public Set<Request> getNotServedRequests() {
@@ -90,14 +101,6 @@ public class Route {
         this.integerRouteRepresetation.add(value);
     }
 
-    public void calculateTotalRouteDistance() {
-
-    }
-
-    public void calculateTravelTime() {
-
-    }
-
     public void buildSequenceOfAttendedRequests(ProblemData data) {
         List<Integer> idSequence = new ArrayList<>();
         idSequence = this.integerRouteRepresetation.stream().filter(u -> u.longValue() > 0)
@@ -131,7 +134,7 @@ public class Route {
             if (!id.equals(0)) {
                 Request passenger = null;
                 passenger = findRequestWithIdentification(data, id, passenger);
-                
+
                 if (idCrossed.contains(id)) {
                     if (!this.nodesSequence.get(currentPosition - 1).getId().equals(passenger.getDestination().getId())) {
                         this.nodesSequence.add(passenger.getDestination());
@@ -153,45 +156,54 @@ public class Route {
         System.out.println();
     }
 
-//    public void buildNodesSequence(ProblemData data) {
-//        List<Integer> idSequence = new ArrayList<>();
-//        idSequence = this.integerRouteRepresetation.stream().filter(u -> u.longValue() > 0)
-//                .collect(Collectors.toCollection(ArrayList::new));
-//
-//        if (this.nodesSequence == null) {
-//            this.nodesSequence = new ArrayList<>();
-//        }
-//        this.nodesSequence.clear();
-//
-//        Map<Integer, Integer> occurrenceInSequence = new HashMap<>();
-//
-//        for (int i = 0; i < idSequence.size(); i++) {
-//            occurrenceInSequence.put(idSequence.get(i), 0);
-//        }
-//        
-//        for (int i = 0; i < idSequence.size(); i++) {
-//            Integer id = idSequence.get(i);
-//            Request request = data.getRequests().stream().filter(u -> u.getId() == id).findAny().get();
-//            if(idSequence.get(id) == 0){
-//                this.nodesSequence.add(data.getNodes().stream().filter(u -> u.getId() == 0).findAny().get());
-//            } else if(occurrenceInSequence.get(id) == 0 ){
-//                this.nodesSequence.add(request.getOrigin());
-//                occurrenceInSequence.replace(id, 1);
-//            } else if(occurrenceInSequence.get(id) == 1 ){
-//                this.nodesSequence.add(request.getDestination());
-//            }
-//        }
-//        
-//        System.out.println("idSequence"+idSequence);
-//
-//    }
-
     private Request findRequestWithIdentification(ProblemData data, Integer id, Request passenger) {
-        for(Request request: data.getRequests()){
-            if(request.getId().equals(id)){
+        for (Request request : data.getRequests()) {
+            if (request.getId().equals(id)) {
                 passenger = request;
             }
         }
         return passenger;
     }
+
+    public void calculateTravelTime(ProblemData data) {
+        long totalTravelTime = 0;
+        for (int i = 0; i < this.nodesSequence.size() - 2; i++) {
+            totalTravelTime += data.getDuration()[this.nodesSequence.get(i).getId()][this.nodesSequence.get(i + 1).getId()].getSeconds();
+        }
+
+        this.routeTravelTime = totalTravelTime;
+    }
+
+    public void calculateDistanceTraveled(ProblemData data) {
+        long totalDistance = 0;
+        for (int i = 0; i < this.nodesSequence.size() - 2; i++) {
+            totalDistance += data.getDistance()[this.nodesSequence.get(i).getId()][this.nodesSequence.get(i + 1).getId()];
+        }
+
+        this.totalDistanceTraveled = totalDistance;
+    }
+
+    public void calculateTotalViolationOfTheDeliveryTimeWindow() {
+        Duration violations = Duration.ofMinutes(0);
+        Set<Request> attendedRequests = new HashSet<>();
+        for (Request request : this.sequenceOfAttendedRequests) {
+            attendedRequests.add(request);
+        }
+
+        for (Request request : attendedRequests) {
+            if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
+                Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
+                violations = violations.plus(time);
+            }
+        }
+        
+        this.totalTimeWindowViolation = violations.getSeconds();
+        System.out.println(this.totalTimeWindowViolation/60);
+    }
+
+    @Override
+    public String toString() {
+        return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime + "s";
+    }
+
 }

@@ -112,9 +112,11 @@ public class Route {
         this.sequenceOfAttendedRequests.clear();
 
         for (Integer id : idSequence) {
-            Request request = data.getRequests().stream().filter(u -> u.getId() == id).findAny().get();
+            Request request = data.getRequests().stream().filter(u -> u.getId().equals(id)).findAny().get();
             this.sequenceOfAttendedRequests.add(request);
         }
+
+        
     }
 
     public void buildNodesSequence(ProblemData data) {
@@ -193,17 +195,19 @@ public class Route {
         for (Request request : attendedRequests) {
             if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
                 Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
+                //System.out.println("violation for request = " + time);
                 violations = violations.plus(time);
             }
         }
         
-        this.totalTimeWindowViolation = violations.getSeconds();
-        System.out.println(this.totalTimeWindowViolation/60);
+        this.totalTimeWindowViolation = violations.getSeconds()/60;
+        //System.out.println(this.totalTimeWindowViolation/60);
     }
 
     @Override
     public String toString() {
-        return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime + "s";
+        return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime +
+                "s - Total DTW Violated  = " + this.totalTimeWindowViolation + " min";
     }
 
 }

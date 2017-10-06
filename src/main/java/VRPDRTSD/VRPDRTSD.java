@@ -165,7 +165,7 @@ public class VRPDRTSD implements Algorithm {
             addRouteInSolution();
             List<Integer> list = currentRoute.getIntegerRouteRepresetation();
             //System.out.println(list);
-            System.out.println(currentRoute.getSequenceOfAttendedRequests());
+            System.out.println(currentRoute);
         }
         //finalizeSolution();
     }

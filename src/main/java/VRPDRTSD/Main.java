@@ -9,7 +9,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String instanceName = "r010n12tw10";
+        String instanceName = "r005n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 50;
@@ -21,7 +21,7 @@ public class Main {
         problem.buildGreedySolution();
         System.out.println(problem.getSolution());
         //problem.getSolution().getStaticMapForEveryRoute(problem.getData().getNodes(), adjacenciesData, nodesData);
-        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
+        //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
     }
 
 }

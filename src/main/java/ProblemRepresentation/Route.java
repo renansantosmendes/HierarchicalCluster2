@@ -214,6 +214,11 @@ public class Route {
         return nodesSequence;
     }
     
+    
+    public void clearIntegerRepresentation(){
+        this.integerRouteRepresetation.clear();
+    }
+    
     @Override
     public String toString() {
         return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime +

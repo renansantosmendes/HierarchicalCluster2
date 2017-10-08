@@ -280,7 +280,7 @@ public class VRPDRTSD implements Algorithm {
     public void finalizeRoute() {
         //schedulePickUpTime();
         scheduleRoute();
-        addDepotInRoute();
+        //addDepotInRoute();
         buildSequenceOfAttendedRequests();
         buildNodesSequence();
         calculateDistanceTraveled();
@@ -295,8 +295,6 @@ public class VRPDRTSD implements Algorithm {
         List<Integer> idSequence = new ArrayList<>();
         idSequence.addAll(pickupIdSequence);
         idSequence.addAll(deliveryIdSequence);
-        //idSequence.add(0);
-        //idSequence.add(0, 0);
 
         int positionInSequenceOfFirstDelivery = 0;
 
@@ -311,36 +309,36 @@ public class VRPDRTSD implements Algorithm {
             visitedIds.add(id);
         }
 
-        List<Long> deliveryTimes = new ArrayList<>();
+        List<Integer> deliveryTimes = new ArrayList<>();
         List<Integer> pickupTimes = new ArrayList<>();
         int currentTimeForDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery))
                 .getDeliveryTimeWindowLowerInMinutes();
-
-        deliveryTimes.add((long) -currentTimeForDelivery);
+        int currentTimeForPickup = -currentTimeForDelivery;
+        deliveryTimes.add(-currentTimeForDelivery);
 
         for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size() - 1; i++) {
             int originPassengerId = idSequence.get(i);
             int destinationPassengerId = idSequence.get(i + 1);
             Request originRequest = getRequestUsingId(originPassengerId);
             Request destinationRequest = getRequestUsingId(destinationPassengerId);
-            long timeBetween;
+            int timeBetween;
 
             if (visitedIds.contains(originPassengerId)) {
                 if (visitedIds.contains(destinationPassengerId)) {
-                    timeBetween = data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getDestination().getId()]
+                    timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getDestination().getId()]
                             .getSeconds() / 60;
                 } else {
-                    timeBetween = data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getOrigin().getId()]
+                    timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getOrigin().getId()]
                             .getSeconds() / 60;
                 }
                 deliveryTimes.add(-currentTimeForDelivery - timeBetween);
                 currentTimeForDelivery -= -timeBetween;
             } else {
                 if (visitedIds.contains(destinationPassengerId)) {
-                    timeBetween = data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getDestination().getId()]
+                    timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getDestination().getId()]
                             .getSeconds() / 60;
                 } else {
-                    timeBetween = data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getOrigin().getId()]
+                    timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getOrigin().getId()]
                             .getSeconds() / 60;
                 }
                 deliveryTimes.add(-currentTimeForDelivery - timeBetween);
@@ -350,6 +348,12 @@ public class VRPDRTSD implements Algorithm {
 
         deliveryIdSequence.add(0);
         pickupIdSequence.add(0, 0);
+
+        int timeBetween = (int)data.getDuration()
+                [getRequestUsingId(idSequence.get(idSequence.size() - 1)).getDestination().getId()][0]
+                .getSeconds() / 60;
+        deliveryTimes.add(-currentTimeForDelivery - timeBetween);
+        //deliveryTimes.add(-currentTimeForDelivery - 10);
 
         List<Long> displacementTimesBetweenPassengers = new ArrayList<>();
         for (int i = 0; i < pickupIdSequence.size() - 1; i++) {
@@ -376,13 +380,28 @@ public class VRPDRTSD implements Algorithm {
         Request firstDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery));
         long timeBetweenLastPickupAndFirstDelivery = data
                 .getDuration()[lastPickup.getOrigin().getId()][firstDelivery.getDestination().getId()].getSeconds() / 60;
-        
+
         displacementTimesBetweenPassengers.add(-timeBetweenLastPickupAndFirstDelivery);
-        
-        
-        
-        List<Long> times = new ArrayList<>();
-        //times
+        List<Integer> times = new ArrayList<>();
+        for (int i = displacementTimesBetweenPassengers.size() - 1; i >= 0; i--) {
+            currentTimeForPickup -= displacementTimesBetweenPassengers.get(i);
+            times.add((int) currentTimeForPickup);
+        }
+
+        Collections.reverse(times);
+        times.addAll(deliveryTimes);
+
+        //fazer um merge dos ids com os tempos
+        idSequence.add(0);
+        idSequence.add(0, 0);
+        List<Integer> integerRepresentation = new ArrayList<>();
+        for (int i = 0; i < idSequence.size(); i++) {
+            integerRepresentation.add(idSequence.get(i));
+            integerRepresentation.add(times.get(i));
+        }
+
+        currentRoute.clearIntegerRepresentation();
+        currentRoute.setIntegerRouteRepresetation(integerRepresentation);
     }
 
     private List<Integer> getOnlyIdSequence() {

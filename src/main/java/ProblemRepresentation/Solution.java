@@ -53,7 +53,7 @@ public class Solution {
         }
         return routes;
     }
-
+    
     public List<List<Integer>> getRoutesListForMap() {
         List<List<Integer>> routes = new ArrayList<>();
         for (Route route : this.routes) {

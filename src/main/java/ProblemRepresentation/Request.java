@@ -240,52 +240,13 @@ public class Request {
         }
     }
 
-//    public void determineFeasibilityInConstructionFase(LocalDateTime currentTime, Request lastRequestAdded,
-//            Node currentNode, Duration timeMatrix[][]) {
-//
-//        Duration durationUntilNextDelivery = timeMatrix[currentNode.getId()][this.getPassengerDestination().getId()];
-//        Duration durationToDepot = timeMatrix[currentNode.getId()][0];
-//        LocalDateTime totalDuration = currentTime.plus(durationUntilNextDelivery);
-//        Duration durationBetweenLastRequestAndThis = Duration.between(lastRequestAdded.getDeliveryTimeWindowUpper(),
-//                this.deliveryTimeWindowLower);
-//        
-//        Duration delta = Duration.between(lastRequestAdded.getDeliveryTimeWindowUpper(), this.getDeliveryTimeWindowLower());
-//        //Duration durationBetweenTimeWindows = Duration.between(durationToDepot, durationBetweenLastRequestAndThis);
-//        //durationToDepot.
-//
-//        //System.out.println("testing = " + durationToDepot.minus(durationBetweenLastRequestAndThis).toMinutes());
-////        System.out.println("duration to depot = " + durationToDepot.getSeconds()
-////                + " delta = " + Duration.between(lastRequestAdded.getDeliveryTimeWindowUpper(),
-////                        this.getDeliveryTimeWindowLower()).getSeconds());
-////        System.out.println(this);
-////        if (totalDuration.isBefore(this.getDeliveryTimeWindowUpper())
-////                && durationToDepot.minus(durationBetweenLastRequestAndThis).toMinutes() >= 0) {
-////            this.setFeasible(true);
-////
-////        }
-//        if (totalDuration.isBefore(this.getDeliveryTimeWindowUpper())
-//                && delta.getSeconds() < durationToDepot.getSeconds()) {
-//            this.setFeasible(true);
-//        }else{
-//            this.setFeasible(false);
-//        }
-//    }
     public void determineFeasibilityInConstructionFase(LocalDateTime currentTime, Request lastRequestAdded, Node currentNode, Duration timeMatrix[][]) {
 
-        //repensar nesse valores coletados
         Duration durationFromCurrentNodeToThisDeliveryNode = timeMatrix[currentNode.getId()][this.getDestination().getId()];
-        //Duration durationFromCurrentNodeToOrigin = timeMatrix[currentNode.getId()][0];
         Duration durationFromCurrentNodeToOrigin = timeMatrix[this.getDestination().getId()][0];
 
         Duration durationBetweenTimeWindows = Duration.between(this.deliveryTimeWindowLower, lastRequestAdded.getDeliveryTimeWindowUpper());
 
-//        if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())
-//                && (Math.abs(durationBetweenTimeWindows.getSeconds()) < durationFromCurrentNodeToOrigin.getSeconds()) 
-//                && durationBetweenTimeWindows.getSeconds() >= 0) {
-//            this.setFeasible(true);
-//        } else {
-//            this.setFeasible(false);
-//        }
         if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())) {
             if (durationBetweenTimeWindows.getSeconds() <= 0) {
                 this.setFeasible(true);

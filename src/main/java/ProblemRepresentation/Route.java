@@ -198,9 +198,7 @@ public class Route {
                 violations = violations.plus(time);
             }
         }
-
         this.totalTimeWindowViolation = violations.getSeconds() / 60;
-        //System.out.println(this.totalTimeWindowViolation/60);
     }
 
     public List<Integer> getNodesVisitationInIntegerRepresentation() {

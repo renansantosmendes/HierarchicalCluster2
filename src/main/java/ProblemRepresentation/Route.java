@@ -1,6 +1,7 @@
 package ProblemRepresentation;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -116,7 +117,6 @@ public class Route {
             this.sequenceOfAttendedRequests.add(request);
         }
 
-        
     }
 
     public void buildNodesSequence(ProblemData data) {
@@ -195,34 +195,55 @@ public class Route {
         for (Request request : attendedRequests) {
             if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
                 Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
-                //System.out.println("violation for request = " + time);
                 violations = violations.plus(time);
             }
         }
-        
-        this.totalTimeWindowViolation = violations.getSeconds()/60;
+
+        this.totalTimeWindowViolation = violations.getSeconds() / 60;
         //System.out.println(this.totalTimeWindowViolation/60);
     }
 
-    
-    public List<Integer> getNodesVisitationInIntegerRepresentation(){
+    public List<Integer> getNodesVisitationInIntegerRepresentation() {
         List<Integer> nodesSequence = new ArrayList<>();
-        
-        for(Node node: this.nodesSequence){
+
+        for (Node node : this.nodesSequence) {
             nodesSequence.add(node.getId());
         }
         return nodesSequence;
     }
-    
-    
-    public void clearIntegerRepresentation(){
+
+    public void clearIntegerRepresentation() {
         this.integerRouteRepresetation.clear();
     }
-    
+
+    public void setPickupAndDeliveryTimeForEachAttendedRequest(ProblemData data) {
+        Set<Integer> visitedIds = new HashSet<>();
+        for (int i = 0; i < this.integerRouteRepresetation.size(); i += 2) {
+            if (this.integerRouteRepresetation.get(i) != 0) {
+                if (visitedIds.contains(this.integerRouteRepresetation.get(i))) {
+                    Request request = getRequestUsingId(this.integerRouteRepresetation.get(i), data);
+                    request.setDeliveryTime(this.integerRouteRepresetation.get(i + 1));
+                } else {
+                    Request request = getRequestUsingId(this.integerRouteRepresetation.get(i), data);
+                    request.setPickUpTime(this.integerRouteRepresetation.get(i + 1));
+                }
+                visitedIds.add(this.integerRouteRepresetation.get(i));
+            }
+        }
+    }
+
+    public Request getRequestUsingId(Integer id, ProblemData data) {
+        if (id != 0) {
+            return data.getRequests().stream().filter(u -> u.getId().equals(id)).findAny().get();
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public String toString() {
-        return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime +
-                "s - Total DTW Violated  = " + this.totalTimeWindowViolation + " min";
+        return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime
+                + "s - Total DTW Violated  = " + this.totalTimeWindowViolation + " min";
     }
 
 }

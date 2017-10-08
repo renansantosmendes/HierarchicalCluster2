@@ -349,8 +349,7 @@ public class VRPDRTSD implements Algorithm {
         deliveryIdSequence.add(0);
         pickupIdSequence.add(0, 0);
 
-        int timeBetween = (int)data.getDuration()
-                [getRequestUsingId(idSequence.get(idSequence.size() - 1)).getDestination().getId()][0]
+        int timeBetween = (int) data.getDuration()[getRequestUsingId(idSequence.get(idSequence.size() - 1)).getDestination().getId()][0]
                 .getSeconds() / 60;
         deliveryTimes.add(-currentTimeForDelivery - timeBetween);
         //deliveryTimes.add(-currentTimeForDelivery - 10);
@@ -402,6 +401,7 @@ public class VRPDRTSD implements Algorithm {
 
         currentRoute.clearIntegerRepresentation();
         currentRoute.setIntegerRouteRepresetation(integerRepresentation);
+        currentRoute.setPickupAndDeliveryTimeForEachAttendedRequest(data);
     }
 
     private List<Integer> getOnlyIdSequence() {

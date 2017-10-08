@@ -76,6 +76,21 @@ public class Request {
     public void setDeliveryTime(LocalDateTime deliveryTime) {
         this.deliveryTime = deliveryTime;
     }
+    
+    public void setDeliveryTime(Integer deliveryTime) {
+        if (deliveryTime < 0) {
+            deliveryTime = -deliveryTime;
+            int hour = deliveryTime / 60;
+            int minute = deliveryTime % 60;
+            //LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+        } else {
+            int hour = deliveryTime / 60;
+            int minute = deliveryTime % 60;
+            //LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+        }
+    }
 
     public void setDeliveryTimeWindowLower(LocalDateTime deliveryTimeWindowLower) {
         this.deliveryTimeWindowLower = deliveryTimeWindowLower;

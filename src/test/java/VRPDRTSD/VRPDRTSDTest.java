@@ -7,7 +7,10 @@
 package VRPDRTSD;
 
 import ProblemRepresentation.Node;
+import ProblemRepresentation.Route;
+import ProblemRepresentation.Solution;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Test;
@@ -82,5 +85,33 @@ public class VRPDRTSDTest {
         assertEquals(false, nodes.contains(node));
         nodes.forEach(System.out::println);
 
+    }
+    
+    @Test
+    public void scheduleRouteTest() {
+        String instanceName = "r005n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+        problem.buildGreedySolution();
+        
+        Solution solution = problem.getSolution();
+        int routeNumber = 1;
+        List<Integer> integerRepresentation = problem.getSolution().getRoutes().get(routeNumber).getIntegerRouteRepresetation();
+        List<Integer> idSequence = integerRepresentation
+                .stream()
+                .filter(u -> u >= 0)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        Route route = solution.getRoutes().get(routeNumber);
+        Collections.swap(idSequence, 3, 4);
+        route.clearIntegerRepresentation();
+        route.setIntegerRouteRepresetation(idSequence);
+        
+        problem.scheduleRoute(route);
+        route.evaluateRoute(problem.getData());
+        assertEquals(null, problem.getSolution());
     }
 }

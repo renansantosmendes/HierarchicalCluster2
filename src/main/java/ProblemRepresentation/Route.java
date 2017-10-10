@@ -166,6 +166,12 @@ public class Route {
         }
         return passenger;
     }
+    
+    public void evaluateRoute(ProblemData data){
+        calculateTravelTime(data);
+        calculateDistanceTraveled(data);
+        calculateTotalViolationOfTheDeliveryTimeWindow();
+    }
 
     public void calculateTravelTime(ProblemData data) {
         long totalTravelTime = 0;

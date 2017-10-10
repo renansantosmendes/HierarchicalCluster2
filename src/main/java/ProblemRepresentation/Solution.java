@@ -39,6 +39,30 @@ public class Solution {
         this.nonAttendedRequests = nonAttendedRequests;
     }
 
+    public long getTotalDistanceTraveled() {
+        return totalDistanceTraveled;
+    }
+
+    public long getTotalTravelTime() {
+        return totalTravelTime;
+    }
+
+    public long getTotalTimeWindowViolation() {
+        return totalTimeWindowViolation;
+    }
+
+    public List<Route> getRoutes() {
+        return routes;
+    }
+
+    public Set<Request> getNonAttendedRequests() {
+        return nonAttendedRequests;
+    }
+
+    public List<Integer> getIntegerRepresentation() {
+        return integerRepresentation;
+    }
+
     public void addRoute(Route route) {
         this.routes.add(route);
         this.totalDistanceTraveled += route.getTotalRouteDistance();
@@ -53,7 +77,7 @@ public class Solution {
         }
         return routes;
     }
-    
+
     public List<List<Integer>> getRoutesListForMap() {
         List<List<Integer>> routes = new ArrayList<>();
         for (Route route : this.routes) {

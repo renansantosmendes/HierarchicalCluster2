@@ -111,7 +111,9 @@ public class VRPDRTSDTest {
         route.setIntegerRouteRepresetation(idSequence);
         
         problem.scheduleRoute(route);
+        route.buildSequenceOfAttendedRequests(problem.getData());
+        route.buildNodesSequence(problem.getData());
         route.evaluateRoute(problem.getData());
-        assertEquals(null, problem.getSolution());
+        assertEquals(7, problem.getSolution().getRoutes().get(1).getNodesSequence().size());
     }
 }

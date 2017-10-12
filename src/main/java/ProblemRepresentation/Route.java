@@ -175,7 +175,7 @@ public class Route {
 
     public void calculateTravelTime(ProblemData data) {
         long totalTravelTime = 0;
-        for (int i = 0; i < this.nodesSequence.size() - 2; i++) {
+        for (int i = 0; i < this.nodesSequence.size() - 1; i++) {
             totalTravelTime += data.getDuration()[this.nodesSequence.get(i).getId()][this.nodesSequence.get(i + 1).getId()].getSeconds();
         }
 
@@ -184,7 +184,7 @@ public class Route {
 
     public void calculateDistanceTraveled(ProblemData data) {
         long totalDistance = 0;
-        for (int i = 0; i < this.nodesSequence.size() - 2; i++) {
+        for (int i = 0; i < this.nodesSequence.size() - 1; i++) {
             totalDistance += data.getDistance()[this.nodesSequence.get(i).getId()][this.nodesSequence.get(i + 1).getId()];
         }
 

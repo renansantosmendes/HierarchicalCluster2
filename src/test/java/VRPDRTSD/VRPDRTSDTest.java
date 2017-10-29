@@ -61,7 +61,7 @@ public class VRPDRTSDTest {
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
        
         problem.originalRequestsFeasibilityAnalysis();
-        problem.getData().getRequests().stream().filter(r -> r.isFeasible()).forEach(System.out::println);
+        //problem.getData().getRequests().stream().filter(r -> r.isFeasible()).forEach(System.out::println);
         
         assertEquals(problem.getData().getNodes().get(0), problem.getData().getCurrentNode());
         assertEquals(50, problem.getData().getRequests()
@@ -83,7 +83,7 @@ public class VRPDRTSDTest {
         nodes.addAll(problem.getData().getNodes());
         nodes.remove(node);
         assertEquals(false, nodes.contains(node));
-        nodes.forEach(System.out::println);
+        //nodes.forEach(System.out::println);
 
     }
     
@@ -106,6 +106,9 @@ public class VRPDRTSDTest {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         Route route = solution.getRoutes().get(routeNumber);
+        
+        System.out.println("before");
+        System.out.println(route);
         Collections.swap(idSequence, 3, 4);
         route.clearIntegerRepresentation();
         route.setIntegerRouteRepresetation(idSequence);
@@ -114,6 +117,8 @@ public class VRPDRTSDTest {
         route.buildSequenceOfAttendedRequests(problem.getData());
         route.buildNodesSequence(problem.getData());
         route.evaluateRoute(problem.getData());
+        System.out.println("after");
+        System.out.println(route);
         assertEquals(7, problem.getSolution().getRoutes().get(1).getNodesSequence().size());
     }
 }

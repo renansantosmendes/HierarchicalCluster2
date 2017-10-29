@@ -328,7 +328,7 @@ public class VRPDRTSD implements Algorithm {
         int positionInSequenceOfFirstDelivery = 0;
 
         idSequence.addAll(pickupIdSequence);
-        //idSequence.addAll(deliveryIdSequence);
+        idSequence.addAll(deliveryIdSequence);
 
         positionInSequenceOfFirstDelivery = findFirstDelivery(idSequence, visitedIds, positionInSequenceOfFirstDelivery);
 

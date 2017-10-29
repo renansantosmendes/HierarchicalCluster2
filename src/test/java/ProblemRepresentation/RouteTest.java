@@ -61,12 +61,12 @@ public class RouteTest {
         sequenceOfRequests.forEach(System.out::println);
 
         assertEquals(sequenceOfRequests, route.getSequenceOfAttendedRequests());
-        System.out.println(sequenceOfAttendedRequests);
+        //System.out.println(sequenceOfAttendedRequests);
     }
 
     @Test
     public void testBuildNodesSequence() {
-        
+
         String instanceName = "r010n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
@@ -74,8 +74,8 @@ public class RouteTest {
         int vehicleCapacity = 11;
         System.out.println("Testing BUILD NODES SEQUENCE");
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-        
-         Route route = new Route();
+
+        Route route = new Route();
         List<Integer> sequence = new ArrayList<>();
         sequence.add(0);
         sequence.add(-vehicleCapacity);
@@ -94,7 +94,27 @@ public class RouteTest {
         route.buildNodesSequence(problem.getData());
         System.out.println("Testing ----");
         //route.getSequenceOfAttendedRequests().forEach(System.out::println);
-        route.getNodesSequence().forEach(System.out::println);
+        //route.getNodesSequence().forEach(System.out::println);
     }
 
+    @Test
+    public void scheduleRouteTest() {
+        String instanceName = "r005n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+        problem.buildGreedySolution();
+
+        Solution solution = problem.getSolution();
+        int routeNumber = 1;
+
+        Route route = solution.getRoutes().get(routeNumber);
+        System.out.println("\n\nTesting Route Scheduling --- \n\nBefore Movement\n" + route);
+        route.swapRequests(3, 4, problem.getData());
+        
+        System.out.println("After Movement\n" + route);
+        assertEquals(7, route.getNodesSequence().size());
+    }
 }

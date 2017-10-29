@@ -22,6 +22,9 @@ public class Main {
         System.out.println(problem.getSolution());
         //problem.getSolution().getStaticMapForEveryRoute(problem.getData().getNodes(), adjacenciesData, nodesData);
         //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
+        
+        byte bt = 0;
+        System.out.println(bt);
     }
 
 }

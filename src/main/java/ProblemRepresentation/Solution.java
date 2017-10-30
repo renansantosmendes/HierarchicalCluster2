@@ -16,7 +16,9 @@ public class Solution {
 
     private long totalDistanceTraveled;
     private long totalTravelTime;
-    private long totalTimeWindowViolation;
+    private long totalTimeWindowAnticipation;
+    private long totalTimeWindowDelay;
+    private long evaluationFunction;
     private List<Route> routes;
     private Set<Request> nonAttendedRequests;
     private List<Integer> integerRepresentation;
@@ -27,14 +29,18 @@ public class Solution {
         this.integerRepresentation = new ArrayList<>();
         this.totalDistanceTraveled = 0;
         this.totalTravelTime = 0;
-        this.totalTimeWindowViolation = 0;
+        this.totalTimeWindowAnticipation = 0;
+        this.totalTimeWindowDelay = 0;
+        this.evaluationFunction = 0;
     }
 
-    public Solution(long totalDistance, long totalTravelTime, long totalTimeWindowViolation, List<Route> routes,
-            Set<Request> nonAttendedRequests) {
+    public Solution(long totalDistance, long totalTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
+            long evaluationFunction, List<Route> routes, Set<Request> nonAttendedRequests) {
         this.totalDistanceTraveled = totalDistance;
         this.totalTravelTime = totalTravelTime;
-        this.totalTimeWindowViolation = totalTimeWindowViolation;
+        this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
+        this.totalTimeWindowDelay = totalTimeWindowDelay;
+        this.evaluationFunction = evaluationFunction;
         this.routes = routes;
         this.nonAttendedRequests = nonAttendedRequests;
     }
@@ -47,8 +53,12 @@ public class Solution {
         return totalTravelTime;
     }
 
-    public long getTotalTimeWindowViolation() {
-        return totalTimeWindowViolation;
+    public long getTotalTimeWindowAnticipation() {
+        return totalTimeWindowAnticipation;
+    }
+
+    public long getTotalTimeWindowDelay() {
+        return totalTimeWindowDelay;
     }
 
     public List<Route> getRoutes() {
@@ -65,9 +75,27 @@ public class Solution {
 
     public void addRoute(Route route) {
         this.routes.add(route);
-        this.totalDistanceTraveled += route.getTotalRouteDistance();
-        this.totalTravelTime += route.getRouteTravelTime();
-        this.totalTimeWindowViolation += route.getTotalTimeWindowViolation();
+//        this.totalDistanceTraveled += route.getTotalRouteDistance();
+//        this.totalTravelTime += route.getRouteTravelTime();
+//        this.totalTimeWindowAnticipation += route.getTotalTimeWindowAnticipation();
+//        this.totalTimeWindowDelay += route.getTotalTimeWindowDelay();
+    }
+
+    public void calculateEvaluationFunction() {
+        for (Route route : this.routes) {
+            this.totalDistanceTraveled += route.getTotalRouteDistance();
+            this.totalTravelTime += route.getRouteTravelTime();
+            this.totalTimeWindowAnticipation += route.getTotalTimeWindowAnticipation();
+            this.totalTimeWindowDelay += route.getTotalTimeWindowDelay();
+        }
+
+        if (this.totalTimeWindowDelay > 0) {
+            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay 
+                    + this.totalTimeWindowAnticipation;
+        }else{
+            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation;
+        }
+
     }
 
     public Set<List<Integer>> getRoutesForMap() {
@@ -116,8 +144,10 @@ public class Solution {
 
         }
 
-        return "Solution - " + this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t" + this.totalTimeWindowViolation + "\t"
-                + this.routes.size() + "\n" + idSequence + integerRepresentation + nodesSequence;
+//        return "Solution - " + this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t"
+//                + this.routes.size() + "\n" + idSequence + integerRepresentation + nodesSequence;
+        return "Solution - " + this.evaluationFunction + "\t"+ this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t"
+                + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay;
     }
 
 }

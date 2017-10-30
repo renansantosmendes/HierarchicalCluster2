@@ -119,6 +119,6 @@ public class VRPDRTSDTest {
         route.evaluateRoute(problem.getData());
         System.out.println("after");
         System.out.println(route);
-        assertEquals(7, problem.getSolution().getRoutes().get(1).getNodesSequence().size());
+        assertEquals(11, problem.getSolution().getRoutes().get(1).getNodesSequence().size());
     }
 }

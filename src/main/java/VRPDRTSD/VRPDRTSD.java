@@ -158,7 +158,7 @@ public class VRPDRTSD implements Algorithm {
             addRouteInSolution();
             System.out.println(currentRoute);
         }
-        //finalizeSolution();
+        finalizeSolution();
     }
 
     public void initializeSolution() {
@@ -285,6 +285,10 @@ public class VRPDRTSD implements Algorithm {
         evaluateRoute();
     }
 
+     public void scheduleRouteTest() {
+         currentRoute.scheduleRoute(data);
+     }
+    
     public void scheduleRoute() {
         List<Integer> deliveryIdSequence = getOnlyIdSequence();
         List<Integer> pickupIdSequence = getOnlyIdSequence();
@@ -533,6 +537,10 @@ public class VRPDRTSD implements Algorithm {
                 || data.getCurrentTime().isEqual(request.getDeliveryTimeWindowLower()))
                 && (data.getCurrentTime().isBefore(request.getDeliveryTimeWindowUpper())
                 || data.getCurrentTime().isEqual(request.getDeliveryTimeWindowUpper()));
+    }
+
+    private void finalizeSolution() {
+        solution.calculateEvaluationFunction();
     }
 
 }

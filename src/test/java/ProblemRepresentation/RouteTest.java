@@ -58,7 +58,7 @@ public class RouteTest {
             sequenceOfRequests.add(request);
         }
 
-        sequenceOfRequests.forEach(System.out::println);
+        //sequenceOfRequests.forEach(System.out::println);
 
         assertEquals(sequenceOfRequests, route.getSequenceOfAttendedRequests());
         //System.out.println(sequenceOfAttendedRequests);
@@ -111,10 +111,31 @@ public class RouteTest {
         int routeNumber = 1;
 
         Route route = solution.getRoutes().get(routeNumber);
-        System.out.println("\n\nTesting Route Scheduling --- \n\nBefore Movement\n" + route);
+        System.out.println("\n\nTesting Route Swapping --- \n\nBefore Movement\n" + route);
         route.swapRequests(3, 4, problem.getData());
         
         System.out.println("After Movement\n" + route);
         assertEquals(7, route.getNodesSequence().size());
+    }
+    
+    @Test
+    public void minutesAddedAndRemovedTest(){
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+        problem.buildGreedySolution();
+
+        Solution solution = problem.getSolution();
+        int routeNumber = 1;
+
+        Route route = solution.getRoutes().get(routeNumber);
+        System.out.println("\n\nTesting Route Scheduling --- \n\nBefore Movement\n" + route);
+        route.addMinutesInRoute(30, problem.getData());
+        
+        System.out.println("After Movement\n" + route);
+        assertEquals(5, route.getNodesSequence().size());
     }
 }

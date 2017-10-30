@@ -63,12 +63,10 @@ public class Request {
             pickUpTime = -pickUpTime;
             int hour = pickUpTime / 60;
             int minute = pickUpTime % 60;
-            //LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
             this.pickUpTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
         } else {
             int hour = pickUpTime / 60;
             int minute = pickUpTime % 60;
-            //LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
             this.pickUpTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
         }
     }
@@ -82,12 +80,10 @@ public class Request {
             deliveryTime = -deliveryTime;
             int hour = deliveryTime / 60;
             int minute = deliveryTime % 60;
-            //LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
             this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
         } else {
             int hour = deliveryTime / 60;
             int minute = deliveryTime % 60;
-            //LocalDateTime pickUp = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
             this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
         }
     }

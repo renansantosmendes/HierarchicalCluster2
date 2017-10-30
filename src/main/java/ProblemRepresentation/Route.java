@@ -20,17 +20,19 @@ public class Route {
 
     private long totalDistanceTraveled;
     private long routeTravelTime;
-    private long totalTimeWindowViolation;
+    private long totalTimeWindowAnticipation;
+    private long totalTimeWindowDelay;
     private Set<Request> notServedRequests;
     private List<Node> nodesSequence;
     private List<Request> sequenceOfAttendedRequests;
     private List<Integer> integerRouteRepresetation;
 
-    public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowViolation, Set<Request> notServedRequests,
-            List<Node> nodesSequence, List<Request> sequenceOfServedRequests) {
+    public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
+            Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests) {
         this.totalDistanceTraveled = totalRouteDistance;
         this.routeTravelTime = routeTravelTime;
-        this.totalTimeWindowViolation = totalTimeWindowViolation;
+        this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
+        this.totalTimeWindowDelay = totalTimeWindowDelay;
         this.notServedRequests = notServedRequests;
         this.nodesSequence = nodesSequence;
         this.sequenceOfAttendedRequests = sequenceOfServedRequests;
@@ -59,12 +61,20 @@ public class Route {
         this.routeTravelTime = routeTravelTime;
     }
 
-    public long getTotalTimeWindowViolation() {
-        return totalTimeWindowViolation;
+    public long getTotalTimeWindowAnticipation() {
+        return totalTimeWindowAnticipation;
     }
 
-    public void setTotalTimeWindowViolation(long totalTimeWindowViolation) {
-        this.totalTimeWindowViolation = totalTimeWindowViolation;
+    public void setTotalTimeWindowAnticipation(long totalTimeWindowAnticipation) {
+        this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
+    }
+
+    public long getTotalTimeWindowDelay() {
+        return totalTimeWindowDelay;
+    }
+
+    public void setTotalTimeWindowDelay(long totalTimeWindowAnticipation) {
+        this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
     }
 
     public Set<Request> getNotServedRequests() {
@@ -168,7 +178,8 @@ public class Route {
     public void evaluateRoute(ProblemData data) {
         calculateTravelTime(data);
         calculateDistanceTraveled(data);
-        calculateTotalViolationOfTheDeliveryTimeWindow();
+        calculateTotalDeliveryAnticipation();
+        calculateTotalDeliveryDelay();
     }
 
     public void calculateTravelTime(ProblemData data) {
@@ -189,7 +200,7 @@ public class Route {
         this.totalDistanceTraveled = totalDistance;
     }
 
-    public void calculateTotalViolationOfTheDeliveryTimeWindow() {
+    public void calculateTotalDeliveryAnticipation() {
         Duration violations = Duration.ofMinutes(0);
         Set<Request> attendedRequests = new HashSet<>();
         for (Request request : this.sequenceOfAttendedRequests) {
@@ -202,7 +213,23 @@ public class Route {
                 violations = violations.plus(time);
             }
         }
-        this.totalTimeWindowViolation = violations.getSeconds() / 60;
+        this.totalTimeWindowAnticipation = violations.getSeconds() / 60;
+    }
+
+    public void calculateTotalDeliveryDelay() {
+        Duration violations = Duration.ofMinutes(0);
+        Set<Request> attendedRequests = new HashSet<>();
+        for (Request request : this.sequenceOfAttendedRequests) {
+            attendedRequests.add(request);
+        }
+
+        for (Request request : attendedRequests) {
+            if (request.getDeliveryTimeWindowUpper().isBefore(request.getDeliveryTime())) {
+                Duration time = Duration.between(request.getDeliveryTimeWindowUpper(), request.getDeliveryTime());
+                violations = violations.plus(time);
+            }
+        }
+        this.totalTimeWindowDelay = violations.getSeconds() / 60;
     }
 
     public List<Integer> getNodesVisitationInIntegerRepresentation() {
@@ -263,52 +290,37 @@ public class Route {
                 this.clearNodesSequence();
                 this.clearSequenceOfAttendeRequests();
                 this.setIntegerRouteRepresetation(idSequence);
-
-                this.scheduleRoute2(data);
+                this.scheduleRoute(data);
                 this.buildSequenceOfAttendedRequests(data);
                 this.buildNodesSequence(data);
                 this.evaluateRoute(data);
             }
         }
     }
-
-    public void scheduleRoute2(ProblemData data) {
-        List<Integer> deliveryIdSequence = getOnlyIdSequence();
-        List<Integer> pickupIdSequence = getOnlyIdSequence();
-        List<Integer> idSequence = new ArrayList<>();
-        Set<Integer> visitedIds = new HashSet<>();
-        int positionInSequenceOfFirstDelivery = 0;
-
-        idSequence.addAll(pickupIdSequence);
-        //idSequence.addAll(deliveryIdSequence);
-
-        positionInSequenceOfFirstDelivery = findFirstDelivery(idSequence, visitedIds, positionInSequenceOfFirstDelivery);
-
-        deliveryIdSequence.subList(0, positionInSequenceOfFirstDelivery).clear();
-        pickupIdSequence.subList(positionInSequenceOfFirstDelivery, pickupIdSequence.size()).clear();
-
-        List<Integer> deliveryTimes = new ArrayList<>();
-        List<Integer> pickupTimes = new ArrayList<>();
-
-        int currentTimeForDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery), data)
-                .getDeliveryTimeWindowLowerInMinutes();
-        int currentTimeForPickup = -currentTimeForDelivery;
-        deliveryTimes.add(-currentTimeForDelivery);
-
-        currentTimeForDelivery = scheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
-                idSequence, visitedIds, deliveryTimes, currentTimeForDelivery, data);
-
-        addDepotInPickupAndDeliverySequences(deliveryIdSequence, pickupIdSequence);
-
-        int timeBetween = (int) data.getDuration()[getRequestUsingId(idSequence.get(idSequence.size() - 1), data).getDestination().getId()][0]
-                .getSeconds() / 60;
-        deliveryTimes.add(-currentTimeForDelivery - timeBetween);
-
-        List<Integer> times = schedulePassengerPickups(pickupIdSequence, idSequence, positionInSequenceOfFirstDelivery,
-                currentTimeForPickup, deliveryTimes, data);
-
-        addDepotInPickupAndDeliverySequences(idSequence, idSequence);
-        setIntegerRepresentation(idSequence, times, data);
+    
+    public void addMinutesInRoute(int timeInterval, ProblemData data){
+//        for(int time: this.integerRouteRepresetation){
+//            if(time < 0){
+//                time -= timeInterval;
+//            }
+//        }
+        
+        for(int i=0; i< this.integerRouteRepresetation.size(); i++){
+            if(this.integerRouteRepresetation.get(i) < 0){
+                this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) - timeInterval);
+            }
+        }
+        setPickupAndDeliveryTimeForEachAttendedRequest(data);
+        this.evaluateRoute(data);
+    }
+    
+    public void removeMinutesInRoute(int timeInterval, ProblemData data){
+        for(int time: this.integerRouteRepresetation){
+            if(time < 0){
+                time += timeInterval;
+            }
+        }
+        this.evaluateRoute(data);
     }
 
     public void scheduleRoute(ProblemData data) {
@@ -319,9 +331,11 @@ public class Route {
         int positionInSequenceOfFirstDelivery = 0;
 
         idSequence.addAll(pickupIdSequence);
-        //idSequence.addAll(deliveryIdSequence);
 
         positionInSequenceOfFirstDelivery = findFirstDelivery(idSequence, visitedIds, positionInSequenceOfFirstDelivery);
+
+        deliveryIdSequence.subList(0, positionInSequenceOfFirstDelivery).clear();
+        pickupIdSequence.subList(positionInSequenceOfFirstDelivery, pickupIdSequence.size()).clear();
 
         List<Integer> deliveryTimes = new ArrayList<>();
         List<Integer> pickupTimes = new ArrayList<>();
@@ -466,7 +480,8 @@ public class Route {
     @Override
     public String toString() {
         return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime
-                + "s - Total DTW Violated  = " + this.totalTimeWindowViolation + " min";
+                + "s - Total of Anticipation  = " + this.totalTimeWindowAnticipation + " min"
+                + " - Total of Delay  = " + this.totalTimeWindowDelay + " min";
     }
 
 }

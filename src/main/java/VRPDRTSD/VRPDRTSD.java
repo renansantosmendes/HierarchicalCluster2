@@ -382,15 +382,14 @@ public class VRPDRTSD implements Algorithm {
 
     private void swapFirstImprovement() {
         for (int i = 0; i < solution.getRoutes().size(); i++) {
-            Route route = solution.getRoute(i);
-            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
-            for (int j = 0; j < route.getIntegerSequenceOfAttendedRequests().size(); j++) {
+            Route route = new Route(solution.getRoute(i));
+            long evaluationFunctionBeforeMovement = solution.getRoute(i).getEvaluationFunction();
+            for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size(); j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
                     route.swapRequests(j, k, data);
-                    solution.setRoute(i, route);
-                    solution.calculateEvaluationFunction();
-                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                    long evaluationFunctionAfterMovement = route.getEvaluationFunction();
                     if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
+                        solution.setRoute(i, route);
                         break;
                     }
                 }

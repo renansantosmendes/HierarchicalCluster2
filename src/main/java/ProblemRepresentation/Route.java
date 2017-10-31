@@ -15,17 +15,19 @@ public class Route {
     private long routeTravelTime;
     private long totalTimeWindowAnticipation;
     private long totalTimeWindowDelay;
+    private long evaluationFunction;    
     private Set<Request> notServedRequests;
     private List<Node> nodesSequence;
     private List<Request> sequenceOfAttendedRequests;
     private List<Integer> integerRouteRepresetation;
 
     public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
-            Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests) {
+            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests) {
         this.totalDistanceTraveled = totalRouteDistance;
         this.routeTravelTime = routeTravelTime;
         this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
         this.totalTimeWindowDelay = totalTimeWindowDelay;
+        this.evaluationFunction = evaluationFunction;
         this.notServedRequests = notServedRequests;
         this.nodesSequence = nodesSequence;
         this.sequenceOfAttendedRequests = sequenceOfServedRequests;
@@ -38,11 +40,24 @@ public class Route {
         this.integerRouteRepresetation = new ArrayList<>();
     }
     
+    public Route(Route route){
+        this.totalDistanceTraveled = route.getTotalRouteDistance();
+        this.routeTravelTime = route.getRouteTravelTime();
+        this.totalTimeWindowAnticipation = route.getTotalTimeWindowAnticipation();
+        this.totalTimeWindowDelay = route.getTotalTimeWindowDelay();
+        this.evaluationFunction = route.getEvaluationFunction();
+        this.notServedRequests = route.getNotServedRequests();
+        this.nodesSequence = route.getNodesSequence();
+        this.sequenceOfAttendedRequests = route.getSequenceOfAttendedRequests();
+        this.integerRouteRepresetation = route.getIntegerRouteRepresetation();
+    }
+    
     public void setRoute(Route route){
         this.totalDistanceTraveled = route.getTotalRouteDistance();
         this.routeTravelTime = route.getRouteTravelTime();
         this.totalTimeWindowAnticipation = route.getTotalTimeWindowAnticipation();
         this.totalTimeWindowDelay = route.getTotalTimeWindowDelay();
+        this.evaluationFunction = route.getEvaluationFunction();
         this.notServedRequests = route.getNotServedRequests();
         this.nodesSequence = route.getNodesSequence();
         this.sequenceOfAttendedRequests = route.getSequenceOfAttendedRequests();
@@ -54,6 +69,14 @@ public class Route {
 
     public void setTotalDistanceTraveled(long totalDistanceTraveled) {
         this.totalDistanceTraveled = totalDistanceTraveled;
+    }
+
+    public long getEvaluationFunction() {
+        return evaluationFunction;
+    }
+
+    public void setEvaluationFunction(long evaluationFunction) {
+        this.evaluationFunction = evaluationFunction;
     }
 
     public long getRouteTravelTime() {
@@ -190,6 +213,7 @@ public class Route {
         calculateDistanceTraveled(data);
         calculateTotalDeliveryAnticipation();
         calculateTotalDeliveryDelay();
+        calculateEvaluationFunction();
     }
 
     public void calculateTravelTime(ProblemData data) {
@@ -240,6 +264,16 @@ public class Route {
             }
         }
         this.totalTimeWindowDelay = violations.getSeconds() / 60;
+    }
+    
+    public void calculateEvaluationFunction() {
+        if (this.totalTimeWindowDelay > 0) {
+            this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime * this.totalTimeWindowDelay 
+                    + this.totalTimeWindowAnticipation;
+        }else{
+            this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime + this.totalTimeWindowAnticipation;
+        }
+
     }
 
     public List<Integer> getNodesVisitationInIntegerRepresentation() {

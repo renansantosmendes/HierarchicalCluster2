@@ -21,14 +21,14 @@ public class Solution {
     private List<Integer> integerRepresentation;
 
     public Solution() {
+        initializeAttributesWithEmptyLists();
+        clearAttributeValues();
+    }
+
+    private void initializeAttributesWithEmptyLists() {
         this.routes = new ArrayList<>();
         this.nonAttendedRequests = new HashSet<>();
         this.integerRepresentation = new ArrayList<>();
-        this.totalDistanceTraveled = 0;
-        this.totalTravelTime = 0;
-        this.totalTimeWindowAnticipation = 0;
-        this.totalTimeWindowDelay = 0;
-        this.evaluationFunction = 0;
     }
 
     public Solution(long totalDistance, long totalTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
@@ -84,13 +84,11 @@ public class Solution {
 
     public void addRoute(Route route) {
         this.routes.add(route);
-//        this.totalDistanceTraveled += route.getTotalRouteDistance();
-//        this.totalTravelTime += route.getRouteTravelTime();
-//        this.totalTimeWindowAnticipation += route.getTotalTimeWindowAnticipation();
-//        this.totalTimeWindowDelay += route.getTotalTimeWindowDelay();
     }
 
     public void calculateEvaluationFunction() {
+        clearAttributeValues();
+                
         for (Route route : this.routes) {
             this.totalDistanceTraveled += route.getTotalRouteDistance();
             this.totalTravelTime += route.getRouteTravelTime();
@@ -105,6 +103,14 @@ public class Solution {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation;
         }
 
+    }
+
+    private void clearAttributeValues() {
+        this.totalDistanceTraveled = 0;
+        this.totalTravelTime = 0;
+        this.totalTimeWindowAnticipation = 0;
+        this.totalTimeWindowDelay = 0;
+        this.evaluationFunction = 0;    
     }
 
     public Set<List<Integer>> getRoutesForMap() {

@@ -74,7 +74,6 @@ public class VRPDRTSD implements Algorithm {
         for (Request request : candidates) {
             request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getLastPassengerAddedToRoute(),
                     data.getCurrentNode(), data.getDuration());
-//            request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }
     }
 
@@ -279,200 +278,29 @@ public class VRPDRTSD implements Algorithm {
     }
 
     public void finalizeRoute() {
-        scheduleRoute();
+        addPickupSequence();
+        scheduleRouteTest();
         buildSequenceOfAttendedRequests();
         buildNodesSequence();
         evaluateRoute();
     }
 
-     public void scheduleRouteTest() {
-         currentRoute.scheduleRoute(data);
-     }
-    
-    public void scheduleRoute() {
-        List<Integer> deliveryIdSequence = getOnlyIdSequence();
-        List<Integer> pickupIdSequence = getOnlyIdSequence();
+    private void addPickupSequence() {
+        List<Integer> deliverySequence = getOnlyIdSequence();
+        List<Integer> pickupSequence = getOnlyIdSequence();
         List<Integer> idSequence = new ArrayList<>();
-        Set<Integer> visitedIds = new HashSet<>();
-        int positionInSequenceOfFirstDelivery = 0;
 
-        idSequence.addAll(pickupIdSequence);
-        idSequence.addAll(deliveryIdSequence);
-
-        positionInSequenceOfFirstDelivery = findFirstDelivery(idSequence, visitedIds, positionInSequenceOfFirstDelivery);
-
-        List<Integer> deliveryTimes = new ArrayList<>();
-        List<Integer> pickupTimes = new ArrayList<>();
-
-        int currentTimeForDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery))
-                .getDeliveryTimeWindowLowerInMinutes();
-        int currentTimeForPickup = -currentTimeForDelivery;
-        deliveryTimes.add(-currentTimeForDelivery);
-
-        currentTimeForDelivery = scheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
-                idSequence, visitedIds, deliveryTimes, currentTimeForDelivery);
-
-        addDepotInPickupAndDeliverySequences(deliveryIdSequence, pickupIdSequence);
-
-        int timeBetween = (int) data.getDuration()[getRequestUsingId(idSequence.get(idSequence.size() - 1)).getDestination().getId()][0]
-                .getSeconds() / 60;
-        deliveryTimes.add(-currentTimeForDelivery - timeBetween);
-
-        List<Integer> times = schedulePassengerPickups(pickupIdSequence, idSequence, positionInSequenceOfFirstDelivery, currentTimeForPickup, deliveryTimes);
-
-        addDepotInPickupAndDeliverySequences(idSequence, idSequence);
-        setIntegerRepresentation(idSequence, times);
-    }
-
-    public void scheduleRoute(Route route) {
-        List<Integer> deliveryIdSequence = getOnlyIdSequence();
-        List<Integer> pickupIdSequence = getOnlyIdSequence();
-        List<Integer> idSequence = new ArrayList<>();
-        Set<Integer> visitedIds = new HashSet<>();
-        int positionInSequenceOfFirstDelivery = 0;
-
-        idSequence.addAll(pickupIdSequence);
-        idSequence.addAll(deliveryIdSequence);
-
-        positionInSequenceOfFirstDelivery = findFirstDelivery(idSequence, visitedIds, positionInSequenceOfFirstDelivery);
-
-        List<Integer> deliveryTimes = new ArrayList<>();
-        List<Integer> pickupTimes = new ArrayList<>();
-
-        int currentTimeForDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery))
-                .getDeliveryTimeWindowLowerInMinutes();
-        int currentTimeForPickup = -currentTimeForDelivery;
-        deliveryTimes.add(-currentTimeForDelivery);
-
-        currentTimeForDelivery = scheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
-                idSequence, visitedIds, deliveryTimes, currentTimeForDelivery);
-
-        addDepotInPickupAndDeliverySequences(deliveryIdSequence, pickupIdSequence);
-
-        int timeBetween = (int) data.getDuration()[getRequestUsingId(idSequence.get(idSequence.size() - 1)).getDestination().getId()][0]
-                .getSeconds() / 60;
-        deliveryTimes.add(-currentTimeForDelivery - timeBetween);
-
-        List<Integer> times = schedulePassengerPickups(pickupIdSequence, idSequence, positionInSequenceOfFirstDelivery, currentTimeForPickup, deliveryTimes);
-
-        addDepotInPickupAndDeliverySequences(idSequence, idSequence);
-        this.currentRoute.clearIntegerRepresentation();
-        setIntegerRepresentation(route, idSequence, times);
-    }
-
-    private void setIntegerRepresentation(List<Integer> idSequence, List<Integer> times) {
-        List<Integer> integerRepresentation = buildIntegerRepresentation(idSequence, times);
+        idSequence.addAll(deliverySequence);
+        idSequence.addAll(pickupSequence);
+        idSequence.add(0);
+        idSequence.add(0, 0);
 
         currentRoute.clearIntegerRepresentation();
-        currentRoute.setIntegerRouteRepresetation(integerRepresentation);
-        currentRoute.setPickupAndDeliveryTimeForEachAttendedRequest(data);
+        currentRoute.setIntegerRouteRepresetation(idSequence);
     }
 
-    private void setIntegerRepresentation(Route route, List<Integer> idSequence, List<Integer> times) {
-        List<Integer> integerRepresentation = buildIntegerRepresentation(idSequence, times);
-
-        route.clearIntegerRepresentation();
-        route.setIntegerRouteRepresetation(integerRepresentation);
-        route.setPickupAndDeliveryTimeForEachAttendedRequest(data);
-    }
-
-    private List<Integer> buildIntegerRepresentation(List<Integer> idSequence, List<Integer> times) {
-        List<Integer> integerRepresentation = new ArrayList<>();
-        for (int i = 0; i < idSequence.size(); i++) {
-            integerRepresentation.add(idSequence.get(i));
-            integerRepresentation.add(times.get(i));
-        }
-        return integerRepresentation;
-    }
-
-    private List<Integer> schedulePassengerPickups(List<Integer> pickupIdSequence, List<Integer> idSequence, int positionInSequenceOfFirstDelivery, int currentTimeForPickup, List<Integer> deliveryTimes) {
-        List<Long> displacementTimesBetweenPassengers = new ArrayList<>();
-        for (int i = 0; i < pickupIdSequence.size() - 1; i++) {
-            int originPassengerId = pickupIdSequence.get(i);
-            int destinationPassengerId = pickupIdSequence.get(i + 1);
-            long displacementTime = 0;
-
-            Request originRequest = getRequestUsingId(originPassengerId);
-            Request destinationRequest = getRequestUsingId(destinationPassengerId);
-
-            if (originRequest == null) {
-                displacementTime = data.getDuration()[0][destinationRequest.getOrigin().getId()]
-                        .getSeconds();
-            } else if (destinationRequest == null) {
-                displacementTime = data.getDuration()[originRequest.getOrigin().getId()][0]
-                        .getSeconds();
-            } else {
-                displacementTime = data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getOrigin().getId()]
-                        .getSeconds();
-            }
-            displacementTimesBetweenPassengers.add(-displacementTime / 60);
-        }
-        Request lastPickup = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery - 1));
-        Request firstDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery));
-        long timeBetweenLastPickupAndFirstDelivery = data
-                .getDuration()[lastPickup.getOrigin().getId()][firstDelivery.getDestination().getId()].getSeconds() / 60;
-
-        displacementTimesBetweenPassengers.add(-timeBetweenLastPickupAndFirstDelivery);
-
-        List<Integer> times = new ArrayList<>();
-        for (int i = displacementTimesBetweenPassengers.size() - 1; i >= 0; i--) {
-            currentTimeForPickup -= displacementTimesBetweenPassengers.get(i);
-            times.add((int) currentTimeForPickup);
-        }
-
-        Collections.reverse(times);
-        times.addAll(deliveryTimes);
-        return times;
-    }
-
-    private void addDepotInPickupAndDeliverySequences(List<Integer> deliveryIdSequence, List<Integer> pickupIdSequence) {
-        deliveryIdSequence.add(0);
-        pickupIdSequence.add(0, 0);
-    }
-
-    private int scheludePassengerDeliveries(int positionInSequenceOfFirstDelivery, List<Integer> idSequence, Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery) {
-        for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size() - 1; i++) {
-            int originPassengerId = idSequence.get(i);
-            int destinationPassengerId = idSequence.get(i + 1);
-            Request originRequest = getRequestUsingId(originPassengerId);
-            Request destinationRequest = getRequestUsingId(destinationPassengerId);
-            int timeBetween;
-
-            if (visitedIds.contains(originPassengerId)) {
-                if (visitedIds.contains(destinationPassengerId)) {
-                    timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getDestination().getId()]
-                            .getSeconds() / 60;
-                } else {
-                    timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getOrigin().getId()]
-                            .getSeconds() / 60;
-                }
-                deliveryTimes.add(-currentTimeForDelivery - timeBetween);
-                currentTimeForDelivery -= -timeBetween;
-            } else {
-                if (visitedIds.contains(destinationPassengerId)) {
-                    timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getDestination().getId()]
-                            .getSeconds() / 60;
-                } else {
-                    timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getOrigin().getId()]
-                            .getSeconds() / 60;
-                }
-                deliveryTimes.add(-currentTimeForDelivery - timeBetween);
-                currentTimeForDelivery -= -timeBetween;
-            }
-        }
-        return currentTimeForDelivery;
-    }
-
-    private int findFirstDelivery(List<Integer> idSequence, Set<Integer> visitedIds, int positionInSequenceOfFirstDelivery) {
-        for (int i = 0; i < idSequence.size(); i++) {
-            int id = idSequence.get(i);
-            if (visitedIds.contains(id)) {
-                positionInSequenceOfFirstDelivery = i;
-                break;
-            }
-            visitedIds.add(id);
-        }
-        return positionInSequenceOfFirstDelivery;
+    public void scheduleRouteTest() {
+        currentRoute.scheduleRoute(data);
     }
 
     private List<Integer> getOnlyIdSequence() {
@@ -488,10 +316,6 @@ public class VRPDRTSD implements Algorithm {
         } else {
             return null;
         }
-    }
-
-    private void addDepotInRoute() {
-        addDepotInPickupAndDeliverySequences(this.currentRoute.getIntegerRouteRepresetation(), this.currentRoute.getIntegerRouteRepresetation());
     }
 
     private void buildSequenceOfAttendedRequests() {
@@ -543,4 +367,34 @@ public class VRPDRTSD implements Algorithm {
         solution.calculateEvaluationFunction();
     }
 
+    @Override
+    public void localSearch() {
+        int localSearchType = 1;
+        switch (localSearchType) {
+            case 1:
+                swapFirstImprovement();
+                break;
+            case 2:
+                //swapBestImprovement();
+                break;
+        }
+    }
+
+    private void swapFirstImprovement() {
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            Route route = solution.getRoute(i);
+            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+            for (int j = 0; j < route.getIntegerSequenceOfAttendedRequests().size(); j++) {
+                for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
+                    route.swapRequests(j, k, data);
+                    solution.setRoute(i, route);
+                    solution.calculateEvaluationFunction();
+                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                    if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }

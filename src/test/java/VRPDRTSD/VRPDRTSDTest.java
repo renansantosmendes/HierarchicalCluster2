@@ -113,12 +113,27 @@ public class VRPDRTSDTest {
         route.clearIntegerRepresentation();
         route.setIntegerRouteRepresetation(idSequence);
         
-        problem.scheduleRoute(route);
+       // problem.scheduleRoute(route);
         route.buildSequenceOfAttendedRequests(problem.getData());
         route.buildNodesSequence(problem.getData());
         route.evaluateRoute(problem.getData());
         System.out.println("after");
         System.out.println(route);
         assertEquals(11, problem.getSolution().getRoutes().get(1).getNodesSequence().size());
+    }
+    
+    @Test
+    public void localSearchTest(){
+        String instanceName = "r005n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+        
+        problem.buildGreedySolution();
+        problem.localSearch();
+        
+        Solution solution = problem.getSolution();
     }
 }

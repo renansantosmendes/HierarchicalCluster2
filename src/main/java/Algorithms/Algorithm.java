@@ -12,13 +12,5 @@ public interface Algorithm {
 
     public void buildGreedySolution();
 
-//    public void initializeSolution();
-//
-//    public void initializeCandidatesElementsSet();
-//
-//    public void findBestCandidate();
-//
-//    public void addCandidateIntoSolution();
-//
-//    public void actualizeCandidatesElementsSet();
+    public void localSearch();
 }

@@ -2,10 +2,7 @@ package ProblemRepresentation;
 
 import GoogleMapsApi.GoogleStaticMap;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -64,7 +61,19 @@ public class Solution {
     public List<Route> getRoutes() {
         return routes;
     }
-
+    
+    public Route getRoute(int position){
+        return routes.get(position);
+    }
+    
+    public long getEvaluationFunction(){
+        return this.evaluationFunction;
+    }
+    
+    public void setRoute(int position, Route route){
+        routes.get(position).setRoute(route);
+    }
+    
     public Set<Request> getNonAttendedRequests() {
         return nonAttendedRequests;
     }

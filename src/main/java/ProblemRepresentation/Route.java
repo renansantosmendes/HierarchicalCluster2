@@ -1,14 +1,7 @@
 package ProblemRepresentation;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,8 +37,18 @@ public class Route {
         this.sequenceOfAttendedRequests = new ArrayList<>();
         this.integerRouteRepresetation = new ArrayList<>();
     }
+    
+    public void setRoute(Route route){
+        this.totalDistanceTraveled = route.getTotalRouteDistance();
+        this.routeTravelTime = route.getRouteTravelTime();
+        this.totalTimeWindowAnticipation = route.getTotalTimeWindowAnticipation();
+        this.totalTimeWindowDelay = route.getTotalTimeWindowDelay();
+        this.notServedRequests = route.getNotServedRequests();
+        this.nodesSequence = route.getNodesSequence();
+        this.sequenceOfAttendedRequests = route.getSequenceOfAttendedRequests();
+    }
 
-    public double getTotalRouteDistance() {
+    public long getTotalRouteDistance() {
         return totalDistanceTraveled;
     }
 
@@ -95,6 +98,13 @@ public class Route {
 
     public List<Request> getSequenceOfAttendedRequests() {
         return sequenceOfAttendedRequests;
+    }
+    
+    public List<Integer> getIntegerSequenceOfAttendedRequests() {
+        return this.getIntegerRouteRepresetation()
+                .stream()
+                .filter(u -> u.intValue() > 0)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void setSequenceOfAttendedRequests(List<Request> sequenceOfAttendedRequests) {
@@ -188,7 +198,7 @@ public class Route {
             totalTravelTime += data.getDuration()[this.nodesSequence.get(i).getId()][this.nodesSequence.get(i + 1).getId()].getSeconds();
         }
 
-        this.routeTravelTime = totalTravelTime;
+        this.routeTravelTime = totalTravelTime/60;
     }
 
     public void calculateDistanceTraveled(ProblemData data) {
@@ -299,12 +309,6 @@ public class Route {
     }
     
     public void addMinutesInRoute(int timeInterval, ProblemData data){
-//        for(int time: this.integerRouteRepresetation){
-//            if(time < 0){
-//                time -= timeInterval;
-//            }
-//        }
-        
         for(int i=0; i< this.integerRouteRepresetation.size(); i++){
             if(this.integerRouteRepresetation.get(i) < 0){
                 this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) - timeInterval);
@@ -479,8 +483,8 @@ public class Route {
 
     @Override
     public String toString() {
-        return "Route - Total Distance = " + this.totalDistanceTraveled + "m - Travel Time = " + this.routeTravelTime
-                + "s - Total of Anticipation  = " + this.totalTimeWindowAnticipation + " min"
+        return "Route - Total Distance = " + this.totalDistanceTraveled + " meters - Travel Time = " + this.routeTravelTime
+                + " min - Total of Anticipation  = " + this.totalTimeWindowAnticipation + " min"
                 + " - Total of Delay  = " + this.totalTimeWindowDelay + " min";
     }
 

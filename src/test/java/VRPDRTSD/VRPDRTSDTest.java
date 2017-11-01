@@ -9,6 +9,7 @@ package VRPDRTSD;
 import ProblemRepresentation.Node;
 import ProblemRepresentation.Route;
 import ProblemRepresentation.Solution;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -123,8 +124,8 @@ public class VRPDRTSDTest {
     }
 
     @Test
-    public void localSearchTest() {
-        String instanceName = "r100n12tw10";
+    public void localSearchTest() throws IOException {
+        String instanceName = "r010n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;
@@ -135,5 +136,7 @@ public class VRPDRTSDTest {
         System.out.println("\nBefore local search = " + problem.getSolution());
         problem.localSearch();
         System.out.println("\nAfter local search = " + problem.getSolution());
+        
+        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
     }
 }

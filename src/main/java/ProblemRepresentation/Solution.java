@@ -24,6 +24,18 @@ public class Solution {
         initializeAttributesWithEmptyLists();
         clearAttributeValues();
     }
+    
+    public Solution(Solution solution) {
+        initializeAttributesWithEmptyLists();
+        clearAttributeValues();
+        this.totalDistanceTraveled = solution.getTotalDistanceTraveled();
+        this.totalTravelTime = solution.getTotalTravelTime();
+        this.totalTimeWindowAnticipation = solution.getTotalTimeWindowAnticipation();
+        this.totalTimeWindowDelay = solution.getTotalTimeWindowDelay();
+        this.evaluationFunction = solution.getEvaluationFunction();
+        this.routes = solution.getRoutes();
+        this.nonAttendedRequests = solution.getNonAttendedRequests();
+    }
 
     private void initializeAttributesWithEmptyLists() {
         this.routes = new ArrayList<>();

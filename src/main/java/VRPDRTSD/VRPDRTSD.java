@@ -372,15 +372,16 @@ public class VRPDRTSD implements Algorithm {
         int localSearchType = 1;
         switch (localSearchType) {
             case 1:
-                swapFirstImprovement();
+                this.solution = swapFirstImprovement();
                 break;
             case 2:
-                //swapBestImprovement();
+                this.solution = swapBestImprovement();
                 break;
         }
     }
 
-    private void swapFirstImprovement() {
+    private Solution swapFirstImprovement() {
+        Solution solution = new Solution(this.solution);
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             Route route = new Route(solution.getRoute(i));
             System.out.println(route.getEvaluationFunction() + "\t"+route.getIntegerRouteRepresetation());
@@ -400,12 +401,46 @@ public class VRPDRTSD implements Algorithm {
                     if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
                         solution.setRoute(i, route);
                         solution.calculateEvaluationFunction();
-                        break;
+                        return solution;
+                        //break;
                     } else {
                         route.swapRequests(j, k, data);
                     }
                 }
             }
         }
+        return null;
+    }
+    
+    private Solution swapBestImprovement() {
+        Solution solution = new Solution(this.solution);
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            Route route = new Route(solution.getRoute(i));
+            System.out.println(route.getEvaluationFunction() + "\t"+route.getIntegerRouteRepresetation());
+            long evaluationFunctionBeforeMovement = solution.getRoute(i).getEvaluationFunction();
+            for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
+                for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
+                    route.swapRequests(j, k, data);
+                    
+                    List<Integer> idSequence = route.getIntegerRouteRepresetation()
+                            .stream()
+                            .filter(u -> u >= 0)
+                            .collect(Collectors.toCollection(ArrayList::new));
+
+                    System.out.println(route.getEvaluationFunction() + "\t"+idSequence);
+                    
+                    long evaluationFunctionAfterMovement = route.getEvaluationFunction();
+                    if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
+                        solution.setRoute(i, route);
+                        solution.calculateEvaluationFunction();
+                        //return solution;
+                        //break;
+                    } else {
+                        route.swapRequests(j, k, data);
+                    }
+                }
+            }
+        }
+        return solution;
     }
 }

@@ -34,6 +34,10 @@ public class Route {
     }
 
     public Route() {
+        initializeAttributes();
+    }
+
+    private void initializeAttributes() {
         this.notServedRequests = new HashSet<>();
         this.nodesSequence = new ArrayList<>();
         this.sequenceOfAttendedRequests = new ArrayList<>();
@@ -41,6 +45,7 @@ public class Route {
     }
     
     public Route(Route route){
+        initializeAttributes();
         this.totalDistanceTraveled = route.getTotalRouteDistance();
         this.routeTravelTime = route.getRouteTravelTime();
         this.totalTimeWindowAnticipation = route.getTotalTimeWindowAnticipation();
@@ -49,7 +54,8 @@ public class Route {
         this.notServedRequests = route.getNotServedRequests();
         this.nodesSequence = route.getNodesSequence();
         this.sequenceOfAttendedRequests = route.getSequenceOfAttendedRequests();
-        this.integerRouteRepresetation = route.getIntegerRouteRepresetation();
+        //this.integerRouteRepresetation = route.getIntegerRouteRepresetation();
+        this.integerRouteRepresetation.addAll(route.getIntegerRouteRepresetation());
     }
     
     public void setRoute(Route route){

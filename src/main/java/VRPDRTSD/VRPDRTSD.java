@@ -384,12 +384,10 @@ public class VRPDRTSD implements Algorithm {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             Route route = new Route(solution.getRoute(i));
-            //long evaluationFunctionBeforeMovement = solution.getRoute(i).getEvaluationFunction();
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size(); j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
                     route.swapRequests(j, k, data);
-                    System.out.println(route.getEvaluationFunction() + "\t" + route.getIntegerSequenceOfAttendedRequests());
                     solution.setRoute(i, route);
                     solution.calculateEvaluationFunction();
                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
@@ -409,31 +407,23 @@ public class VRPDRTSD implements Algorithm {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             Route route = new Route(solution.getRoute(i));
-            System.out.println(route.getEvaluationFunction() + "\t" + route.getIntegerRouteRepresetation());
-            long evaluationFunctionBeforeMovement = solution.getRoute(i).getEvaluationFunction();
+            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
                     route.swapRequests(j, k, data);
-
-                    List<Integer> idSequence = route.getIntegerRouteRepresetation()
-                            .stream()
-                            .filter(u -> u >= 0)
-                            .collect(Collectors.toCollection(ArrayList::new));
-
-                    System.out.println(route.getEvaluationFunction() + "\t" + idSequence);
-
-                    long evaluationFunctionAfterMovement = route.getEvaluationFunction();
-                    if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
-                        solution.setRoute(i, route);
-                        solution.calculateEvaluationFunction();
-                        //return solution;
-                        //break;
-                    } else {
+                    solution.setRoute(i, route);
+                    solution.calculateEvaluationFunction();
+                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                    if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                         route.swapRequests(j, k, data);
                     }
                 }
             }
         }
-        return this.solution;
+        if(solution.getEvaluationFunction() < this.solution.getEvaluationFunction()){
+            return solution;
+        }else{
+            return this.solution;
+        }
     }
 }

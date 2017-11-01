@@ -108,8 +108,8 @@ public class VRPDRTSDTest {
 
         Route route = solution.getRoutes().get(routeNumber);
 
-        System.out.println("before");
-        System.out.println(route);
+        //System.out.println("before");
+        //System.out.println(route);
         Collections.swap(idSequence, 3, 4);
         route.clearIntegerRepresentation();
         route.setIntegerRouteRepresetation(idSequence);
@@ -118,8 +118,8 @@ public class VRPDRTSDTest {
         route.buildSequenceOfAttendedRequests(problem.getData());
         route.buildNodesSequence(problem.getData());
         route.evaluateRoute(problem.getData());
-        System.out.println("after");
-        System.out.println(route);
+        //System.out.println("after");
+        //System.out.println(route);
         assertEquals(7, problem.getSolution().getRoutes().get(1).getNodesSequence().size());
     }
 
@@ -133,6 +133,7 @@ public class VRPDRTSDTest {
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
 
         problem.buildGreedySolution();
+        
         System.out.println("\nBefore local search = " + problem.getSolution());
         problem.localSearch();
         System.out.println("\nAfter local search = " + problem.getSolution());

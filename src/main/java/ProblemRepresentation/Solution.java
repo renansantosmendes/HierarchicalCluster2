@@ -153,7 +153,7 @@ public class Solution {
     }
     
     public void printRoutes(){
-        this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getIntegerRouteRepresetation()));
+        this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getIntegerSequenceOfAttendedRequests()));
     }
 
     @Override

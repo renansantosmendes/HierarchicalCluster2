@@ -155,6 +155,10 @@ public class Solution {
     public void printRoutes(){
         this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getIntegerSequenceOfAttendedRequests()));
     }
+    
+    public void printIntegerRepresentationOfRoutes(){
+        this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getIntegerRouteRepresetation()));
+    }
 
     @Override
     public String toString() {

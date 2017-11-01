@@ -155,7 +155,7 @@ public class VRPDRTSD implements Algorithm {
             }
             finalizeRoute();
             addRouteInSolution();
-            System.out.println(currentRoute);
+            //System.out.println(currentRoute);
         }
         finalizeSolution();
     }

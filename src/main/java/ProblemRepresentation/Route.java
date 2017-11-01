@@ -242,6 +242,7 @@ public class Route {
 
     public void calculateTotalDeliveryAnticipation() {
         Duration violations = Duration.ofMinutes(0);
+        long test = 0;
         Set<Request> attendedRequests = new HashSet<>();
         for (Request request : this.sequenceOfAttendedRequests) {
             attendedRequests.add(request);
@@ -249,11 +250,13 @@ public class Route {
 
         for (Request request : attendedRequests) {
             if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
-                Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
-                violations = violations.plus(time);
+                long diference = request.getDeliveryTime().getHour()*60 + request.getDeliveryTime().getMinute()
+                        - request.getDeliveryTimeWindowLower().getHour()*60 -request.getDeliveryTimeWindowLower().getMinute();
+                test += diference;
             }
         }
-        this.totalTimeWindowAnticipation = violations.getSeconds() / 60;
+        //not explained this signal changing
+        this.totalTimeWindowAnticipation = -test;
     }
 
     public void calculateTotalDeliveryDelay() {

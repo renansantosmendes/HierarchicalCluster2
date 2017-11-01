@@ -126,7 +126,7 @@ public class Route {
     public List<Integer> getIntegerSequenceOfAttendedRequests() {
         return this.getIntegerRouteRepresetation()
                 .stream()
-                .filter(u -> u.intValue() > 0)
+                .filter(u -> u.intValue() >= 0)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -517,7 +517,7 @@ public class Route {
 
     @Override
     public String toString() {
-        return "Route - Evaluation Function = " + this.evaluationFunction + "Total Distance = " + this.totalDistanceTraveled + " meters - Travel Time = " + this.routeTravelTime
+        return "Route - Evaluation Function = " + this.evaluationFunction + " - Total Distance = " + this.totalDistanceTraveled + " meters - Travel Time = " + this.routeTravelTime
                 + " min - Total of Anticipation  = " + this.totalTimeWindowAnticipation + " min"
                 + " - Total of Delay  = " + this.totalTimeWindowDelay + " min";
     }

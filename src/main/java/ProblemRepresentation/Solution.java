@@ -35,6 +35,7 @@ public class Solution {
         this.evaluationFunction = solution.getEvaluationFunction();
         this.routes = solution.getRoutes();
         this.nonAttendedRequests = solution.getNonAttendedRequests();
+        
     }
 
     private void initializeAttributesWithEmptyLists() {
@@ -149,6 +150,10 @@ public class Solution {
         for (List<Integer> route : this.getRoutesListForMap()) {
             new GoogleStaticMap(nodesList, route, adjacenciesTable, nodesTable);
         }
+    }
+    
+    public void printRoutes(){
+        this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getIntegerRouteRepresetation()));
     }
 
     @Override

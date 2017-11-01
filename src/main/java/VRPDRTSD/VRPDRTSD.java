@@ -369,7 +369,7 @@ public class VRPDRTSD implements Algorithm {
 
     @Override
     public void localSearch() {
-        int localSearchType = 1;
+        int localSearchType = 2;
         switch (localSearchType) {
             case 1:
                 this.solution = swapFirstImprovement();
@@ -384,51 +384,44 @@ public class VRPDRTSD implements Algorithm {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             Route route = new Route(solution.getRoute(i));
-            System.out.println(route.getEvaluationFunction() + "\t"+route.getIntegerRouteRepresetation());
-            long evaluationFunctionBeforeMovement = solution.getRoute(i).getEvaluationFunction();
-            for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
+            //long evaluationFunctionBeforeMovement = solution.getRoute(i).getEvaluationFunction();
+            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+            for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size(); j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
                     route.swapRequests(j, k, data);
-                    
-                    List<Integer> idSequence = route.getIntegerRouteRepresetation()
-                            .stream()
-                            .filter(u -> u >= 0)
-                            .collect(Collectors.toCollection(ArrayList::new));
+                    System.out.println(route.getEvaluationFunction() + "\t" + route.getIntegerSequenceOfAttendedRequests());
+                    solution.setRoute(i, route);
+                    solution.calculateEvaluationFunction();
+                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
-                    System.out.println(route.getEvaluationFunction() + "\t"+idSequence);
-                    
-                    long evaluationFunctionAfterMovement = route.getEvaluationFunction();
                     if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
-                        solution.setRoute(i, route);
-                        solution.calculateEvaluationFunction();
                         return solution;
-                        //break;
                     } else {
                         route.swapRequests(j, k, data);
                     }
                 }
             }
         }
-        return null;
+        return this.solution;
     }
-    
+
     private Solution swapBestImprovement() {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             Route route = new Route(solution.getRoute(i));
-            System.out.println(route.getEvaluationFunction() + "\t"+route.getIntegerRouteRepresetation());
+            System.out.println(route.getEvaluationFunction() + "\t" + route.getIntegerRouteRepresetation());
             long evaluationFunctionBeforeMovement = solution.getRoute(i).getEvaluationFunction();
             for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
                     route.swapRequests(j, k, data);
-                    
+
                     List<Integer> idSequence = route.getIntegerRouteRepresetation()
                             .stream()
                             .filter(u -> u >= 0)
                             .collect(Collectors.toCollection(ArrayList::new));
 
-                    System.out.println(route.getEvaluationFunction() + "\t"+idSequence);
-                    
+                    System.out.println(route.getEvaluationFunction() + "\t" + idSequence);
+
                     long evaluationFunctionAfterMovement = route.getEvaluationFunction();
                     if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
                         solution.setRoute(i, route);
@@ -441,6 +434,6 @@ public class VRPDRTSD implements Algorithm {
                 }
             }
         }
-        return solution;
+        return this.solution;
     }
 }

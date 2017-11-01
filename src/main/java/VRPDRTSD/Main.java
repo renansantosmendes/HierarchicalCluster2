@@ -28,5 +28,4 @@ public class Main {
         problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 
     }
-
 }

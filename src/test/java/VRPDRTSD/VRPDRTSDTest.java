@@ -127,7 +127,7 @@ public class VRPDRTSDTest {
     @Test
     public void localSearchTest() throws IOException {
         System.out.println("------ Testing local search method ------");
-        String instanceName = "r010n12tw10";
+        String instanceName = "r250n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;
@@ -137,10 +137,10 @@ public class VRPDRTSDTest {
         problem.buildGreedySolution();
 
         System.out.println("\nBefore local search = " + problem.getSolution());
-        problem.getSolution().printIntegerRepresentationOfRoutes();
+        //problem.getSolution().printIntegerRepresentationOfRoutes();
         problem.localSearch();
         System.out.println("\nAfter local search = " + problem.getSolution());
-        problem.getSolution().printIntegerRepresentationOfRoutes();
+        //problem.getSolution().printIntegerRepresentationOfRoutes();
         //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
     }
 
@@ -158,7 +158,7 @@ public class VRPDRTSDTest {
 
         Solution solution = problem.getSolution();
         ProblemData data = problem.getData();
-        
+
         Route route = new Route(solution.getRoute(0));
         long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
         for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
@@ -172,6 +172,6 @@ public class VRPDRTSDTest {
                 }
             }
         }
-        assertEquals(282, route.getTotalTimeWindowAnticipation());
+        assertEquals(272, route.getTotalTimeWindowAnticipation());
     }
 }

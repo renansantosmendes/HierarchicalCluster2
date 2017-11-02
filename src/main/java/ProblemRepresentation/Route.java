@@ -67,6 +67,7 @@ public class Route {
         this.notServedRequests = route.getNotServedRequests();
         this.nodesSequence = route.getNodesSequence();
         this.sequenceOfAttendedRequests = route.getSequenceOfAttendedRequests();
+        this.integerRouteRepresetation = route.getIntegerRouteRepresetation();
     }
 
     public long getTotalRouteDistance() {

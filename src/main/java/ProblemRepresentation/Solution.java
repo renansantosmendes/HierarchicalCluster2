@@ -101,14 +101,8 @@ public class Solution {
 
     public void calculateEvaluationFunction() {
         clearAttributeValues();
-                
-        for (Route route : this.routes) {
-            this.totalDistanceTraveled += route.getTotalRouteDistance();
-            this.totalTravelTime += route.getRouteTravelTime();
-            this.totalTimeWindowAnticipation += route.getTotalTimeWindowAnticipation();
-            this.totalTimeWindowDelay += route.getTotalTimeWindowDelay();
-        }
-
+        sumAttibutesForEveryRoute();
+        
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay 
                     + this.totalTimeWindowAnticipation;
@@ -116,6 +110,13 @@ public class Solution {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation;
         }
 
+    }
+
+    private void sumAttibutesForEveryRoute() {
+        this.totalDistanceTraveled = this.routes.stream().mapToLong(Route::getTotalRouteDistance).sum();
+        this.totalTravelTime = this.routes.stream().mapToLong(Route::getRouteTravelTime).sum();
+        this.totalTimeWindowAnticipation = this.routes.stream().mapToLong(Route::getTotalTimeWindowAnticipation).sum();
+        this.totalTimeWindowDelay = this.routes.stream().mapToLong(Route::getTotalTimeWindowDelay).sum();
     }
 
     private void clearAttributeValues() {
@@ -157,7 +158,7 @@ public class Solution {
     }
     
     public void printIntegerRepresentationOfRoutes(){
-        this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getIntegerRouteRepresetation()));
+        this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getTotalTimeWindowAnticipation() + "\t" + r.getIntegerRouteRepresetation()));
     }
 
     @Override

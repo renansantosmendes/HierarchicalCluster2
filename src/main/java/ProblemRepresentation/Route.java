@@ -250,13 +250,16 @@ public class Route {
 
         for (Request request : attendedRequests) {
             if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
-                long diference = request.getDeliveryTime().getHour()*60 + request.getDeliveryTime().getMinute()
-                        - request.getDeliveryTimeWindowLower().getHour()*60 -request.getDeliveryTimeWindowLower().getMinute();
+                Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
+                violations = violations.plus(time);
+                long diference = Math.abs(request.getDeliveryTime().getHour()*60 + request.getDeliveryTime().getMinute()
+                        - request.getDeliveryTimeWindowLower().getHour()*60 -request.getDeliveryTimeWindowLower().getMinute());
                 test += diference;
             }
         }
         //not explained this signal changing
-        this.totalTimeWindowAnticipation = -test;
+//        this.totalTimeWindowAnticipation = test;
+        this.totalTimeWindowAnticipation = violations.getSeconds() / 60;
     }
 
     public void calculateTotalDeliveryDelay() {

@@ -155,7 +155,6 @@ public class VRPDRTSD implements Algorithm {
             }
             finalizeRoute();
             addRouteInSolution();
-            //System.out.println(currentRoute);
         }
         finalizeSolution();
     }
@@ -279,7 +278,7 @@ public class VRPDRTSD implements Algorithm {
 
     public void finalizeRoute() {
         addPickupSequence();
-        scheduleRouteTest();
+        scheduleRoute();
         buildSequenceOfAttendedRequests();
         buildNodesSequence();
         evaluateRoute();
@@ -299,7 +298,7 @@ public class VRPDRTSD implements Algorithm {
         currentRoute.setIntegerRouteRepresetation(idSequence);
     }
 
-    public void scheduleRouteTest() {
+    public void scheduleRoute() {
         currentRoute.scheduleRoute(data);
     }
 

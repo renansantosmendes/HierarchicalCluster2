@@ -7,6 +7,7 @@
 package VRPDRTSD;
 
 import ProblemRepresentation.Node;
+import ProblemRepresentation.ProblemData;
 import ProblemRepresentation.Route;
 import ProblemRepresentation.Solution;
 import java.io.IOException;
@@ -134,12 +135,43 @@ public class VRPDRTSDTest {
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
 
         problem.buildGreedySolution();
-        
+
         System.out.println("\nBefore local search = " + problem.getSolution());
         problem.getSolution().printIntegerRepresentationOfRoutes();
         problem.localSearch();
         System.out.println("\nAfter local search = " + problem.getSolution());
         problem.getSolution().printIntegerRepresentationOfRoutes();
         //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
+    }
+
+    @Test
+    public void swapBestImprovementTest() {
+        System.out.println("------ Testing local search method ------");
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+
+        problem.buildGreedySolution();
+
+        Solution solution = problem.getSolution();
+        ProblemData data = problem.getData();
+        
+        Route route = new Route(solution.getRoute(0));
+        long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+        for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
+            for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
+                route.swapRequests(j, k, data);
+                solution.setRoute(0, route);
+                solution.calculateEvaluationFunction();
+                long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
+                    route.swapRequests(j, k, data);
+                }
+            }
+        }
+        assertEquals(282, route.getTotalTimeWindowAnticipation());
     }
 }

@@ -138,7 +138,7 @@ public class VRPDRTSDTest {
 
         System.out.println("\nBefore local search = " + problem.getSolution());
         //problem.getSolution().printIntegerRepresentationOfRoutes();
-        problem.localSearch();
+        problem.localSearch(2);
         System.out.println("\nAfter local search = " + problem.getSolution());
         //problem.getSolution().printIntegerRepresentationOfRoutes();
         //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);

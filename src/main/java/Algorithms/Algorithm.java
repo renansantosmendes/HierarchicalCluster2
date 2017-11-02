@@ -12,5 +12,5 @@ public interface Algorithm {
 
     public void buildGreedySolution();
 
-    public void localSearch();
+    public void localSearch(int typeOfLocalSearch);
 }

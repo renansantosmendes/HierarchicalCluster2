@@ -367,14 +367,19 @@ public class VRPDRTSD implements Algorithm {
     }
 
     @Override
-    public void localSearch() {
-        int localSearchType = 2;
+    public void localSearch(int localSearchType) {
         switch (localSearchType) {
             case 1:
                 this.solution = swapFirstImprovement();
                 break;
             case 2:
                 this.solution = swapBestImprovement();
+                break;
+            case 3:
+                this.solution = addMinutesInSolutionSchedule();
+                break;
+            case 4:
+                this.solution = removeMinutesInSolutionSchedule();
                 break;
         }
     }
@@ -424,5 +429,13 @@ public class VRPDRTSD implements Algorithm {
         }else{
             return this.solution;
         }
+    }
+    
+    private Solution addMinutesInSolutionSchedule(){
+        return null;
+    }
+    
+    private Solution removeMinutesInSolutionSchedule(){
+        return null;
     }
 }

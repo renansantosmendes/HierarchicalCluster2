@@ -21,7 +21,7 @@ public class Main {
         System.out.println(problem.getSolution());
         problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 
-        problem.localSearch();
+        problem.localSearch(1);
         System.out.println(problem.getSolution());
 
         //problem.getSolution().getStaticMapForEveryRoute(problem.getData().getNodes(), adjacenciesData, nodesData);

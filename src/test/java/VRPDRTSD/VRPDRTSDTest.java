@@ -174,4 +174,23 @@ public class VRPDRTSDTest {
         }
         assertEquals(272, route.getTotalTimeWindowAnticipation());
     }
+    
+    @Test
+    public void addAndRemoveTimeTest(){
+        System.out.println("------ Testing local search method ------");
+        System.out.println("-------- Testing time alteration --------");
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+
+        problem.buildGreedySolution();
+
+        System.out.println("\nBefore local search = " + problem.getSolution());
+        //problem.getSolution().printIntegerRepresentationOfRoutes();
+        problem.localSearch(4);
+        System.out.println("\nAfter local search = " + problem.getSolution());
+    }
 }

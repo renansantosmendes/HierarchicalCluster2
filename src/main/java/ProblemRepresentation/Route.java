@@ -15,7 +15,7 @@ public class Route {
     private long routeTravelTime;
     private long totalTimeWindowAnticipation;
     private long totalTimeWindowDelay;
-    private long evaluationFunction;    
+    private long evaluationFunction;
     private Set<Request> notServedRequests;
     private List<Node> nodesSequence;
     private List<Request> sequenceOfAttendedRequests;
@@ -43,8 +43,8 @@ public class Route {
         this.sequenceOfAttendedRequests = new ArrayList<>();
         this.integerRouteRepresetation = new ArrayList<>();
     }
-    
-    public Route(Route route){
+
+    public Route(Route route) {
         initializeAttributes();
         this.totalDistanceTraveled = route.getTotalRouteDistance();
         this.routeTravelTime = route.getRouteTravelTime();
@@ -57,8 +57,8 @@ public class Route {
         //this.integerRouteRepresetation = route.getIntegerRouteRepresetation();
         this.integerRouteRepresetation.addAll(route.getIntegerRouteRepresetation());
     }
-    
-    public void setRoute(Route route){
+
+    public void setRoute(Route route) {
         this.totalDistanceTraveled = route.getTotalRouteDistance();
         this.routeTravelTime = route.getRouteTravelTime();
         this.totalTimeWindowAnticipation = route.getTotalTimeWindowAnticipation();
@@ -129,7 +129,7 @@ public class Route {
     public List<Request> getSequenceOfAttendedRequests() {
         return sequenceOfAttendedRequests;
     }
-    
+
     public List<Integer> getIntegerSequenceOfAttendedRequests() {
         return this.getIntegerRouteRepresetation()
                 .stream()
@@ -229,7 +229,7 @@ public class Route {
             totalTravelTime += data.getDuration()[this.nodesSequence.get(i).getId()][this.nodesSequence.get(i + 1).getId()].getSeconds();
         }
 
-        this.routeTravelTime = totalTravelTime/60;
+        this.routeTravelTime = totalTravelTime / 60;
     }
 
     public void calculateDistanceTraveled(ProblemData data) {
@@ -253,8 +253,8 @@ public class Route {
             if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
                 Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
                 violations = violations.plus(time);
-                long diference = Math.abs(request.getDeliveryTime().getHour()*60 + request.getDeliveryTime().getMinute()
-                        - request.getDeliveryTimeWindowLower().getHour()*60 -request.getDeliveryTimeWindowLower().getMinute());
+                long diference = Math.abs(request.getDeliveryTime().getHour() * 60 + request.getDeliveryTime().getMinute()
+                        - request.getDeliveryTimeWindowLower().getHour() * 60 - request.getDeliveryTimeWindowLower().getMinute());
                 test += diference;
             }
         }
@@ -278,12 +278,12 @@ public class Route {
         }
         this.totalTimeWindowDelay = violations.getSeconds() / 60;
     }
-    
+
     public void calculateEvaluationFunction() {
         if (this.totalTimeWindowDelay > 0) {
-            this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime * this.totalTimeWindowDelay 
+            this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime * this.totalTimeWindowDelay
                     + this.totalTimeWindowAnticipation;
-        }else{
+        } else {
             this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime + this.totalTimeWindowAnticipation;
         }
 
@@ -354,23 +354,30 @@ public class Route {
             }
         }
     }
-    
-    public void addMinutesInRoute(int timeInterval, ProblemData data){
-        for(int i=0; i< this.integerRouteRepresetation.size(); i++){
-            if(this.integerRouteRepresetation.get(i) < 0){
+
+    public void addMinutesInRoute(int timeInterval, ProblemData data) {
+        for (int i = 0; i < this.integerRouteRepresetation.size(); i++) {
+            if (this.integerRouteRepresetation.get(i) < 0) {
                 this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) - timeInterval);
             }
         }
         setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);
     }
-    
-    public void removeMinutesInRoute(int timeInterval, ProblemData data){
-        for(int time: this.integerRouteRepresetation){
-            if(time < 0){
-                time += timeInterval;
+
+    public void removeMinutesInRoute(int timeInterval, ProblemData data) {
+//        for(int time: this.integerRouteRepresetation){
+//            if(time < 0){
+//                time += timeInterval;
+//            }
+//        }
+//        this.evaluateRoute(data);
+        for (int i = 0; i < this.integerRouteRepresetation.size(); i++) {
+            if (this.integerRouteRepresetation.get(i) < 0) {
+                this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) + timeInterval);
             }
         }
+        setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);
     }
 

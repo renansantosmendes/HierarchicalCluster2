@@ -376,10 +376,16 @@ public class VRPDRTSD implements Algorithm {
                 this.solution = swapBestImprovement();
                 break;
             case 3:
-                this.solution = addMinutesInSolutionSchedule();
+                this.solution = addMinutesInSolutionScheduleFirstImprovement();
                 break;
             case 4:
-                this.solution = removeMinutesInSolutionSchedule();
+                this.solution = addMinutesInSolutionScheduleBestImprovement();
+                break;
+            case 5:
+                this.solution = removeMinutesInSolutionScheduleFirstMovement();
+                break;
+            case 6:
+                this.solution = removeMinutesInSolutionScheduleBestMovement();
                 break;
         }
     }
@@ -424,18 +430,66 @@ public class VRPDRTSD implements Algorithm {
                 }
             }
         }
-        if(solution.getEvaluationFunction() < this.solution.getEvaluationFunction()){
+        if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
             return solution;
-        }else{
+        } else {
             return this.solution;
         }
     }
-    
-    private Solution addMinutesInSolutionSchedule(){
+
+    private Solution addMinutesInSolutionScheduleFirstImprovement() {
+        Solution solution = new Solution(this.solution);
+        for (int i = 1; i <= 5; i++) {
+            for (int j = 0; j < solution.getRoutes().size(); j++) {
+                Route route = new Route(solution.getRoute(j));
+                long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+
+                route.addMinutesInRoute(i, data);
+                solution.setRoute(j, route);
+                solution.calculateEvaluationFunction();
+                long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+
+                if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
+                    return solution;
+                } else {
+                    route.removeMinutesInRoute(i, data);
+                }
+
+            }
+        }
+        return this.solution;
+    }
+
+    private Solution addMinutesInSolutionScheduleBestImprovement() {
+        Solution solution = new Solution(this.solution);
+        for (int i = 1; i <= 5; i++) {
+            for (int j = 0; j < solution.getRoutes().size(); j++) {
+                Route route = new Route(solution.getRoute(j));
+                long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+
+                route.addMinutesInRoute(i, data);
+                solution.setRoute(j, route);
+                solution.calculateEvaluationFunction();
+                long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+
+                if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
+                    route.removeMinutesInRoute(i, data);
+                }
+
+            }
+        }
+        if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
+            return solution;
+        } else {
+            return this.solution;
+        }
+    }
+
+    private Solution removeMinutesInSolutionScheduleBestMovement() {
         return null;
     }
-    
-    private Solution removeMinutesInSolutionSchedule(){
+
+    private Solution removeMinutesInSolutionScheduleFirstMovement() {
         return null;
     }
 }

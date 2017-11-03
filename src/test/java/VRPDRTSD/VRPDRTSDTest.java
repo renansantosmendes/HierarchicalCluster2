@@ -179,7 +179,7 @@ public class VRPDRTSDTest {
     public void addAndRemoveTimeTest(){
         System.out.println("------ Testing local search method ------");
         System.out.println("-------- Testing time alteration --------");
-        String instanceName = "r010n12tw10";
+        String instanceName = "r150n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;
@@ -190,7 +190,8 @@ public class VRPDRTSDTest {
 
         System.out.println("\nBefore local search = " + problem.getSolution());
         //problem.getSolution().printIntegerRepresentationOfRoutes();
-        problem.localSearch(4);
+        problem.localSearch(2);
+        problem.localSearch(5);
         System.out.println("\nAfter local search = " + problem.getSolution());
     }
 }

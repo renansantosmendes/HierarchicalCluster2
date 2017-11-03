@@ -426,6 +426,8 @@ public class VRPDRTSD implements Heuristic {
                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
                     if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                         route.swapRequests(j, k, data);
+                        solution.setRoute(i, route);
+                        solution.calculateEvaluationFunction();
                     }
                 }
             }
@@ -439,20 +441,21 @@ public class VRPDRTSD implements Heuristic {
 
     private Solution addMinutesInSolutionScheduleFirstImprovement() {
         Solution solution = new Solution(this.solution);
-        for (int i = 1; i <= 5; i++) {
-            for (int j = 0; j < solution.getRoutes().size(); j++) {
-                Route route = new Route(solution.getRoute(j));
+
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            for (int j = 1; j <= 5; j++) {
+                Route route = new Route(solution.getRoute(i));
                 long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
 
-                route.addMinutesInRoute(i, data);
-                solution.setRoute(j, route);
+                route.addMinutesInRoute(j, data);
+                solution.setRoute(i, route);
                 solution.calculateEvaluationFunction();
                 long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                 if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
                     return solution;
                 } else {
-                    route.removeMinutesInRoute(i, data);
+                    route.removeMinutesInRoute(j, data);
                 }
 
             }
@@ -462,18 +465,21 @@ public class VRPDRTSD implements Heuristic {
 
     private Solution addMinutesInSolutionScheduleBestImprovement() {
         Solution solution = new Solution(this.solution);
-        for (int i = 1; i <= 5; i++) {
-            for (int j = 0; j < solution.getRoutes().size(); j++) {
-                Route route = new Route(solution.getRoute(j));
+
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            for (int j = 1; j <= 5; j++) {
+                Route route = new Route(solution.getRoute(i));
                 long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
 
-                route.addMinutesInRoute(i, data);
-                solution.setRoute(j, route);
+                route.addMinutesInRoute(j, data);
+                solution.setRoute(i, route);
                 solution.calculateEvaluationFunction();
                 long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                 if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
-                    route.removeMinutesInRoute(i, data);
+                    route.removeMinutesInRoute(j, data);
+                    solution.setRoute(i, route);
+                    solution.calculateEvaluationFunction();
                 }
 
             }
@@ -486,10 +492,54 @@ public class VRPDRTSD implements Heuristic {
     }
 
     private Solution removeMinutesInSolutionScheduleBestMovement() {
-        return null;
+        Solution solution = new Solution(this.solution);
+
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            for (int j = 1; j <= 5; j++) {
+                Route route = new Route(solution.getRoute(i));
+                long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+
+                route.removeMinutesInRoute(j, data);
+                solution.setRoute(i, route);
+                solution.calculateEvaluationFunction();
+                long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+
+                if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
+                    return solution;
+                } else {
+                    route.addMinutesInRoute(j, data);
+                }
+
+            }
+        }
+        return this.solution;
     }
 
     private Solution removeMinutesInSolutionScheduleFirstMovement() {
-        return null;
+        Solution solution = new Solution(this.solution);
+
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            for (int j = 1; j <= 5; j++) {
+                Route route = new Route(solution.getRoute(i));
+                long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+
+                route.removeMinutesInRoute(j, data);
+                solution.setRoute(i, route);
+                solution.calculateEvaluationFunction();
+                long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+
+                if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
+                    route.addMinutesInRoute(j, data);
+                    solution.setRoute(i, route);
+                    solution.calculateEvaluationFunction();
+                }
+
+            }
+        }
+        if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
+            return solution;
+        } else {
+            return this.solution;
+        }
     }
 }

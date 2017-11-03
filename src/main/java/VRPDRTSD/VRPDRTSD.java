@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  *
  * @author renansantos
  */
-public class VRPDRTSD implements Algorithm {
+public class VRPDRTSD implements Heuristic {
 
     private ProblemData data;
     private String instanceName;

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * @author renansantos - The Route Class represents a vehicle route for the
  * problem
  */
-public class Route {
+public class Route implements Cloneable{
 
     private long totalDistanceTraveled;
     private long routeTravelTime;
@@ -55,7 +55,7 @@ public class Route {
         this.nodesSequence = route.getNodesSequence();
         this.sequenceOfAttendedRequests = route.getSequenceOfAttendedRequests();
         //this.integerRouteRepresetation = route.getIntegerRouteRepresetation();
-        this.integerRouteRepresetation.addAll(route.getIntegerRouteRepresetation());
+        this.integerRouteRepresetation.addAll(new ArrayList<>(route.getIntegerRouteRepresetation()));
     }
 
     public void setRoute(Route route) {
@@ -366,12 +366,6 @@ public class Route {
     }
 
     public void removeMinutesInRoute(int timeInterval, ProblemData data) {
-//        for(int time: this.integerRouteRepresetation){
-//            if(time < 0){
-//                time += timeInterval;
-//            }
-//        }
-//        this.evaluateRoute(data);
         for (int i = 0; i < this.integerRouteRepresetation.size(); i++) {
             if (this.integerRouteRepresetation.get(i) < 0) {
                 this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) + timeInterval);

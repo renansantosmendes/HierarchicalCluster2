@@ -127,7 +127,7 @@ public class VRPDRTSDTest {
     @Test
     public void localSearchTest() throws IOException {
         System.out.println("------ Testing local search method ------");
-        String instanceName = "r250n12tw10";
+        String instanceName = "r010n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;

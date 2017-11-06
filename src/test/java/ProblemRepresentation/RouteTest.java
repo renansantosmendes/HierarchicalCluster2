@@ -138,4 +138,22 @@ public class RouteTest {
         System.out.println("After Movement\n" + route);
         assertEquals(5, route.getNodesSequence().size());
     }
+    
+    @Test
+    public void pointersTest(){
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+        problem.buildGreedySolution();
+
+        Solution solution = problem.getSolution();
+        int routeNumber = 1;
+
+        Route route = solution.getRoutes().get(routeNumber);
+        
+        assertEquals(5, route.getNodesSequence().size());
+    }
 }

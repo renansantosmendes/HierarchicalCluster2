@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  *
  * @author renansantos
  */
-public class Solution {
+public class Solution implements Cloneable{
 
     private long totalDistanceTraveled;
     private long totalTravelTime;
@@ -33,7 +33,8 @@ public class Solution {
         this.totalTimeWindowAnticipation = solution.getTotalTimeWindowAnticipation();
         this.totalTimeWindowDelay = solution.getTotalTimeWindowDelay();
         this.evaluationFunction = solution.getEvaluationFunction();
-        this.routes = solution.getRoutes();
+        this.routes.clear();
+        this.routes.addAll(solution.getRoutes());
         this.nonAttendedRequests = solution.getNonAttendedRequests();
         
     }
@@ -181,10 +182,13 @@ public class Solution {
 
         }
 
-//        return "Solution - " + this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t"
-//                + this.routes.size() + "\n" + idSequence + integerRepresentation + nodesSequence;
         return "Solution - " + this.evaluationFunction + "\t"+ this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t"
                 + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay;
     }
 
+    
+    public Object clone(){
+        return new Solution(totalDistanceTraveled, totalTravelTime, totalTimeWindowAnticipation, 
+                totalTimeWindowDelay, evaluationFunction,  routes, nonAttendedRequests);
+    }
 }

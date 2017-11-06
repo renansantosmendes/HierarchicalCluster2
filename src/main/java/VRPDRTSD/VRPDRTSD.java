@@ -414,7 +414,7 @@ public class VRPDRTSD implements Heuristic {
     }
 
     private Solution swapBestImprovement() {
-        Solution solution = new Solution(this.solution);
+        Solution solution = new Solution((Solution) this.solution.clone());
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             Route route = new Route(solution.getRoute(i));
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
@@ -457,7 +457,6 @@ public class VRPDRTSD implements Heuristic {
                 } else {
                     route.removeMinutesInRoute(j, data);
                 }
-
             }
         }
         return this.solution;
@@ -481,7 +480,6 @@ public class VRPDRTSD implements Heuristic {
                     solution.setRoute(i, route);
                     solution.calculateEvaluationFunction();
                 }
-
             }
         }
         if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
@@ -509,7 +507,6 @@ public class VRPDRTSD implements Heuristic {
                 } else {
                     route.addMinutesInRoute(j, data);
                 }
-
             }
         }
         return this.solution;
@@ -533,7 +530,6 @@ public class VRPDRTSD implements Heuristic {
                     solution.setRoute(i, route);
                     solution.calculateEvaluationFunction();
                 }
-
             }
         }
         if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {

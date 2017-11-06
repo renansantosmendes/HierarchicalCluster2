@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  *
  * @author renansantos
  */
-public class Solution implements Cloneable{
+public class Solution implements Cloneable {
 
     private long totalDistanceTraveled;
     private long totalTravelTime;
@@ -24,7 +24,7 @@ public class Solution implements Cloneable{
         initializeAttributesWithEmptyLists();
         clearAttributeValues();
     }
-    
+
     public Solution(Solution solution) {
         initializeAttributesWithEmptyLists();
         clearAttributeValues();
@@ -36,7 +36,7 @@ public class Solution implements Cloneable{
         this.routes.clear();
         this.routes.addAll(solution.getRoutes());
         this.nonAttendedRequests = solution.getNonAttendedRequests();
-        
+
     }
 
     private void initializeAttributesWithEmptyLists() {
@@ -75,19 +75,19 @@ public class Solution implements Cloneable{
     public List<Route> getRoutes() {
         return routes;
     }
-    
-    public Route getRoute(int position){
+
+    public Route getRoute(int position) {
         return routes.get(position);
     }
-    
-    public long getEvaluationFunction(){
+
+    public long getEvaluationFunction() {
         return this.evaluationFunction;
     }
-    
-    public void setRoute(int position, Route route){
+
+    public void setRoute(int position, Route route) {
         routes.get(position).setRoute(route);
     }
-    
+
     public Set<Request> getNonAttendedRequests() {
         return nonAttendedRequests;
     }
@@ -103,11 +103,11 @@ public class Solution implements Cloneable{
     public void calculateEvaluationFunction() {
         clearAttributeValues();
         sumAttibutesForEveryRoute();
-        
+
         if (this.totalTimeWindowDelay > 0) {
-            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay 
+            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay
                     + this.totalTimeWindowAnticipation;
-        }else{
+        } else {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation;
         }
 
@@ -125,7 +125,7 @@ public class Solution implements Cloneable{
         this.totalTravelTime = 0;
         this.totalTimeWindowAnticipation = 0;
         this.totalTimeWindowDelay = 0;
-        this.evaluationFunction = 0;    
+        this.evaluationFunction = 0;
     }
 
     public Set<List<Integer>> getRoutesForMap() {
@@ -153,17 +153,16 @@ public class Solution implements Cloneable{
             new GoogleStaticMap(nodesList, route, adjacenciesTable, nodesTable);
         }
     }
-    
-    public void printRoutes(){
+
+    public void printRoutes() {
         this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getIntegerSequenceOfAttendedRequests()));
     }
-    
-    public void printIntegerRepresentationOfRoutes(){
+
+    public void printIntegerRepresentationOfRoutes() {
         this.routes.forEach(r -> System.out.println(r.getEvaluationFunction() + "\t" + r.getTotalTimeWindowAnticipation() + "\t" + r.getIntegerRouteRepresetation()));
     }
-
-    @Override
-    public String toString() {
+    
+    public void printAllInformations(){
         StringBuilder nodesSequence = new StringBuilder();
         StringBuilder integerRepresentation = new StringBuilder();
         StringBuilder idSequence = new StringBuilder();
@@ -181,14 +180,25 @@ public class Solution implements Cloneable{
                     .append("\n");
 
         }
+        System.out.println("Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t" + 
+                this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay);
+        System.out.println(nodesSequence);
+        System.out.println(integerRepresentation);
+        System.out.println(idSequence);
+    }
 
-        return "Solution - " + this.evaluationFunction + "\t"+ this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t"
+    @Override
+    public String toString() {
+        return "Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t"
                 + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay;
     }
 
-    
-    public Object clone(){
-        return new Solution(totalDistanceTraveled, totalTravelTime, totalTimeWindowAnticipation, 
-                totalTimeWindowDelay, evaluationFunction,  routes, nonAttendedRequests);
+    public Object clone() {
+        List<Route> routesClone = new ArrayList<>();
+        for (Route route : routes) {
+            routesClone.add((Route) route.clone());
+        }
+        return new Solution(totalDistanceTraveled, totalTravelTime, totalTimeWindowAnticipation,
+                totalTimeWindowDelay, evaluationFunction, routesClone, nonAttendedRequests);
     }
 }

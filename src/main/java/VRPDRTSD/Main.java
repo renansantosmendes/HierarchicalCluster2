@@ -19,13 +19,13 @@ public class Main {
         problem.buildGreedySolution();
 
         System.out.println(problem.getSolution());
-        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
+        //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 
-        problem.localSearch(1);
+        problem.localSearch(2);
         System.out.println(problem.getSolution());
 
         //problem.getSolution().getStaticMapForEveryRoute(problem.getData().getNodes(), adjacenciesData, nodesData);
-        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
+        //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 
     }
 }

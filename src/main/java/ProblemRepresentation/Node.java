@@ -7,16 +7,16 @@ import java.util.Map;
  *
  * @author Renan Santos Mendes T
  */
-public class Node {
+public class Node implements Cloneable {
 
     private Integer id;
     private Double longitude;
     private Double latitude;
     private String adress;
     private int loadIndex;
-    
-    public Node(){
-        
+
+    public Node() {
+
     }
 
     public Node(Integer nodeId, Double longitude, Double latitude, String adress) {
@@ -25,6 +25,14 @@ public class Node {
         this.latitude = latitude;
         this.adress = adress;
         this.loadIndex = 0;
+    }
+
+    public Node(Integer id, Double longitude, Double latitude, String adress, int loadIndex) {
+        this.id = id;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.adress = adress;
+        this.loadIndex = loadIndex;
     }
 
     public Integer getId() {
@@ -143,5 +151,10 @@ public class Node {
         String string = Integer.toString(this.getId());
         int hash = string.hashCode();
         return hash;
+    }
+
+    @Override
+    public Object clone() {
+        return new Node(id, longitude, latitude, adress, loadIndex);
     }
 }

@@ -22,7 +22,8 @@ public class Route implements Cloneable{
     private List<Integer> integerRouteRepresetation;
 
     public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
-            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests) {
+            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests, 
+            List<Integer> integerRouteRepresetation) {
         this.totalDistanceTraveled = totalRouteDistance;
         this.routeTravelTime = routeTravelTime;
         this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
@@ -31,6 +32,7 @@ public class Route implements Cloneable{
         this.notServedRequests = notServedRequests;
         this.nodesSequence = nodesSequence;
         this.sequenceOfAttendedRequests = sequenceOfServedRequests;
+        this.integerRouteRepresetation = integerRouteRepresetation;
     }
 
     public Route() {
@@ -440,7 +442,6 @@ public class Route implements Cloneable{
             Request originRequest = getRequestUsingId(originPassengerId, data);
             Request destinationRequest = getRequestUsingId(destinationPassengerId, data);
             int timeBetween;
-
             if (visitedIds.contains(originPassengerId)) {
                 if (visitedIds.contains(destinationPassengerId)) {
                     timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getDestination().getId()]
@@ -536,4 +537,18 @@ public class Route implements Cloneable{
                 + " - Total of Delay  = " + this.totalTimeWindowDelay + " min";
     }
 
+    public Object clone(){
+        List<Request> sequenceOfAttendedRequestsClone = new ArrayList<>();
+        List<Node> nodesSequenceClone = new ArrayList<>();
+        for(Request request: sequenceOfAttendedRequests){
+            sequenceOfAttendedRequestsClone.add((Request) request.clone());
+        }
+        
+        for(Node node: nodesSequence){
+            nodesSequenceClone.add((Node) node.clone());
+        }
+        
+        return new Route(totalDistanceTraveled, routeTravelTime, totalTimeWindowAnticipation, totalTimeWindowDelay,
+            evaluationFunction, notServedRequests, nodesSequenceClone, sequenceOfAttendedRequestsClone, integerRouteRepresetation);
+    }
 }

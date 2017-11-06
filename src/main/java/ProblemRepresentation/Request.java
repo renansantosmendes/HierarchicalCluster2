@@ -7,7 +7,7 @@ import java.time.*;
  * @author renansantos The Request Class represents the request for transport
  * used in VRPDRTSD
  */
-public class Request {
+public class Request implements Cloneable{
 
     private final Integer id;
     private final Node origin;
@@ -47,6 +47,33 @@ public class Request {
         this.destinationNodeRankingFunction = 0.0;
     }
 
+    public Request(Integer id, Node origin, Node destination, LocalDateTime dayRequestWasMade, LocalDateTime pickUpTime,
+            LocalDateTime deliveryTime, LocalDateTime deliveryTimeWindowLower, LocalDateTime deliveryTimeWindowUpper, 
+            boolean feasible, boolean boarded, double requestRankingFunction, double distanceRankingFunction, 
+            double distanceToAttendThisRequest, double deliveryTimeWindowLowerRankingFunction, 
+            double deliveryTimeWindowUpperRankingFunction, double originNodeRankingFunction, 
+            double destinationNodeRankingFunction) {
+        this.id = id;
+        this.origin = origin;
+        this.destination = destination;
+        this.dayRequestWasMade = dayRequestWasMade;
+        this.pickUpTime = pickUpTime;
+        this.deliveryTime = deliveryTime;
+        this.deliveryTimeWindowLower = deliveryTimeWindowLower;
+        this.deliveryTimeWindowUpper = deliveryTimeWindowUpper;
+        this.feasible = feasible;
+        this.boarded = boarded;
+        this.requestRankingFunction = requestRankingFunction;
+        this.distanceRankingFunction = distanceRankingFunction;
+        this.distanceToAttendThisRequest = distanceToAttendThisRequest;
+        this.deliveryTimeWindowLowerRankingFunction = deliveryTimeWindowLowerRankingFunction;
+        this.deliveryTimeWindowUpperRankingFunction = deliveryTimeWindowUpperRankingFunction;
+        this.originNodeRankingFunction = originNodeRankingFunction;
+        this.destinationNodeRankingFunction = destinationNodeRankingFunction;
+    }
+
+    
+    
     public void setDayRequestWasMade(LocalDateTime dayRequestWasMade) {
         this.dayRequestWasMade = dayRequestWasMade;
     }
@@ -266,6 +293,13 @@ public class Request {
                 + "\nDelivery Time = " + this.deliveryTime
                 + "\nRRF = " + this.requestRankingFunction
                 + "\nIs Feasible = " + this.feasible;
+    }
+    
+    public Object clone(){
+        return new Request( id, (Node) origin.clone(), (Node) destination.clone(), dayRequestWasMade,  pickUpTime, deliveryTime, 
+                deliveryTimeWindowLower, deliveryTimeWindowUpper, feasible, boarded, requestRankingFunction, 
+                distanceRankingFunction, distanceToAttendThisRequest, deliveryTimeWindowLowerRankingFunction, 
+                deliveryTimeWindowUpperRankingFunction, originNodeRankingFunction, destinationNodeRankingFunction);
     }
 
 }

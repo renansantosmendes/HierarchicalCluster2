@@ -463,6 +463,7 @@ public class Route implements Cloneable{
                 deliveryTimes.add(-currentTimeForDelivery - timeBetween);
                 currentTimeForDelivery -= -timeBetween;
             }
+            visitedIds.add(originPassengerId);
         }
         return currentTimeForDelivery;
     }

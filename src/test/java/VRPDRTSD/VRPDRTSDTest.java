@@ -127,7 +127,7 @@ public class VRPDRTSDTest {
     @Test
     public void localSearchTest() throws IOException {
         System.out.println("------ Testing local search method ------");
-        String instanceName = "r010n12tw10";
+        String instanceName = "r150n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;
@@ -189,12 +189,12 @@ public class VRPDRTSDTest {
         int vehicleCapacity = 11;
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
 
-        problem.buildGreedySolution();
+        //problem.buildGreedySolution();
 
-        System.out.println("\nBefore local search = " + problem.getSolution());
+        //System.out.println("\nBefore local search = " + problem.getSolution());
         //problem.getSolution().printIntegerRepresentationOfRoutes();
-        problem.localSearch(2);
+        //problem.localSearch(2);
         //problem.localSearch(5);
-        System.out.println("\nAfter local search = " + problem.getSolution());
+        //System.out.println("\nAfter local search = " + problem.getSolution());
     }
 }

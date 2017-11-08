@@ -97,46 +97,46 @@ public class RouteTest {
         //route.getNodesSequence().forEach(System.out::println);
     }
 
-    @Test
-    public void scheduleRouteTest() {
-        String instanceName = "r005n12tw10";
-        String nodesData = "bh_n12s";
-        String adjacenciesData = "bh_adj_n12s";
-        int numberOfVehicles = 10;
-        int vehicleCapacity = 11;
-        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-        problem.buildGreedySolution();
-
-        Solution solution = problem.getSolution();
-        int routeNumber = 1;
-
-        Route route = solution.getRoutes().get(routeNumber);
-        System.out.println("\n\nTesting Route Swapping --- \n\nBefore Movement\n" + route);
-        route.swapRequests(3, 4, problem.getData());
-        
-        System.out.println("After Movement\n" + route);
-        assertEquals(7, route.getNodesSequence().size());
-    }
+//    @Test
+//    public void scheduleRouteTest() {
+//        String instanceName = "r005n12tw10";
+//        String nodesData = "bh_n12s";
+//        String adjacenciesData = "bh_adj_n12s";
+//        int numberOfVehicles = 10;
+//        int vehicleCapacity = 11;
+//        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+//        problem.buildGreedySolution();
+//
+//        Solution solution = problem.getSolution();
+//        int routeNumber = 1;
+//
+//        Route route = solution.getRoutes().get(routeNumber);
+//        System.out.println("\n\nTesting Route Swapping --- \n\nBefore Movement\n" + route);
+//        route.swapRequests(3, 4, problem.getData());
+//        
+//        System.out.println("After Movement\n" + route);
+//        assertEquals(7, route.getNodesSequence().size());
+//    }
     
     @Test
     public void minutesAddedAndRemovedTest(){
-        String instanceName = "r010n12tw10";
-        String nodesData = "bh_n12s";
-        String adjacenciesData = "bh_adj_n12s";
-        int numberOfVehicles = 10;
-        int vehicleCapacity = 11;
-        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-        problem.buildGreedySolution();
-
-        Solution solution = problem.getSolution();
-        int routeNumber = 1;
-
-        Route route = solution.getRoutes().get(routeNumber);
-        System.out.println("\n\nTesting Route Scheduling --- \n\nBefore Movement\n" + route);
-        route.addMinutesInRoute(30, problem.getData());
-        
-        System.out.println("After Movement\n" + route);
-        assertEquals(5, route.getNodesSequence().size());
+//        String instanceName = "r010n12tw10";
+//        String nodesData = "bh_n12s";
+//        String adjacenciesData = "bh_adj_n12s";
+//        int numberOfVehicles = 10;
+//        int vehicleCapacity = 11;
+//        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+//        problem.buildGreedySolution();
+//
+//        Solution solution = problem.getSolution();
+//        int routeNumber = 1;
+//
+//        Route route = solution.getRoutes().get(routeNumber);
+//        System.out.println("\n\nTesting Route Scheduling --- \n\nBefore Movement\n" + route);
+//        route.addMinutesInRoute(30, problem.getData());
+//        
+//        System.out.println("After Movement\n" + route);
+//        assertEquals(5, route.getNodesSequence().size());
     }
     
     @Test
@@ -152,6 +152,7 @@ public class RouteTest {
         Solution solution = problem.getSolution();
         int routeNumber = 1;
 
+        problem.localSearch(2);
         Route route = solution.getRoutes().get(routeNumber);
         
         assertEquals(5, route.getNodesSequence().size());

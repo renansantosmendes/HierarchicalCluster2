@@ -420,6 +420,9 @@ public class VRPDRTSD implements Heuristic {
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
+//                    if (i == 0 && j == 5) {
+//                        //System.out.println("i = " + i + " j = " + j + " k = " + k + " " + route.getIntegerRouteRepresetation());
+//                    }
                     route.swapRequests(j, k, data);
                     solution.setRoute(i, route);
                     solution.calculateEvaluationFunction();

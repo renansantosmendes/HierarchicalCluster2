@@ -197,4 +197,24 @@ public class VRPDRTSDTest {
         //problem.localSearch(5);
         //System.out.println("\nAfter local search = " + problem.getSolution());
     }
+    
+    @Test
+    public void interRouteMovimentsTest(){
+        System.out.println("------ Testing local search method ------");
+        String instanceName = "r150n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+
+        problem.buildGreedySolution();
+
+        System.out.println("\nBefore local search = " + problem.getSolution());
+        problem.getSolution().printAllInformations();
+        //problem.getSolution().printIntegerRepresentationOfRoutes();
+        problem.localSearch(7);
+        System.out.println("\nAfter local search = " + problem.getSolution());
+        problem.getSolution().printAllInformations();
+    }
 }

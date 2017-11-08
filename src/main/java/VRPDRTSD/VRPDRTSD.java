@@ -370,10 +370,10 @@ public class VRPDRTSD implements Heuristic {
     public void localSearch(int localSearchType) {
         switch (localSearchType) {
             case 1:
-                this.solution = swapFirstImprovement();
+                this.solution = swapIntraRouteFirstImprovement();
                 break;
             case 2:
-                this.solution = swapBestImprovement();
+                this.solution = swapIntraBestImprovement();
                 break;
             case 3:
                 this.solution = addMinutesInSolutionScheduleFirstImprovement();
@@ -387,10 +387,16 @@ public class VRPDRTSD implements Heuristic {
             case 6:
                 this.solution = removeMinutesInSolutionScheduleBestMovement();
                 break;
+            case 7:
+                this.solution = swapInterRouteFirstImprovement();
+                break;
+            case 8:
+                this.solution = swapInterRouteBestImprovement();
+                break;
         }
     }
 
-    private Solution swapFirstImprovement() {
+    private Solution swapIntraRouteFirstImprovement() {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             Route route = new Route(solution.getRoute(i));
@@ -413,16 +419,13 @@ public class VRPDRTSD implements Heuristic {
         return this.solution;
     }
 
-    private Solution swapBestImprovement() {
+    private Solution swapIntraBestImprovement() {
         Solution solution = new Solution((Solution) this.solution.clone());
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             Route route = new Route(solution.getRoute(i));
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
-//                    if (i == 0 && j == 5) {
-//                        //System.out.println("i = " + i + " j = " + j + " k = " + k + " " + route.getIntegerRouteRepresetation());
-//                    }
                     route.swapRequests(j, k, data);
                     solution.setRoute(i, route);
                     solution.calculateEvaluationFunction();
@@ -540,5 +543,21 @@ public class VRPDRTSD implements Heuristic {
         } else {
             return this.solution;
         }
+    }
+
+    private Solution swapInterRouteFirstImprovement() {
+        Solution solution = new Solution(this.solution);
+
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            for (int j = i + 1; j < solution.getRoutes().size(); j++) {
+
+            }
+        }
+
+        return null;
+    }
+
+    private Solution swapInterRouteBestImprovement() {
+        return null;
     }
 }

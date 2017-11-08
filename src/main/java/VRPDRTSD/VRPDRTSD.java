@@ -382,10 +382,10 @@ public class VRPDRTSD implements Heuristic {
                 this.solution = addMinutesInSolutionScheduleBestImprovement();
                 break;
             case 5:
-                this.solution = removeMinutesInSolutionScheduleFirstMovement();
+                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
                 break;
             case 6:
-                this.solution = removeMinutesInSolutionScheduleBestMovement();
+                this.solution = removeMinutesInSolutionScheduleBestImprovement();
                 break;
             case 7:
                 this.solution = swapInterRouteFirstImprovement();
@@ -495,7 +495,7 @@ public class VRPDRTSD implements Heuristic {
         }
     }
 
-    private Solution removeMinutesInSolutionScheduleBestMovement() {
+    private Solution removeMinutesInSolutionScheduleBestImprovement() {
         Solution solution = new Solution(this.solution);
 
         for (int i = 0; i < solution.getRoutes().size(); i++) {
@@ -518,7 +518,7 @@ public class VRPDRTSD implements Heuristic {
         return this.solution;
     }
 
-    private Solution removeMinutesInSolutionScheduleFirstMovement() {
+    private Solution removeMinutesInSolutionScheduleFirstImprovement() {
         Solution solution = new Solution(this.solution);
 
         for (int i = 0; i < solution.getRoutes().size(); i++) {
@@ -549,15 +549,75 @@ public class VRPDRTSD implements Heuristic {
         Solution solution = new Solution(this.solution);
 
         for (int i = 0; i < solution.getRoutes().size(); i++) {
-            for (int j = i + 1; j < solution.getRoutes().size(); j++) {
+            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+            LinkedHashSet<Integer> firstRoute = new LinkedHashSet<>();
+            firstRoute.addAll(returnSetWithIds(solution, i));
 
+            for (int j = i + 1; j < solution.getRoutes().size(); j++) {
+                LinkedHashSet<Integer> secondRoute = new LinkedHashSet<>();
+                secondRoute.addAll(returnSetWithIds(solution, j));
+
+                for (int firstId : firstRoute) {
+                    for (int secondId : secondRoute) {
+                        solution.getRoute(i).replaceRequest(firstId, secondId, data);
+                        solution.getRoute(j).replaceRequest(secondId, firstId, data);
+                        solution.calculateEvaluationFunction();
+                        long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                        if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
+                            return solution;
+                        } else {
+                            solution.getRoute(i).replaceRequest(secondId, firstId, data);
+                            solution.getRoute(j).replaceRequest(firstId, secondId, data);
+                            solution.calculateEvaluationFunction();
+                        }
+                    }
+                }
             }
         }
 
-        return null;
+        return this.solution;
     }
 
     private Solution swapInterRouteBestImprovement() {
-        return null;
+        Solution solution = new Solution(this.solution);
+
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+            LinkedHashSet<Integer> firstRoute = new LinkedHashSet<>();
+            firstRoute.addAll(returnSetWithIds(solution, i));
+
+            for (int j = i + 1; j < solution.getRoutes().size(); j++) {
+                LinkedHashSet<Integer> secondRoute = new LinkedHashSet<>();
+                secondRoute.addAll(returnSetWithIds(solution, j));
+
+                for (int firstId : firstRoute) {
+                    for (int secondId : secondRoute) {
+                        solution.getRoute(i).replaceRequest(firstId, secondId, data);
+                        solution.getRoute(j).replaceRequest(secondId, firstId, data);
+                        solution.calculateEvaluationFunction();
+                        long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                        
+                        if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
+                            solution.getRoute(i).replaceRequest(secondId, firstId, data);
+                            solution.getRoute(j).replaceRequest(firstId, secondId, data);
+                            solution.calculateEvaluationFunction();
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
+            return solution;
+        } else {
+            return this.solution;
+        }
+    }
+
+    private static LinkedHashSet<Integer> returnSetWithIds(Solution solution, int routePosition) {
+        return solution.getRoute(routePosition).getIntegerRouteRepresetation()
+                .stream()
+                .filter(u -> u.intValue() > 0)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

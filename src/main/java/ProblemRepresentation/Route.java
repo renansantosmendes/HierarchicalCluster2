@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * @author renansantos - The Route Class represents a vehicle route for the
  * problem
  */
-public class Route implements Cloneable{
+public class Route implements Cloneable {
 
     private long totalDistanceTraveled;
     private long routeTravelTime;
@@ -22,7 +22,7 @@ public class Route implements Cloneable{
     private List<Integer> integerRouteRepresetation;
 
     public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
-            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests, 
+            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests,
             List<Integer> integerRouteRepresetation) {
         this.totalDistanceTraveled = totalRouteDistance;
         this.routeTravelTime = routeTravelTime;
@@ -260,8 +260,7 @@ public class Route implements Cloneable{
                 test += diference;
             }
         }
-        //not explained this signal changing
-//        this.totalTimeWindowAnticipation = test;
+
         this.totalTimeWindowAnticipation = violations.getSeconds() / 60;
     }
 
@@ -531,6 +530,32 @@ public class Route implements Cloneable{
         return integerRepresentation;
     }
 
+    public void replaceRequest(int oldId, int newId, ProblemData data) {
+        List<Integer> idSequence = new ArrayList<>();
+        idSequence = this.integerRouteRepresetation.stream().filter(u -> u.longValue() >= 0)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        List<Integer> positions = new ArrayList<>();
+        for (int i = 0; i < idSequence.size(); i++) {
+            if (idSequence.get(i) == oldId) {
+                positions.add(i);
+            }
+        }
+
+        for (int id : positions) {
+            idSequence.set(id, newId);
+        }
+
+        this.clearIntegerRepresentation();
+        this.clearNodesSequence();
+        this.clearSequenceOfAttendeRequests();
+        this.setIntegerRouteRepresetation(idSequence);
+        this.scheduleRoute(data);
+        this.buildSequenceOfAttendedRequests(data);
+        this.buildNodesSequence(data);
+        this.evaluateRoute(data);
+    }
+
     @Override
     public String toString() {
         return "Route - Evaluation Function = " + this.evaluationFunction + " - Total Distance = " + this.totalDistanceTraveled + " meters - Travel Time = " + this.routeTravelTime
@@ -538,18 +563,18 @@ public class Route implements Cloneable{
                 + " - Total of Delay  = " + this.totalTimeWindowDelay + " min";
     }
 
-    public Object clone(){
+    public Object clone() {
         List<Request> sequenceOfAttendedRequestsClone = new ArrayList<>();
         List<Node> nodesSequenceClone = new ArrayList<>();
-        for(Request request: sequenceOfAttendedRequests){
+        for (Request request : sequenceOfAttendedRequests) {
             sequenceOfAttendedRequestsClone.add((Request) request.clone());
         }
-        
-        for(Node node: nodesSequence){
+
+        for (Node node : nodesSequence) {
             nodesSequenceClone.add((Node) node.clone());
         }
-        
+
         return new Route(totalDistanceTraveled, routeTravelTime, totalTimeWindowAnticipation, totalTimeWindowDelay,
-            evaluationFunction, notServedRequests, nodesSequenceClone, sequenceOfAttendedRequestsClone, integerRouteRepresetation);
+                evaluationFunction, notServedRequests, nodesSequenceClone, sequenceOfAttendedRequestsClone, integerRouteRepresetation);
     }
 }

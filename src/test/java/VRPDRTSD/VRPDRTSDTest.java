@@ -13,6 +13,7 @@ import ProblemRepresentation.Solution;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Test;
@@ -127,7 +128,7 @@ public class VRPDRTSDTest {
     @Test
     public void localSearchTest() throws IOException {
         System.out.println("------ Testing local search method ------");
-        String instanceName = "r150n12tw10";
+        String instanceName = "r010n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;
@@ -190,18 +191,17 @@ public class VRPDRTSDTest {
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
 
         //problem.buildGreedySolution();
-
         //System.out.println("\nBefore local search = " + problem.getSolution());
         //problem.getSolution().printIntegerRepresentationOfRoutes();
         //problem.localSearch(2);
         //problem.localSearch(5);
         //System.out.println("\nAfter local search = " + problem.getSolution());
     }
-    
+
     @Test
-    public void interRouteMovimentsTest(){
+    public void interRouteMovimentsTest() {
         System.out.println("------ Testing local search method ------");
-        String instanceName = "r150n12tw10";
+        String instanceName = "r010n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;
@@ -210,11 +210,11 @@ public class VRPDRTSDTest {
 
         problem.buildGreedySolution();
 
-        System.out.println("\nBefore local search = " + problem.getSolution());
+//        System.out.println(problem.getSolution());
         problem.getSolution().printAllInformations();
-        //problem.getSolution().printIntegerRepresentationOfRoutes();
-        problem.localSearch(7);
-        System.out.println("\nAfter local search = " + problem.getSolution());
+        problem.localSearch(8);
+        //problem.localSearch(2);
+//        System.out.println(problem.getSolution());
         problem.getSolution().printAllInformations();
     }
 }

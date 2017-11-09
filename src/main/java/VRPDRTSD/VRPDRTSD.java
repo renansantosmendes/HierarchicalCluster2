@@ -551,11 +551,11 @@ public class VRPDRTSD implements Heuristic {
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             LinkedHashSet<Integer> firstRoute = new LinkedHashSet<>();
-            firstRoute.addAll(returnSetWithIds(solution, i));
+            firstRoute.addAll(returnUsedIds(solution, i));
 
             for (int j = i + 1; j < solution.getRoutes().size(); j++) {
                 LinkedHashSet<Integer> secondRoute = new LinkedHashSet<>();
-                secondRoute.addAll(returnSetWithIds(solution, j));
+                secondRoute.addAll(returnUsedIds(solution, j));
 
                 for (int firstId : firstRoute) {
                     for (int secondId : secondRoute) {
@@ -583,33 +583,31 @@ public class VRPDRTSD implements Heuristic {
 
         for (int i = 0; i < solution.getRoutes().size(); i++) {
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
-            LinkedHashSet<Integer> firstRoute = new LinkedHashSet<>();
-            firstRoute.addAll(returnSetWithIds(solution, i));
+            List<Integer> firstRoute = new ArrayList<>();
+            firstRoute.addAll(returnUsedIds(solution, i));
 
             for (int j = i + 1; j < solution.getRoutes().size(); j++) {
-                LinkedHashSet<Integer> secondRoute = new LinkedHashSet<>();
-                secondRoute.addAll(returnSetWithIds(solution, j));
+                List<Integer> secondRoute = new ArrayList<>();
+                secondRoute.addAll(returnUsedIds(solution, j));
 
-                for (int firstId : firstRoute) {
-                    for (int secondId : secondRoute) {
-                        solution.getRoute(i).replaceRequest(firstId, secondId, data);
-                        solution.getRoute(j).replaceRequest(secondId, firstId, data);
+                for (int k = 0; k < firstRoute.size(); k++) {
+                    for (int l = 0 ; l < secondRoute.size(); l++) {
+                        solution.getRoute(i).replaceRequest(firstRoute.get(k), secondRoute.get(l), data);
+                        solution.getRoute(j).replaceRequest(secondRoute.get(l), firstRoute.get(k), data);
                         solution.calculateEvaluationFunction();
                         long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
                         
                         if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
-                            solution.getRoute(i).replaceRequest(secondId, firstId, data);
-                            solution.getRoute(j).replaceRequest(firstId, secondId, data);
+                            solution.getRoute(i).replaceRequest(secondRoute.get(l), firstRoute.get(k), data);
+                            solution.getRoute(j).replaceRequest(firstRoute.get(k), secondRoute.get(l), data);
                             solution.calculateEvaluationFunction();
                         } else {
                             evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
                             System.out.println(evaluationFunctionBeforeMovement);
                             solution.printAllInformations();
-                            //testing
-//                            firstRoute.clear();
-                            firstRoute.add(secondId);//
-//                            secondRoute.clear();
-                            secondRoute.add(firstId);//
+                            
+                            firstRoute.set(k, secondRoute.get(l));
+                            secondRoute.set(l, firstRoute.get(k));
                             if(evaluationFunctionAfterMovement == 27197){
                                 solution.printAllInformations();
                             }
@@ -626,10 +624,22 @@ public class VRPDRTSD implements Heuristic {
         }
     }
 
-    private static LinkedHashSet<Integer> returnSetWithIds(Solution solution, int routePosition) {
-        return solution.getRoute(routePosition).getIntegerRouteRepresetation()
+    private static List<Integer> returnUsedIds(Solution solution, int routePosition) {
+        Set<Integer> setOfIds = solution.getRoute(routePosition).getIntegerRouteRepresetation()
                 .stream()
                 .filter(u -> u.intValue() > 0)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
+        
+        List<Integer> idsUsed = new ArrayList<>();
+        for(int id: setOfIds){
+            idsUsed.add(id);
+        }
+        
+        
+        return idsUsed;
+//        return solution.getRoute(routePosition).getIntegerRouteRepresetation()
+//                .stream()
+//                .filter(u -> u.intValue() > 0)
+//                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

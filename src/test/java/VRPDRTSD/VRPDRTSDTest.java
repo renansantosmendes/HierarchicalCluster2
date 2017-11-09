@@ -201,7 +201,7 @@ public class VRPDRTSDTest {
     @Test
     public void interRouteMovimentsTest() {
         System.out.println("------ Testing local search method ------");
-        String instanceName = "r010n12tw10";
+        String instanceName = "r250n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;
@@ -213,7 +213,8 @@ public class VRPDRTSDTest {
 //        System.out.println(problem.getSolution());
         problem.getSolution().printAllInformations();
         problem.localSearch(8);
-        //problem.localSearch(2);
+        problem.localSearch(2);
+        problem.localSearch(4);
 //        System.out.println(problem.getSolution());
         problem.getSolution().printAllInformations();
     }

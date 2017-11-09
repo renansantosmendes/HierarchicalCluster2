@@ -581,7 +581,7 @@ public class VRPDRTSD implements Heuristic {
     private Solution swapInterRouteBestImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getRoutes().size() ; i++) {
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             List<Integer> firstRoute = new ArrayList<>();
             firstRoute.addAll(returnUsedIds(solution, i));
@@ -603,14 +603,10 @@ public class VRPDRTSD implements Heuristic {
                             solution.calculateEvaluationFunction();
                         } else {
                             evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
-                            System.out.println(evaluationFunctionBeforeMovement);
-                            solution.printAllInformations();
-                            
-                            firstRoute.set(k, secondRoute.get(l));
-                            secondRoute.set(l, firstRoute.get(k));
-                            if(evaluationFunctionAfterMovement == 27197){
-                                solution.printAllInformations();
-                            }
+                            int removedIdFromFirstRoute = firstRoute.get(k);
+                            int removedIdFromSecondRoute = secondRoute.get(l);
+                            firstRoute.set(k, removedIdFromSecondRoute);
+                            secondRoute.set(l, removedIdFromFirstRoute);
                         }
                     }
                 }

@@ -601,6 +601,18 @@ public class VRPDRTSD implements Heuristic {
                             solution.getRoute(i).replaceRequest(secondId, firstId, data);
                             solution.getRoute(j).replaceRequest(firstId, secondId, data);
                             solution.calculateEvaluationFunction();
+                        } else {
+                            evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
+                            System.out.println(evaluationFunctionBeforeMovement);
+                            solution.printAllInformations();
+                            //testing
+//                            firstRoute.clear();
+                            firstRoute.add(secondId);//
+//                            secondRoute.clear();
+                            secondRoute.add(firstId);//
+                            if(evaluationFunctionAfterMovement == 27197){
+                                solution.printAllInformations();
+                            }
                         }
                     }
                 }

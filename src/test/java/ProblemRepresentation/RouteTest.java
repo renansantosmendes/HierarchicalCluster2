@@ -97,26 +97,38 @@ public class RouteTest {
         //route.getNodesSequence().forEach(System.out::println);
     }
 
-//    @Test
-//    public void scheduleRouteTest() {
-//        String instanceName = "r005n12tw10";
-//        String nodesData = "bh_n12s";
-//        String adjacenciesData = "bh_adj_n12s";
-//        int numberOfVehicles = 10;
-//        int vehicleCapacity = 11;
-//        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-//        problem.buildGreedySolution();
-//
-//        Solution solution = problem.getSolution();
-//        int routeNumber = 1;
-//
-//        Route route = solution.getRoutes().get(routeNumber);
-//        System.out.println("\n\nTesting Route Swapping --- \n\nBefore Movement\n" + route);
-//        route.swapRequests(3, 4, problem.getData());
-//        
-//        System.out.println("After Movement\n" + route);
-//        assertEquals(7, route.getNodesSequence().size());
-//    }
+    @Test
+    public void scheduleRouteTest() {
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+        System.out.println("Testing VRPDRTSD class");
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+
+        problem.buildGreedySolution();
+        List<Integer> sequence = new ArrayList<>();
+        sequence.add(0);
+        sequence.add(3);
+        sequence.add(4);
+        sequence.add(3);
+        sequence.add(4);
+        sequence.add(9);
+        sequence.add(9);
+//        sequence.add();
+//        sequence.add(-445);
+//        sequence.add(4);
+//        sequence.add(-445);
+        sequence.add(0);
+        
+        //problem.getSolution().getRoute(0).setIntegerRouteRepresetation(sequence);
+        Route route = new Route(problem.getSolution().getRoute(0));
+        route.setIntegerRouteRepresetation(sequence);
+        route.scheduleRoute(problem.getData());
+        System.out.println(route.getIntegerRouteRepresetation());
+        assertEquals(16, route.getIntegerRouteRepresetation().size());
+    }
     
     @Test
     public void minutesAddedAndRemovedTest(){
@@ -155,6 +167,6 @@ public class RouteTest {
         problem.localSearch(2);
         Route route = solution.getRoutes().get(routeNumber);
         
-        assertEquals(5, route.getNodesSequence().size());
+        assertEquals(6, route.getNodesSequence().size());
     }
 }

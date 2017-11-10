@@ -441,29 +441,52 @@ public class Route implements Cloneable {
             Request originRequest = getRequestUsingId(originPassengerId, data);
             Request destinationRequest = getRequestUsingId(destinationPassengerId, data);
             int timeBetween;
-            if (visitedIds.contains(originPassengerId)) {
-                if (visitedIds.contains(destinationPassengerId)) {
-                    timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getDestination().getId()]
-                            .getSeconds() / 60;
-                } else {
-                    timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getOrigin().getId()]
-                            .getSeconds() / 60;
-                }
-                deliveryTimes.add(-currentTimeForDelivery - timeBetween);
-                currentTimeForDelivery -= -timeBetween;
+
+            if (originPassengerId == destinationPassengerId) {
+                currentTimeForDelivery = getTimeForTheSameRequest(data, originRequest, destinationRequest, 
+                        deliveryTimes, currentTimeForDelivery);
             } else {
-                if (visitedIds.contains(destinationPassengerId)) {
-                    timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getDestination().getId()]
-                            .getSeconds() / 60;
-                } else {
-                    timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getOrigin().getId()]
-                            .getSeconds() / 60;
-                }
-                deliveryTimes.add(-currentTimeForDelivery - timeBetween);
-                currentTimeForDelivery -= -timeBetween;
+                currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId, 
+                        data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
             }
-            visitedIds.add(originPassengerId);
         }
+        return currentTimeForDelivery;
+    }
+
+    private int getTimeForDifferentRequests(Set<Integer> visitedIds, int originPassengerId, int destinationPassengerId, ProblemData data, Request originRequest, Request destinationRequest, List<Integer> deliveryTimes, int currentTimeForDelivery) {
+        int timeBetween;
+        if (visitedIds.contains(originPassengerId)) {
+            if (visitedIds.contains(destinationPassengerId)) {
+                timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getDestination().getId()]
+                        .getSeconds() / 60;
+            } else {
+                timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getOrigin().getId()]
+                        .getSeconds() / 60;
+            }
+            deliveryTimes.add(-currentTimeForDelivery - timeBetween);
+            currentTimeForDelivery -= -timeBetween;
+        } else {
+            if (visitedIds.contains(destinationPassengerId)) {
+                timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getDestination().getId()]
+                        .getSeconds() / 60;
+            } else {
+                timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getOrigin().getId()]
+                        .getSeconds() / 60;
+            }
+            deliveryTimes.add(-currentTimeForDelivery - timeBetween);
+            currentTimeForDelivery -= -timeBetween;
+        }
+        visitedIds.add(originPassengerId);
+        visitedIds.add(destinationPassengerId);
+        return currentTimeForDelivery;
+    }
+
+    private int getTimeForTheSameRequest(ProblemData data, Request originRequest, Request destinationRequest, List<Integer> deliveryTimes, int currentTimeForDelivery) {
+        int timeBetween;
+        timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getDestination().getId()]
+                .getSeconds() / 60;
+        deliveryTimes.add(-currentTimeForDelivery - timeBetween);
+        currentTimeForDelivery -= -timeBetween;
         return currentTimeForDelivery;
     }
 

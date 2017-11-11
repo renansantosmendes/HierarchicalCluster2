@@ -214,8 +214,27 @@ public class VRPDRTSDTest {
         problem.getSolution().printAllInformations();
         problem.localSearch(8);
         problem.localSearch(2);
-        problem.localSearch(4);
+        // problem.localSearch(4);
 //        System.out.println(problem.getSolution());
         problem.getSolution().printAllInformations();
+    }
+
+    @Test
+    public void buildRandomSolutionTest() {
+        System.out.println("------ Testing Random Solution ------");
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 10;
+        int vehicleCapacity = 11;
+//        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+
+        for (int i = 0; i < 15; i++) {
+            VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+            problem.buildRandomSolution();
+            System.out.println(problem.getSolution());
+            //problem.getSolution().printAllInformations();
+        }
+
     }
 }

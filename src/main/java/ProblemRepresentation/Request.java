@@ -138,6 +138,10 @@ public class Request implements Cloneable{
                 + destinationNodeCoeficient * this.destinationNodeRankingFunction;
     }
 
+    public void setRequestRankingFunction(double requestRankingFunction){
+        this.requestRankingFunction = requestRankingFunction;
+    }
+    
     public void setDistanceRankingFunction(double maxDistance, double minDistance) {
         this.distanceRankingFunction
                 = (maxDistance - this.getDistanceToAttendThisRequest()) / (maxDistance - minDistance);

@@ -11,6 +11,8 @@ public interface Heuristic {
     public void readInstance();
 
     public void buildGreedySolution();
+    
+    public void buildRandomSolution();
 
     public void localSearch(int typeOfLocalSearch);
 }

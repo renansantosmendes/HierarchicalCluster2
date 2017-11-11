@@ -366,6 +366,43 @@ public class VRPDRTSD implements Heuristic {
         solution.calculateEvaluationFunction();
     }
 
+    
+    @Override
+    public void buildRandomSolution() {
+        initializeSolution();
+        initializeRandomCandidatesSet();
+        while (stoppingCriterionIsFalse()) {
+            startNewRoute();
+            requestsFeasibilityAnalysis();
+            while (hasFeasibleRequests() && hasEmptySeatInVehicle()) {
+                findBestCandidateUsingRRF();
+                addCandidateIntoRoute();
+                actualizeRequestsData();
+                if (hasEmptySeatInVehicle()) {
+                    findOtherRequestsThatCanBeAttended();
+                }
+                requestsFeasibilityAnalysisInConstructionFase();
+            }
+            finalizeRoute();
+            addRouteInSolution();
+        }
+        finalizeSolution();
+    }
+    
+    public void initializeRandomCandidatesSet() {
+        originalRequestsFeasibilityAnalysis();
+        prepareAndSetRequestsData();
+        setRequestRandomParameters();
+        initializeCandidates();
+    }
+    
+    public void setRequestRandomParameters() {
+        Random rnd = new Random();
+        for (Request request : data.getRequests()) {
+            request.setRequestRankingFunction(rnd.nextDouble());
+        }
+    }
+    
     @Override
     public void localSearch(int localSearchType) {
         switch (localSearchType) {

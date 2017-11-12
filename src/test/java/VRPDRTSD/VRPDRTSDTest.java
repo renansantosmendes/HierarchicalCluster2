@@ -235,4 +235,37 @@ public class VRPDRTSDTest {
         //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 
     }
+    
+    @Test
+    public void requestReallocationTest() throws IOException {
+        System.out.println("------ Testing Request Reallocation ------");
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 250;
+        int vehicleCapacity = 1;
+        
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+         List<Integer> sequence = new ArrayList<>();
+        sequence.add(0);
+        sequence.add(1);
+        sequence.add(2);
+        sequence.add(1);
+        sequence.add(2);
+        sequence.add(0);
+        
+        int requestId = 3;
+        int i = 2;
+        int j = 3;
+        List<Integer> newSequence = new ArrayList<>();
+        
+        newSequence.addAll(sequence.subList(0, i));
+        newSequence.add(requestId);
+        newSequence.addAll(sequence.subList(i, j - 1));
+        newSequence.add(requestId);
+        newSequence.addAll(sequence.subList(j - 1, sequence.size()));
+                
+        System.out.println("sequence = " + sequence);
+        System.out.println("newSequence = " + newSequence);
+    }
 }

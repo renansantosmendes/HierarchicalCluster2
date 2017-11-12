@@ -220,21 +220,19 @@ public class VRPDRTSDTest {
     }
 
     @Test
-    public void buildRandomSolutionTest() {
+    public void buildRandomSolutionTest() throws IOException {
         System.out.println("------ Testing Random Solution ------");
         String instanceName = "r010n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
-        int numberOfVehicles = 10;
-        int vehicleCapacity = 11;
-//        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-
-        for (int i = 0; i < 15; i++) {
-            VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-            problem.buildRandomSolution();
-            System.out.println(problem.getSolution());
-            //problem.getSolution().printAllInformations();
-        }
+        int numberOfVehicles = 250;
+        int vehicleCapacity = 1;
+        
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+//        problem.buildRandomSolution();
+        problem.buildSelfishSolution();
+        problem.getSolution().printAllInformations();
+        //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 
     }
 }

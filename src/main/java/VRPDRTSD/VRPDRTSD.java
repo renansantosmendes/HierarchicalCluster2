@@ -389,6 +389,12 @@ public class VRPDRTSD implements Heuristic {
         finalizeSolution();
     }
     
+    public void buildSelfishSolution() {
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesInstanceName, adjacenciesInstanceName, numberOfVehicles, 1);
+        problem.buildGreedySolution();
+        this.solution = problem.getSolution();
+    }
+    
     public void initializeRandomCandidatesSet() {
         originalRequestsFeasibilityAnalysis();
         prepareAndSetRequestsData();

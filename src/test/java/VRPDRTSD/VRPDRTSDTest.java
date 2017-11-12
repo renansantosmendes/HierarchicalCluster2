@@ -243,29 +243,33 @@ public class VRPDRTSDTest {
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;
-        int vehicleCapacity = 1;
+        int vehicleCapacity = 11;
         
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-         List<Integer> sequence = new ArrayList<>();
-        sequence.add(0);
-        sequence.add(1);
-        sequence.add(2);
-        sequence.add(1);
-        sequence.add(2);
-        sequence.add(0);
+         List<Integer> idSequence = new ArrayList<>();
+        idSequence.add(0);
+        idSequence.add(1);
+        idSequence.add(2);
+        idSequence.add(1);
+        idSequence.add(2);
+        idSequence.add(0);
         
         int requestId = 3;
-        int i = 2;
-        int j = 3;
-        List<Integer> newSequence = new ArrayList<>();
+        int l = 2;
+        int m = 3;
+        List<Integer> newIdSequence = new ArrayList<>();
         
-        newSequence.addAll(sequence.subList(0, i));
-        newSequence.add(requestId);
-        newSequence.addAll(sequence.subList(i, j - 1));
-        newSequence.add(requestId);
-        newSequence.addAll(sequence.subList(j - 1, sequence.size()));
+        newIdSequence.addAll(idSequence.subList(0, l));
+        newIdSequence.add(requestId);
+        newIdSequence.addAll(idSequence.subList(l, m - 1));
+        newIdSequence.add(requestId);
+        newIdSequence.addAll(idSequence.subList(m - 1, idSequence.size()));
                 
-        System.out.println("sequence = " + sequence);
-        System.out.println("newSequence = " + newSequence);
+        System.out.println("sequence = " + idSequence);
+        System.out.println("newSequence = " + newIdSequence);
+        
+        
+        problem.buildGreedySolution();
+        problem.localSearch(10);
     }
 }

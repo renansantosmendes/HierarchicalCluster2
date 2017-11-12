@@ -366,7 +366,6 @@ public class VRPDRTSD implements Heuristic {
         solution.calculateEvaluationFunction();
     }
 
-    
     @Override
     public void buildRandomSolution() {
         initializeSolution();
@@ -388,27 +387,27 @@ public class VRPDRTSD implements Heuristic {
         }
         finalizeSolution();
     }
-    
+
     public void buildSelfishSolution() {
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesInstanceName, adjacenciesInstanceName, numberOfVehicles, 1);
         problem.buildGreedySolution();
         this.solution = problem.getSolution();
     }
-    
+
     public void initializeRandomCandidatesSet() {
         originalRequestsFeasibilityAnalysis();
         prepareAndSetRequestsData();
         setRequestRandomParameters();
         initializeCandidates();
     }
-    
+
     public void setRequestRandomParameters() {
         Random rnd = new Random();
         for (Request request : data.getRequests()) {
             request.setRequestRankingFunction(rnd.nextDouble());
         }
     }
-    
+
     @Override
     public void localSearch(int localSearchType) {
         switch (localSearchType) {
@@ -435,6 +434,12 @@ public class VRPDRTSD implements Heuristic {
                 break;
             case 8:
                 this.solution = swapInterRouteBestImprovement();
+                break;
+            case 9:
+                //this.solution = reallocationFirstImprovement();
+                break;
+            case 10:
+                this.solution = requestReallocationBestImprovement();
                 break;
         }
     }
@@ -621,10 +626,23 @@ public class VRPDRTSD implements Heuristic {
         return this.solution;
     }
 
+    private static List<Integer> returnUsedIds(Solution solution, int routePosition) {
+        Set<Integer> setOfIds = solution.getRoute(routePosition).getIntegerRouteRepresetation()
+                .stream()
+                .filter(u -> u.intValue() > 0)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        List<Integer> idsUsed = new ArrayList<>();
+        for (int id : setOfIds) {
+            idsUsed.add(id);
+        }
+        return idsUsed;
+    }
+
     private Solution swapInterRouteBestImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size() ; i++) {
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             List<Integer> firstRoute = new ArrayList<>();
             firstRoute.addAll(returnUsedIds(solution, i));
@@ -634,12 +652,12 @@ public class VRPDRTSD implements Heuristic {
                 secondRoute.addAll(returnUsedIds(solution, j));
 
                 for (int k = 0; k < firstRoute.size(); k++) {
-                    for (int l = 0 ; l < secondRoute.size(); l++) {
+                    for (int l = 0; l < secondRoute.size(); l++) {
                         solution.getRoute(i).replaceRequest(firstRoute.get(k), secondRoute.get(l), data);
                         solution.getRoute(j).replaceRequest(secondRoute.get(l), firstRoute.get(k), data);
                         solution.calculateEvaluationFunction();
                         long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
-                        
+
                         if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                             solution.getRoute(i).replaceRequest(secondRoute.get(l), firstRoute.get(k), data);
                             solution.getRoute(j).replaceRequest(firstRoute.get(k), secondRoute.get(l), data);
@@ -655,7 +673,7 @@ public class VRPDRTSD implements Heuristic {
                 }
             }
         }
-        
+
         if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
             return solution;
         } else {
@@ -663,18 +681,46 @@ public class VRPDRTSD implements Heuristic {
         }
     }
 
-    private static List<Integer> returnUsedIds(Solution solution, int routePosition) {
-        Set<Integer> setOfIds = solution.getRoute(routePosition).getIntegerRouteRepresetation()
-                .stream()
-                .filter(u -> u.intValue() > 0)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        
-        List<Integer> idsUsed = new ArrayList<>();
-        for(int id: setOfIds){
-            idsUsed.add(id);
+    private Solution requestReallocationBestImprovement() {
+        Solution solution = new Solution(this.solution);
+
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            Route firstRoute = new Route(solution.getRoute(i));
+            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+
+            List<Integer> firstRouteIdSequence = new ArrayList<>();
+            firstRouteIdSequence.addAll(returnUsedIds(solution, i));
+
+            for (int j = i + 1; j < solution.getRoutes().size(); j++) {
+                Route secondRoute = new Route(solution.getRoute(j));
+                for (int k = 0; k < firstRouteIdSequence.size(); k++) {
+                    int requestId = firstRouteIdSequence.get(k);
+                    List<Integer> idSequence = new ArrayList<>();
+                    idSequence.addAll(secondRoute.getIntegerSequenceOfAttendedRequests());
+
+                    for (int l = 1; l < idSequence.size() - 1; l++) {
+                        for (int m = l + 1; m < idSequence.size(); m++) {
+                            List<Integer> newIdSequence = new ArrayList<>();
+
+                            newIdSequence.addAll(idSequence.subList(0, l));
+                            newIdSequence.add(requestId);
+                            newIdSequence.addAll(idSequence.subList(l, m - 1));
+                            newIdSequence.add(requestId);
+                            newIdSequence.addAll(idSequence.subList(m - 1, idSequence.size()));
+
+//                            System.out.println("sequence = " + idSequence);
+                            System.out.println("newSequence = " + newIdSequence);
+                        }
+
+                    }
+                }
+            }
         }
-        
-        
-        return idsUsed;
+
+        if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
+            return solution;
+        } else {
+            return this.solution;
+        }
     }
 }

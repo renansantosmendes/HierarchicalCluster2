@@ -54,11 +54,13 @@ public class GoogleStaticMap {
     private List<Integer> route;
     private String adjacenciesTable;
     private String nodesTable;
+    private ColorGenerator colorGenerator;
 
     public GoogleStaticMap(List<Node> nodesList, String adjacenciesTable, String nodesTable) throws IOException {
         this.nodesList = nodesList;
         this.route = route;
         this.nodesTable = nodesTable;
+        this.colorGenerator = new ColorGenerator();
         String folder;
         folder = "RouteDataForStaticMap";
 
@@ -66,14 +68,16 @@ public class GoogleStaticMap {
         boolean successForCreateStaticMapsFolder = (new File(staticMapsFolder)).mkdirs();
 
         buildStringWithNodeMarkets();
+
     }
 
     public GoogleStaticMap(List<Node> nodesList, List<Integer> route, String adjacenciesTable, String nodesTable)
             throws IOException {
-        
+
         this.nodesList = nodesList;
         this.route = route;
         this.nodesTable = nodesTable;
+        this.colorGenerator = new ColorGenerator();
         String folder;
         folder = "RouteDataForStaticMap";
 
@@ -98,6 +102,7 @@ public class GoogleStaticMap {
         this.nodesList = nodesList;
         this.routes = routes;
         this.nodesTable = nodesTable;
+        this.colorGenerator = new ColorGenerator();
         String folder;
         folder = "RouteDataForStaticMap";
 
@@ -134,7 +139,7 @@ public class GoogleStaticMap {
     }
 
     private void buildPathForMapWithOneRoute(String adjacenciesTable, String nodesTable) {
-        String color = new ColorGenerator().generatesColor();
+        String color = this.colorGenerator.generatesColor();
         correctRouteAddingTheDepot(this.route);
 
         for (int i = 0; i < route.size() - 1; i++) {
@@ -148,7 +153,8 @@ public class GoogleStaticMap {
 
     private void buildPathForMapWithAllRoutes(String adjacenciesTable, String nodesTable) {
         for (List<Integer> route : routes) {
-            String color = new ColorGenerator().generatesColor();
+            String color = this.colorGenerator.generatesColor();
+            System.out.println(color);
             correctRouteAddingTheDepot(route);
             for (int i = 0; i < route.size() - 1; i++) {
                 int origin = route.get(i);

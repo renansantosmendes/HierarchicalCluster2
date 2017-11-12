@@ -676,9 +676,5 @@ public class VRPDRTSD implements Heuristic {
         
         
         return idsUsed;
-//        return solution.getRoute(routePosition).getIntegerRouteRepresetation()
-//                .stream()
-//                .filter(u -> u.intValue() > 0)
-//                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

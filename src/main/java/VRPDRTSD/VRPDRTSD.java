@@ -341,7 +341,7 @@ public class VRPDRTSD implements Heuristic {
             otherRequestsToAdd.sort(Comparator.comparing(Request::getDeliveryTimeWindowLower));
         }
 
-        while (otherRequestsToAdd.size() != 0) {
+        while (otherRequestsToAdd.size() != 0 && hasEmptySeatInVehicle()) {
             candidate = otherRequestsToAdd.get(0);
             candidate.setDeliveryTime(data.getCurrentTime());
             currentRoute.addValueInIntegerRepresentation(otherRequestsToAdd.get(0).getId());

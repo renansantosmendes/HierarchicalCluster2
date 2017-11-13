@@ -20,6 +20,7 @@ public class Route implements Cloneable {
     private List<Node> nodesSequence;
     private List<Request> sequenceOfAttendedRequests;
     private List<Integer> integerRouteRepresetation;
+    private boolean violatedSomeConstraint = false;
 
     public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
             long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests,
@@ -223,6 +224,9 @@ public class Route implements Cloneable {
         calculateTotalDeliveryAnticipation();
         calculateTotalDeliveryDelay();
         calculateEvaluationFunction();
+        if(this.violatedSomeConstraint){
+            penalizeRoute();
+        }
     }
 
     public void calculateTravelTime(ProblemData data) {
@@ -565,16 +569,18 @@ public class Route implements Cloneable {
             }else{
                 busySeats++;
                 if(busySeats > data.getVehicleCapacity()){
-                    penalizeRoute();
+                    this.violatedSomeConstraint = true;
                 }
             }
             vehicleOccupation.add(busySeats);
         }
-        System.out.println(vehicleOccupation);
+//        System.out.println(vehicleOccupation);
+//        System.out.println(idSequence + "\n");
     }
 
     private void penalizeRoute(){
-        this.totalDistanceTraveled = this.totalDistanceTraveled*this.totalDistanceTraveled*this.routeTravelTime;
+        this.evaluationFunction = this.totalDistanceTraveled*this.routeTravelTime*this.routeTravelTime;
+        this.totalDistanceTraveled = this.totalDistanceTraveled*this.routeTravelTime*this.routeTravelTime;
     }
     
     private List<Integer> buildIntegerRepresentation(List<Integer> idSequence, List<Integer> times) {

@@ -173,14 +173,18 @@ public class RouteTest {
     @Test
     public void routeCapacityTest(){
         System.out.println("----------- routeCapacityTest() -----------");
-        String instanceName = "r100n12tw10";
+        String instanceName = "r150n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 10;
         int vehicleCapacity = 4;
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.buildGreedySolution();
-        problem.localSearch(10);
+        System.out.println(problem.getSolution());
+        problem.localSearch(8);
+        System.out.println(problem.getSolution());
         problem.localSearch(2);
+        System.out.println(problem.getSolution());
+        //problem.localSearch(2);
     }
 }

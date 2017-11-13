@@ -344,16 +344,24 @@ public class Route implements Cloneable {
         if ((idSequence.get(firstPosition) != 0) && (idSequence.get(secondPosition) != 0)) {
             if (!idSequence.get(firstPosition).equals(idSequence.get(secondPosition))) {
                 Collections.swap(idSequence, firstPosition, secondPosition);
-                this.clearIntegerRepresentation();
-                this.clearNodesSequence();
-                this.clearSequenceOfAttendeRequests();
-                this.setIntegerRouteRepresetation(idSequence);
-                this.scheduleRoute(data);
-                this.buildSequenceOfAttendedRequests(data);
-                this.buildNodesSequence(data);
-                this.evaluateRoute(data);
+                clear();
+                rebuild(idSequence, data);
             }
         }
+    }
+
+    public void rebuild(List<Integer> idSequence, ProblemData data) {
+        this.setIntegerRouteRepresetation(idSequence);
+        this.scheduleRoute(data);
+        this.buildSequenceOfAttendedRequests(data);
+        this.buildNodesSequence(data);
+        this.evaluateRoute(data);
+    }
+
+    public void clear() {
+        this.clearIntegerRepresentation();
+        this.clearNodesSequence();
+        this.clearSequenceOfAttendeRequests();
     }
 
     public void addMinutesInRoute(int timeInterval, ProblemData data) {
@@ -443,10 +451,10 @@ public class Route implements Cloneable {
             int timeBetween;
 
             if (originPassengerId == destinationPassengerId) {
-                currentTimeForDelivery = getTimeForTheSameRequest(data, originRequest, destinationRequest, 
+                currentTimeForDelivery = getTimeForTheSameRequest(data, originRequest, destinationRequest,
                         deliveryTimes, currentTimeForDelivery);
             } else {
-                currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId, 
+                currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId,
                         data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
             }
         }
@@ -569,14 +577,16 @@ public class Route implements Cloneable {
             idSequence.set(id, newId);
         }
 
-        this.clearIntegerRepresentation();
-        this.clearNodesSequence();
-        this.clearSequenceOfAttendeRequests();
-        this.setIntegerRouteRepresetation(idSequence);
-        this.scheduleRoute(data);
-        this.buildSequenceOfAttendedRequests(data);
-        this.buildNodesSequence(data);
-        this.evaluateRoute(data);
+        clear();
+        rebuild(idSequence, data);
+    }
+
+    public void removeReallocatedRequest(int requestId, ProblemData data) {
+        
+
+        this.rebuild(integerRouteRepresetation.stream()
+                .filter(u -> u.intValue() >= 0 && u.intValue() != requestId)
+                .collect(Collectors.toCollection(ArrayList::new)), data);
     }
 
     @Override

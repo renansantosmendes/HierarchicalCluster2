@@ -239,7 +239,7 @@ public class VRPDRTSDTest {
     @Test
     public void requestReallocationTest() throws IOException {
         System.out.println("------ Testing Request Reallocation ------");
-        String instanceName = "r010n12tw10";
+        String instanceName = "r050n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;
@@ -265,11 +265,13 @@ public class VRPDRTSDTest {
         newIdSequence.add(requestId);
         newIdSequence.addAll(idSequence.subList(m - 1, idSequence.size()));
                 
-        System.out.println("sequence = " + idSequence);
-        System.out.println("newSequence = " + newIdSequence);
+        //System.out.println("sequence = " + idSequence);
+        //System.out.println("newSequence = " + newIdSequence);
         
         
         problem.buildGreedySolution();
+        problem.getSolution().printAllInformations();
         problem.localSearch(10);
+        problem.getSolution().printAllInformations();
     }
 }

@@ -107,9 +107,9 @@ public class Solution implements Cloneable {
         
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay
-                    + this.totalTimeWindowAnticipation;
+                    + this.totalTimeWindowAnticipation*this.routes.size();
         } else {
-            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation;
+            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation*this.routes.size();
         }
     }
     
@@ -200,7 +200,7 @@ public class Solution implements Cloneable {
     @Override
     public String toString() {
         return "Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t"
-                + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay;
+                + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t" + this.routes.size();
     }
 
     public Object clone() {

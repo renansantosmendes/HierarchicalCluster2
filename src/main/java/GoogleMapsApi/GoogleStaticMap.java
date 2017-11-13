@@ -154,7 +154,6 @@ public class GoogleStaticMap {
     private void buildPathForMapWithAllRoutes(String adjacenciesTable, String nodesTable) {
         for (List<Integer> route : routes) {
             String color = this.colorGenerator.generatesColor();
-            System.out.println(color);
             correctRouteAddingTheDepot(route);
             for (int i = 0; i < route.size() - 1; i++) {
                 int origin = route.get(i);

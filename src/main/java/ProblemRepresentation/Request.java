@@ -7,7 +7,7 @@ import java.time.*;
  * @author renansantos The Request Class represents the request for transport
  * used in VRPDRTSD
  */
-public class Request implements Cloneable{
+public class Request implements Cloneable {
 
     private final Integer id;
     private final Node origin;
@@ -48,10 +48,10 @@ public class Request implements Cloneable{
     }
 
     public Request(Integer id, Node origin, Node destination, LocalDateTime dayRequestWasMade, LocalDateTime pickUpTime,
-            LocalDateTime deliveryTime, LocalDateTime deliveryTimeWindowLower, LocalDateTime deliveryTimeWindowUpper, 
-            boolean feasible, boolean boarded, double requestRankingFunction, double distanceRankingFunction, 
-            double distanceToAttendThisRequest, double deliveryTimeWindowLowerRankingFunction, 
-            double deliveryTimeWindowUpperRankingFunction, double originNodeRankingFunction, 
+            LocalDateTime deliveryTime, LocalDateTime deliveryTimeWindowLower, LocalDateTime deliveryTimeWindowUpper,
+            boolean feasible, boolean boarded, double requestRankingFunction, double distanceRankingFunction,
+            double distanceToAttendThisRequest, double deliveryTimeWindowLowerRankingFunction,
+            double deliveryTimeWindowUpperRankingFunction, double originNodeRankingFunction,
             double destinationNodeRankingFunction) {
         this.id = id;
         this.origin = origin;
@@ -72,8 +72,6 @@ public class Request implements Cloneable{
         this.destinationNodeRankingFunction = destinationNodeRankingFunction;
     }
 
-    
-    
     public void setDayRequestWasMade(LocalDateTime dayRequestWasMade) {
         this.dayRequestWasMade = dayRequestWasMade;
     }
@@ -98,7 +96,7 @@ public class Request implements Cloneable{
     public void setDeliveryTime(LocalDateTime deliveryTime) {
         this.deliveryTime = deliveryTime;
     }
-    
+
     public void setDeliveryTime(Integer deliveryTime) {
         if (deliveryTime < 0) {
             deliveryTime = -deliveryTime;
@@ -138,10 +136,10 @@ public class Request implements Cloneable{
                 + destinationNodeCoeficient * this.destinationNodeRankingFunction;
     }
 
-    public void setRequestRankingFunction(double requestRankingFunction){
+    public void setRequestRankingFunction(double requestRankingFunction) {
         this.requestRankingFunction = requestRankingFunction;
     }
-    
+
     public void setDistanceRankingFunction(double maxDistance, double minDistance) {
         this.distanceRankingFunction
                 = (maxDistance - this.getDistanceToAttendThisRequest()) / (maxDistance - minDistance);
@@ -270,11 +268,17 @@ public class Request implements Cloneable{
         Duration durationFromCurrentNodeToOrigin = timeMatrix[this.getDestination().getId()][0];
 
         Duration durationBetweenTimeWindows = Duration.between(this.deliveryTimeWindowLower, lastRequestAdded.getDeliveryTimeWindowUpper());
-
-        if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())) {
+        long test = durationFromCurrentNodeToOrigin.getSeconds()/60;
+        long test2 = durationBetweenTimeWindows.getSeconds()/60;
+        if (test2 < 0) {
+            test2 = -test2;
+        }
+        if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())
+                && test2 <= test) {
             if (durationBetweenTimeWindows.getSeconds() <= 0) {
                 this.setFeasible(true);
-            } else if (durationBetweenTimeWindows.getSeconds() < durationFromCurrentNodeToOrigin.getSeconds()) {
+//            } else if (durationBetweenTimeWindows.getSeconds() < durationFromCurrentNodeToOrigin.getSeconds()) {
+            } else if (test2 < test) {
                 this.setFeasible(true);
             } else {
                 this.setFeasible(false);
@@ -298,11 +302,11 @@ public class Request implements Cloneable{
                 + "\nRRF = " + this.requestRankingFunction
                 + "\nIs Feasible = " + this.feasible;
     }
-    
-    public Object clone(){
-        return new Request( id, (Node) origin.clone(), (Node) destination.clone(), dayRequestWasMade,  pickUpTime, deliveryTime, 
-                deliveryTimeWindowLower, deliveryTimeWindowUpper, feasible, boarded, requestRankingFunction, 
-                distanceRankingFunction, distanceToAttendThisRequest, deliveryTimeWindowLowerRankingFunction, 
+
+    public Object clone() {
+        return new Request(id, (Node) origin.clone(), (Node) destination.clone(), dayRequestWasMade, pickUpTime, deliveryTime,
+                deliveryTimeWindowLower, deliveryTimeWindowUpper, feasible, boarded, requestRankingFunction,
+                distanceRankingFunction, distanceToAttendThisRequest, deliveryTimeWindowLowerRankingFunction,
                 deliveryTimeWindowUpperRankingFunction, originNodeRankingFunction, destinationNodeRankingFunction);
     }
 

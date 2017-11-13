@@ -441,6 +441,12 @@ public class VRPDRTSD implements Heuristic {
             case 10:
                 this.solution = requestReallocationBestImprovement();
                 break;
+            case 11:
+                this.solution = addRouteFirstImprovement();
+                break;
+            case 12:
+//                this.solution = addRouteBestImprovement();
+                break;
         }
     }
 
@@ -792,5 +798,27 @@ public class VRPDRTSD implements Heuristic {
         } else {
             return this.solution;
         }
+    }
+
+    private Solution addRouteFirstImprovement() {
+        Solution solution = new Solution((Solution) this.solution.clone());
+        for (int i = 0; i < solution.getRoutes().size(); i++) {
+            Route firstRoute = new Route(solution.getRoute(i));
+            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+            for (int j = 0; j < solution.getRoutes().size(); j++) {
+                if (i != j) {
+                    Route secondRoute = new Route(solution.getRoute(j));
+                    List<Integer> initialSequence = new ArrayList<>();
+                    List<Integer> finalSequence = new ArrayList<>();
+                    initialSequence.addAll(secondRoute.getIntegerSequenceOfAttendedRequests());
+                    initialSequence.remove(initialSequence.size() - 1);
+                    finalSequence.addAll(firstRoute.getIntegerSequenceOfAttendedRequests());
+                    finalSequence.remove(0);
+                    initialSequence.addAll(finalSequence);
+                    int k = 0;
+                }
+            }
+        }
+        return this.solution;
     }
 }

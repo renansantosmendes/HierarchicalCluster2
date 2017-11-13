@@ -267,13 +267,14 @@ public class VRPDRTSDTest {
         
         problem.buildGreedySolution();
         System.out.println(problem.getSolution());
-        problem.localSearch(10);
-        System.out.println(problem.getSolution());
-        problem.localSearch(8);
-        System.out.println(problem.getSolution());
-        problem.localSearch(2);
-        System.out.println(problem.getSolution());
-        problem.localSearch(4);
-        System.out.println(problem.getSolution());
+//        problem.localSearch(10);
+//        System.out.println(problem.getSolution());
+//        problem.localSearch(8);
+//        System.out.println(problem.getSolution());
+//        problem.localSearch(2);
+//        System.out.println(problem.getSolution());
+//        problem.localSearch(4);
+//        System.out.println(problem.getSolution());
+          problem.localSearch(11);
     }
 }

@@ -224,7 +224,7 @@ public class Route implements Cloneable {
         calculateTotalDeliveryAnticipation();
         calculateTotalDeliveryDelay();
         calculateEvaluationFunction();
-        if(this.violatedSomeConstraint){
+        if (this.violatedSomeConstraint) {
             penalizeRoute();
         }
     }
@@ -564,11 +564,11 @@ public class Route implements Cloneable {
         vehicleOccupation.add(busySeats);
         for (int i = 0; i < idSequence.size(); i++) {
             int currentId = idSequence.get(i);
-            if(idSequence.subList(0, i).contains(currentId)){
+            if (idSequence.subList(0, i).contains(currentId)) {
                 busySeats--;
-            }else{
+            } else {
                 busySeats++;
-                if(busySeats > data.getVehicleCapacity()){
+                if (busySeats > data.getVehicleCapacity()) {
                     this.violatedSomeConstraint = true;
                 }
             }
@@ -578,11 +578,11 @@ public class Route implements Cloneable {
 //        System.out.println(idSequence + "\n");
     }
 
-    private void penalizeRoute(){
-        this.evaluationFunction = this.totalDistanceTraveled*this.routeTravelTime*this.routeTravelTime;
-        this.totalDistanceTraveled = this.totalDistanceTraveled*this.routeTravelTime*this.routeTravelTime;
+    private void penalizeRoute() {
+        this.evaluationFunction = this.totalDistanceTraveled * this.routeTravelTime * this.routeTravelTime;
+        this.totalDistanceTraveled = this.totalDistanceTraveled * this.routeTravelTime * this.routeTravelTime;
     }
-    
+
     private List<Integer> buildIntegerRepresentation(List<Integer> idSequence, List<Integer> times) {
         List<Integer> integerRepresentation = new ArrayList<>();
         for (int i = 0; i < idSequence.size(); i++) {
@@ -617,6 +617,14 @@ public class Route implements Cloneable {
         this.rebuild(integerRouteRepresetation.stream()
                 .filter(u -> u.intValue() >= 0 && u.intValue() != requestId)
                 .collect(Collectors.toCollection(ArrayList::new)), data);
+    }
+
+    public void removeAddedRequests(List<Integer> idSequence, ProblemData data) {
+
+        if (integerRouteRepresetation.removeAll(idSequence)) {
+            this.rebuild(integerRouteRepresetation, data);
+        }
+
     }
 
     @Override

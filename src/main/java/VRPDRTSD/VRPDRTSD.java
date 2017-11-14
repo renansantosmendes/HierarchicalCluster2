@@ -180,6 +180,15 @@ public class VRPDRTSD implements Heuristic {
         findMaxAndMinLoadIndex();
     }
 
+    public void recalculateRRF() {
+        setDistanceToAttendEveryRequest();
+        findMaxAndMinDistance();
+        findMaxAndMinTimeWindowLower();
+        findMaxAndMinTimeWindowUpper();
+        findMaxAndMinLoadIndex();
+        setRequestFeasibilityParameters();
+    }
+
     public void setRequestFeasibilityParameters() {
         for (Request request : data.getRequests()) {
             request.setDistanceRankingFunction(maxDistance, minDistance);
@@ -228,6 +237,7 @@ public class VRPDRTSD implements Heuristic {
     public void actualizeRequestsData() {
         candidates.remove(candidate);
         requestsThatLeavesInNode.get(data.getCurrentNode()).remove(candidate);
+        recalculateRRF();
     }
 
     public boolean stoppingCriterionIsFalse() {
@@ -810,12 +820,33 @@ public class VRPDRTSD implements Heuristic {
                     Route secondRoute = new Route(solution.getRoute(j));
                     List<Integer> initialSequence = new ArrayList<>();
                     List<Integer> finalSequence = new ArrayList<>();
+                    List<Integer> newSequence = new ArrayList<>();
                     initialSequence.addAll(secondRoute.getIntegerSequenceOfAttendedRequests());
                     initialSequence.remove(initialSequence.size() - 1);
                     finalSequence.addAll(firstRoute.getIntegerSequenceOfAttendedRequests());
                     finalSequence.remove(0);
-                    initialSequence.addAll(finalSequence);
-                    int k = 0;
+                    //initialSequence.addAll(finalSequence);
+                    newSequence.addAll(initialSequence);
+                    newSequence.addAll(finalSequence);
+                    System.out.println(newSequence);
+                    secondRoute.clear();
+                    secondRoute.rebuild(newSequence, data);
+
+                    solution.setRoute(j, secondRoute);
+                    solution.calculateEvaluationFunction();
+
+                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                    System.out.println(evaluationFunctionAfterMovement - evaluationFunctionBeforeMovement);
+                    if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
+                        solution.getRoutes().remove(i);
+                        i = 0;
+                        System.out.println("entrou");
+                        return solution;
+                    } else {
+                        secondRoute.removeAddedRequests(finalSequence, data);
+                        solution.setRoute(j, secondRoute);
+                        solution.calculateEvaluationFunction();
+                    }
                 }
             }
         }

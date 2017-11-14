@@ -188,7 +188,8 @@ public class Solution implements Cloneable {
 
         }
         System.out.println("Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t"
-                + this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay);
+                + this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t"
+                + this.routes.size());
         System.out.println(nodesSequence);
         System.out.println(integerRepresentation);
         System.out.println(idSequence);

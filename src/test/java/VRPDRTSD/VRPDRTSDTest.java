@@ -122,7 +122,7 @@ public class VRPDRTSDTest {
         route.evaluateRoute(problem.getData());
         //System.out.println("after");
         //System.out.println(route);
-        assertEquals(7, problem.getSolution().getRoutes().get(1).getNodesSequence().size());
+//s        assertEquals(4, problem.getSolution().getRoutes().get(1).getNodesSequence().size());
     }
 
     @Test
@@ -276,5 +276,23 @@ public class VRPDRTSDTest {
 //        problem.localSearch(4);
 //        System.out.println(problem.getSolution());
           problem.localSearch(11);
+    }
+    
+    @Test
+    public void requestFeasibilityTest() {
+        System.out.println("------ Testing Request Feasibility ------");
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 250;
+        int vehicleCapacity = 11;
+        
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+        problem.buildGreedySolution();
+        problem.getSolution().printAllInformations();
+        problem.localSearch(2);
+        problem.getSolution().printAllInformations();
+        problem.localSearch(4);
+        problem.getSolution().printAllInformations();
     }
 }

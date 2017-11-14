@@ -26,6 +26,7 @@ public class Request implements Cloneable {
     private double deliveryTimeWindowUpperRankingFunction;
     private double originNodeRankingFunction;
     private double destinationNodeRankingFunction;
+    static int toleranceTime = 5;
 
     public Request(Integer requestId, Node passengerOrigin, Node passengerDestination, LocalDateTime dayRequestWasMade,
             LocalDateTime pickUpTime, LocalDateTime deliveryTimeWindowLower, LocalDateTime deliveryTimeWindowUpper) {
@@ -274,10 +275,10 @@ public class Request implements Cloneable {
             test2 = -test2;
         }
         if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())
-                && test2 <= test) {
+                && (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isAfter(this.getDeliveryTimeWindowLower()
+                        .minusMinutes(toleranceTime)))) {
             if (durationBetweenTimeWindows.getSeconds() <= 0) {
                 this.setFeasible(true);
-//            } else if (durationBetweenTimeWindows.getSeconds() < durationFromCurrentNodeToOrigin.getSeconds()) {
             } else if (test2 < test) {
                 this.setFeasible(true);
             } else {

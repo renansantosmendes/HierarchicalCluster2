@@ -16,18 +16,14 @@ public class Main {
         int vehicleCapacity = 11;
         System.out.println("Testing VRPDRTSD class");
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-        
+
         problem.buildGreedySolution();
         System.out.println(problem.getSolution());
         problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
-        problem.localSearch(10);
-        System.out.println(problem.getSolution());
-        problem.localSearch(8);
-        System.out.println(problem.getSolution());
         problem.localSearch(2);
-        System.out.println(problem.getSolution());
+        problem.getSolution().printAllInformations();
         problem.localSearch(4);
-        System.out.println(problem.getSolution());
+        problem.getSolution().printAllInformations();
         problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
     }
 }

@@ -459,6 +459,33 @@ public class VRPDRTSD implements Heuristic {
                 break;
         }
     }
+    
+    @Override
+    public void perturbation(int typeOfPerturbation, int intensity){
+        switch (typeOfPerturbation) {
+            case 1:
+                this.solution = swapIntraRouteFirstImprovement();
+                break;
+            
+            case 2:
+                this.solution = addMinutesInSolutionScheduleFirstImprovement();
+                break;
+            
+            case 3:
+                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
+                break;
+            
+            case 4:
+                this.solution = swapInterRouteFirstImprovement();
+                break;
+            
+            case 5:
+                this.solution = requestReallocationFirstImprovement();
+                break;
+            
+            
+        }
+    }
 
     private Solution swapIntraRouteFirstImprovement() {
         Solution solution = new Solution(this.solution);
@@ -831,12 +858,14 @@ public class VRPDRTSD implements Heuristic {
                     System.out.println(newSequence);
                     secondRoute.clear();
                     secondRoute.rebuild(newSequence, data);
-
+                    
+                    System.out.println(secondRoute.getIntegerRouteRepresetation());
+                    
                     solution.setRoute(j, secondRoute);
                     solution.calculateEvaluationFunction();
 
                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
-                    System.out.println(evaluationFunctionAfterMovement - evaluationFunctionBeforeMovement);
+                    //System.out.println(evaluationFunctionAfterMovement - evaluationFunctionBeforeMovement);
                     if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
                         solution.getRoutes().remove(i);
                         i = 0;

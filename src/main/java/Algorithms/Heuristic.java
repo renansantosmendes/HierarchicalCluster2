@@ -15,4 +15,6 @@ public interface Heuristic {
     public void buildRandomSolution();
 
     public void localSearch(int typeOfLocalSearch);
+    
+    public void perturbation(int typeOfPerturbation, int intensity);
 }

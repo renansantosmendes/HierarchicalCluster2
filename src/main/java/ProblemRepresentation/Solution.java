@@ -150,6 +150,10 @@ public class Solution implements Cloneable {
         }
         return routes;
     }
+    
+    public int getNumberOfRoutes(){
+        return this.routes.size();
+    }
 
     public void getStaticMapWithAllRoutes(List<Node> nodesList, String adjacenciesTable, String nodesTable) throws IOException {
         new GoogleStaticMap(nodesList, this.getRoutesForMap(), adjacenciesTable, nodesTable);

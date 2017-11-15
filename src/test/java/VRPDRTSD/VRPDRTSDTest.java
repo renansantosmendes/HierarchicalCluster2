@@ -227,7 +227,7 @@ public class VRPDRTSDTest {
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;
         int vehicleCapacity = 1;
-        
+
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
 //        problem.buildRandomSolution();
         problem.buildSelfishSolution();
@@ -235,7 +235,7 @@ public class VRPDRTSDTest {
         //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 
     }
-    
+
     @Test
     public void requestReallocationTest() throws IOException {
         System.out.println("------ Testing Request Reallocation ------");
@@ -244,27 +244,27 @@ public class VRPDRTSDTest {
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;
         int vehicleCapacity = 11;
-        
+
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-         List<Integer> idSequence = new ArrayList<>();
+        List<Integer> idSequence = new ArrayList<>();
         idSequence.add(0);
         idSequence.add(1);
         idSequence.add(2);
         idSequence.add(1);
         idSequence.add(2);
         idSequence.add(0);
-        
+
         int requestId = 3;
         int l = 2;
         int m = 3;
         List<Integer> newIdSequence = new ArrayList<>();
-        
+
         newIdSequence.addAll(idSequence.subList(0, l));
         newIdSequence.add(requestId);
         newIdSequence.addAll(idSequence.subList(l, m - 1));
         newIdSequence.add(requestId);
         newIdSequence.addAll(idSequence.subList(m - 1, idSequence.size()));
-        
+
         problem.buildGreedySolution();
         System.out.println(problem.getSolution());
 //        problem.localSearch(10);
@@ -275,9 +275,9 @@ public class VRPDRTSDTest {
 //        System.out.println(problem.getSolution());
 //        problem.localSearch(4);
 //        System.out.println(problem.getSolution());
-          problem.localSearch(11);
+        problem.localSearch(11);
     }
-    
+
     @Test
     public void requestFeasibilityTest() {
         System.out.println("------ Testing Request Feasibility ------");
@@ -286,7 +286,7 @@ public class VRPDRTSDTest {
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;
         int vehicleCapacity = 11;
-        
+
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.buildGreedySolution();
         problem.getSolution().printAllInformations();
@@ -295,8 +295,8 @@ public class VRPDRTSDTest {
 //        problem.localSearch(4);
 //        problem.getSolution().printAllInformations();
     }
-    
-     @Test
+
+    @Test
     public void addingRoutesTest() {
         System.out.println("------ Testing ADDROUTES movement ------");
         String instanceName = "r010n12tw10";
@@ -304,12 +304,19 @@ public class VRPDRTSDTest {
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;
         int vehicleCapacity = 11;
-        
+
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-        problem.buildGreedySolution();
-        problem.getSolution().printAllInformations();
-        problem.localSearch(11);
-        problem.getSolution().printAllInformations();
+//        problem.buildGreedySolution();
+//        problem.getSolution().printAllInformations();
+        //problem.localSearch(10);
+        //problem.perturbation(1, 1);
+        //problem.getSolution().printAllInformations();
+        for (int i = 0; i < 10; i++) {
+            problem.buildGreedySolution();
+            problem.perturbation(1, 10);
+//            problem.localSearch(8);
+            System.out.println(problem.getSolution());
+        }
 
     }
 }

@@ -459,44 +459,16 @@ public class VRPDRTSD implements Heuristic {
                 break;
         }
     }
-    
-    @Override
-    public void perturbation(int typeOfPerturbation, int intensity){
-        switch (typeOfPerturbation) {
-            case 1:
-                this.solution = swapIntraRouteFirstImprovement();
-                break;
-            
-            case 2:
-                this.solution = addMinutesInSolutionScheduleFirstImprovement();
-                break;
-            
-            case 3:
-                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
-                break;
-            
-            case 4:
-                this.solution = swapInterRouteFirstImprovement();
-                break;
-            
-            case 5:
-                this.solution = requestReallocationFirstImprovement();
-                break;
-            
-            
-        }
-    }
 
     private Solution swapIntraRouteFirstImprovement() {
         Solution solution = new Solution(this.solution);
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             Route route = new Route(solution.getRoute(i));
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size(); j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
                     route.swapRequests(j, k, data);
-                    solution.setRoute(i, route);
-                    solution.calculateEvaluationFunction();
+                    actualizeSolution(solution, i, route);
                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                     if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
@@ -510,21 +482,24 @@ public class VRPDRTSD implements Heuristic {
         return this.solution;
     }
 
+    private void actualizeSolution(Solution solution, int i, Route route) {
+        solution.setRoute(i, route);
+        solution.calculateEvaluationFunction();
+    }
+
     private Solution swapIntraBestImprovement() {
         Solution solution = new Solution((Solution) this.solution.clone());
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             Route route = new Route(solution.getRoute(i));
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
                 for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
                     route.swapRequests(j, k, data);
-                    solution.setRoute(i, route);
-                    solution.calculateEvaluationFunction();
+                    actualizeSolution(solution, i, route);
                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
                     if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                         route.swapRequests(j, k, data);
-                        solution.setRoute(i, route);
-                        solution.calculateEvaluationFunction();
+                        actualizeSolution(solution, i, route);
                     }
                 }
             }
@@ -539,14 +514,13 @@ public class VRPDRTSD implements Heuristic {
     private Solution addMinutesInSolutionScheduleFirstImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             for (int j = 1; j <= 5; j++) {
                 Route route = new Route(solution.getRoute(i));
                 long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
 
                 route.addMinutesInRoute(j, data);
-                solution.setRoute(i, route);
-                solution.calculateEvaluationFunction();
+                actualizeSolution(solution, i, route);
                 long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                 if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
@@ -562,20 +536,18 @@ public class VRPDRTSD implements Heuristic {
     private Solution addMinutesInSolutionScheduleBestImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             for (int j = 1; j <= 5; j++) {
                 Route route = new Route(solution.getRoute(i));
                 long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
 
                 route.addMinutesInRoute(j, data);
-                solution.setRoute(i, route);
-                solution.calculateEvaluationFunction();
+                actualizeSolution(solution, i, route);
                 long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                 if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                     route.removeMinutesInRoute(j, data);
-                    solution.setRoute(i, route);
-                    solution.calculateEvaluationFunction();
+                    actualizeSolution(solution, i, route);
                 }
             }
         }
@@ -589,14 +561,13 @@ public class VRPDRTSD implements Heuristic {
     private Solution removeMinutesInSolutionScheduleBestImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             for (int j = 1; j <= 5; j++) {
                 Route route = new Route(solution.getRoute(i));
                 long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
 
                 route.removeMinutesInRoute(j, data);
-                solution.setRoute(i, route);
-                solution.calculateEvaluationFunction();
+                actualizeSolution(solution, i, route);
                 long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                 if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
@@ -612,20 +583,18 @@ public class VRPDRTSD implements Heuristic {
     private Solution removeMinutesInSolutionScheduleFirstImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             for (int j = 1; j <= 5; j++) {
                 Route route = new Route(solution.getRoute(i));
                 long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
 
                 route.removeMinutesInRoute(j, data);
-                solution.setRoute(i, route);
-                solution.calculateEvaluationFunction();
+                actualizeSolution(solution, i, route);
                 long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                 if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                     route.addMinutesInRoute(j, data);
-                    solution.setRoute(i, route);
-                    solution.calculateEvaluationFunction();
+                    actualizeSolution(solution, i, route);
                 }
             }
         }
@@ -639,12 +608,12 @@ public class VRPDRTSD implements Heuristic {
     private Solution swapInterRouteFirstImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             LinkedHashSet<Integer> firstRoute = new LinkedHashSet<>();
             firstRoute.addAll(returnUsedIds(solution, i));
 
-            for (int j = i + 1; j < solution.getRoutes().size(); j++) {
+            for (int j = i + 1; j < solution.getNumberOfRoutes(); j++) {
                 LinkedHashSet<Integer> secondRoute = new LinkedHashSet<>();
                 secondRoute.addAll(returnUsedIds(solution, j));
 
@@ -685,12 +654,12 @@ public class VRPDRTSD implements Heuristic {
     private Solution swapInterRouteBestImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
             List<Integer> firstRoute = new ArrayList<>();
             firstRoute.addAll(returnUsedIds(solution, i));
 
-            for (int j = i + 1; j < solution.getRoutes().size(); j++) {
+            for (int j = i + 1; j < solution.getNumberOfRoutes(); j++) {
                 List<Integer> secondRoute = new ArrayList<>();
                 secondRoute.addAll(returnUsedIds(solution, j));
 
@@ -727,14 +696,14 @@ public class VRPDRTSD implements Heuristic {
     private Solution requestReallocationFirstImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             Route firstRoute = new Route(solution.getRoute(i));
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
 
             List<Integer> firstRouteIdSequence = new ArrayList<>();
             firstRouteIdSequence.addAll(returnUsedIds(solution, i));
 
-            for (int j = 0; j < solution.getRoutes().size(); j++) {
+            for (int j = 0; j < solution.getNumberOfRoutes(); j++) {
                 if (i != j) {
                     Route secondRoute = new Route(solution.getRoute(j));
                     for (int k = 0; k < firstRouteIdSequence.size(); k++) {
@@ -746,17 +715,12 @@ public class VRPDRTSD implements Heuristic {
                             for (int m = l + 1; m < idSequenceToInsertRequest.size() + 1; m++) {
                                 List<Integer> newIdSequence = new ArrayList<>();
 
-                                newIdSequence.addAll(idSequenceToInsertRequest.subList(0, l));
-                                newIdSequence.add(requestId);
-                                newIdSequence.addAll(idSequenceToInsertRequest.subList(l, m - 1));
-                                newIdSequence.add(requestId);
-                                newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
+                                insertIdInNewSequence(newIdSequence, idSequenceToInsertRequest, l, requestId, m);
 
                                 secondRoute.clear();
                                 secondRoute.rebuild(newIdSequence, data);
 
-                                solution.setRoute(j, secondRoute);
-                                solution.calculateEvaluationFunction();
+                                actualizeSolution(solution, j, secondRoute);
 
                                 long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
@@ -765,8 +729,7 @@ public class VRPDRTSD implements Heuristic {
                                     return solution;
                                 } else {
                                     secondRoute.removeReallocatedRequest(requestId, data);
-                                    solution.setRoute(j, secondRoute);
-                                    solution.calculateEvaluationFunction();
+                                    actualizeSolution(solution, j, secondRoute);
                                 }
                             }
                         }
@@ -777,10 +740,19 @@ public class VRPDRTSD implements Heuristic {
         return this.solution;
     }
 
+    private void insertIdInNewSequence(List<Integer> newIdSequence, List<Integer> idSequenceToInsertRequest,
+            int l, int requestId, int m) {
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(0, l));
+        newIdSequence.add(requestId);
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(l, m - 1));
+        newIdSequence.add(requestId);
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
+    }
+
     private Solution requestReallocationBestImprovement() {
         Solution solution = new Solution(this.solution);
 
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             Route firstRoute = new Route(solution.getRoute(i));
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
 
@@ -800,24 +772,18 @@ public class VRPDRTSD implements Heuristic {
                                 for (int m = l + 1; m < idSequenceToInsertRequest.size() + 1; m++) {
                                     List<Integer> newIdSequence = new ArrayList<>();
 
-                                    newIdSequence.addAll(idSequenceToInsertRequest.subList(0, l));
-                                    newIdSequence.add(requestId);
-                                    newIdSequence.addAll(idSequenceToInsertRequest.subList(l, m - 1));
-                                    newIdSequence.add(requestId);
-                                    newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
+                                    insertIdInNewSequence(newIdSequence, idSequenceToInsertRequest, l, requestId, m);
 
                                     secondRoute.clear();
                                     secondRoute.rebuild(newIdSequence, data);
 
-                                    solution.setRoute(j, secondRoute);
-                                    solution.calculateEvaluationFunction();
+                                    actualizeSolution(solution, j, secondRoute);
 
                                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                                     if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                                         secondRoute.removeReallocatedRequest(requestId, data);
-                                        solution.setRoute(j, secondRoute);
-                                        solution.calculateEvaluationFunction();
+                                        actualizeSolution(solution, j, secondRoute);
                                     } else if (firstRouteIdSequence.size() > 0) {
                                         firstRouteIdSequence.remove(k);
                                         k = 0;
@@ -839,10 +805,10 @@ public class VRPDRTSD implements Heuristic {
 
     private Solution addRouteFirstImprovement() {
         Solution solution = new Solution((Solution) this.solution.clone());
-        for (int i = 0; i < solution.getRoutes().size(); i++) {
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             Route firstRoute = new Route(solution.getRoute(i));
             long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
-            for (int j = 0; j < solution.getRoutes().size(); j++) {
+            for (int j = 0; j < solution.getNumberOfRoutes(); j++) {
                 if (i != j) {
                     Route secondRoute = new Route(solution.getRoute(j));
                     List<Integer> initialSequence = new ArrayList<>();
@@ -858,11 +824,10 @@ public class VRPDRTSD implements Heuristic {
                     System.out.println(newSequence);
                     secondRoute.clear();
                     secondRoute.rebuild(newSequence, data);
-                    
+
                     System.out.println(secondRoute.getIntegerRouteRepresetation());
-                    
-                    solution.setRoute(j, secondRoute);
-                    solution.calculateEvaluationFunction();
+
+                    actualizeSolution(solution, j, secondRoute);
 
                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
                     //System.out.println(evaluationFunctionAfterMovement - evaluationFunctionBeforeMovement);
@@ -873,12 +838,102 @@ public class VRPDRTSD implements Heuristic {
                         return solution;
                     } else {
                         secondRoute.removeAddedRequests(finalSequence, data);
-                        solution.setRoute(j, secondRoute);
-                        solution.calculateEvaluationFunction();
+                        actualizeSolution(solution, j, secondRoute);
                     }
                 }
             }
         }
         return this.solution;
+    }
+
+    @Override
+    public void perturbation(int typeOfPerturbation, int intensity) {
+        switch (typeOfPerturbation) {
+            case 1:
+                this.solution = swapIntraRoutePerturbation(intensity);
+                break;
+
+            case 2:
+                //this.solution = addMinutesInSolutionScheduleFirstImprovement();
+                break;
+
+            case 3:
+                //this.solution = removeMinutesInSolutionScheduleFirstImprovement();
+                break;
+
+            case 4:
+                //this.solution = swapInterRouteFirstImprovement();
+                break;
+
+            case 5:
+                //this.solution = requestReallocationFirstImprovement();
+                break;
+
+        }
+    }
+
+    private Solution swapIntraRoutePerturbation(int intensity) {
+        Solution solution = new Solution(this.solution);
+
+        for (int i = 0; i < intensity; i++) {
+            int routeIndex = generateRouteIndex(solution);
+            Route route = new Route(solution.getRoute(routeIndex));
+
+            List<Integer> positions = generateTwoDiffentRouteRequests(solution, routeIndex);
+            int firstRequestIndex = positions.get(0);
+            int secondRequestIndex = positions.get(1);
+
+            route.swapRequests(firstRequestIndex, secondRequestIndex, data);
+            actualizeSolution(solution, routeIndex, route);
+        }
+        return solution;
+    }
+
+    private List<Integer> generateTwoDiffentRouteRequests(Solution solution, int routeIndex) {
+        Random rnd = new Random();
+        List<Integer> indexes = new ArrayList<>();
+        int routeSize = solution.getRoute(routeIndex).getIntegerSequenceOfAttendedRequests().size();
+        int firstRequest, secondRequest;
+        firstRequest = rnd.nextInt(routeSize - 2) + 1;
+        do {
+            secondRequest = rnd.nextInt(routeSize - 2) + 1;
+        } while (firstRequest == secondRequest && isTheSameRequest(solution, routeIndex, firstRequest, secondRequest));
+        indexes.add(firstRequest);
+        indexes.add(secondRequest);
+
+        return indexes;
+    }
+
+    private static boolean isTheSameRequest(Solution solution1, int routeIndex, int firstRequest, int secondRequest) {
+        return solution1.getRoute(routeIndex).getIntegerSequenceOfAttendedRequests().get(firstRequest)
+                .equals(solution1.getRoute(routeIndex).getIntegerSequenceOfAttendedRequests().get(secondRequest));
+    }
+
+    private Solution swapInterRoutePerturbation(int intensity) {
+        Solution solution = new Solution(this.solution);
+        List<Integer> indexes = generateTwoDiffentRouteIndexes(solution);
+        int firstRoute = indexes.get(0);
+        int secondRoute = indexes.get(1);
+
+        return this.solution;
+    }
+
+    private List<Integer> generateTwoDiffentRouteIndexes(Solution solution) {
+        Random rnd = new Random();
+        List<Integer> indexes = new ArrayList<>();
+        int totalRoutes = solution.getNumberOfRoutes();
+        int firstRoute, secondRoute;
+        firstRoute = rnd.nextInt(totalRoutes);
+        do {
+            secondRoute = rnd.nextInt(totalRoutes);
+        } while (firstRoute == secondRoute);
+        indexes.add(firstRoute);
+        indexes.add(secondRoute);
+
+        return indexes;
+    }
+
+    private Integer generateRouteIndex(Solution solution) {
+        return new Random().nextInt(solution.getNumberOfRoutes());
     }
 }

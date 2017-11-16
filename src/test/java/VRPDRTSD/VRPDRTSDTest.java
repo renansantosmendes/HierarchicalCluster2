@@ -311,12 +311,14 @@ public class VRPDRTSDTest {
         //problem.localSearch(10);
         //problem.perturbation(1, 1);
         //problem.getSolution().printAllInformations();
-        for (int i = 0; i < 10; i++) {
+//        for (int i = 0; i < 10; i++) {
             problem.buildGreedySolution();
-            problem.perturbation(1, 10);
+            System.out.println(problem.getSolution());
+            problem.perturbation(3, 1);
 //            problem.localSearch(8);
             System.out.println(problem.getSolution());
-        }
+            problem.getSolution().printAllInformations();
+//        }
 
     }
 }

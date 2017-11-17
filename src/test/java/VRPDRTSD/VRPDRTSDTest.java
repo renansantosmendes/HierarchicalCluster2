@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -320,5 +321,11 @@ public class VRPDRTSDTest {
             problem.getSolution().printAllInformations();
 //        }
 
+
+            for (int i = 0; i < 100; i++) {
+                Random rnd = new Random();
+                System.out.println(rnd.nextInt(3));
+            }
+            
     }
 }

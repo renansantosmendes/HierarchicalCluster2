@@ -976,19 +976,47 @@ public class VRPDRTSD implements Heuristic {
         idSequenceToInsertRequest.addAll(returnUsedIds(solution, secondRoute));
 
         List<Integer> newIdSequence = new ArrayList<>();
-
-//        newIdSequence.addAll(idSequenceToInsertRequest.subList(0, l));
-//        newIdSequence.add(requestId);
-//        newIdSequence.addAll(idSequenceToInsertRequest.subList(l, m - 1));
-//        newIdSequence.add(requestId);
-//        newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
+        List<Integer> indexesToRemove = generateTwoDiffentRequestsToOneRoute(idSequenceToRemoveRequest);
+        List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(idSequenceToInsertRequest);
+        int firstIndex = indexesToInsert.get(0);
+        int secondIndex = indexesToInsert.get(1);
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(0, firstIndex));
+        newIdSequence.add(idSequenceToRemoveRequest.get(indexesToRemove.get(0)));
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(firstIndex, secondIndex - 1));
+        newIdSequence.add(idSequenceToRemoveRequest.get(indexesToRemove.get(0)));
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(secondIndex - 1, idSequenceToInsertRequest.size()));
 //
 //        secondRoute.clear();
 //        secondRoute.rebuild(newIdSequence, data);
 //
 //        solution.setRoute(j, secondRoute);
 //        solution.calculateEvaluationFunction();
-
         return solution;
+    }
+
+    private List<Integer> generateTwoDiffentRequestsToOneRoute(List<Integer> idSequence) {
+        Random rnd = new Random();
+        List<Integer> indexes = new ArrayList<>();
+        int firstRouteSize = idSequence.size();
+        int firstRequest, secondRequest;
+        firstRequest = rnd.nextInt(firstRouteSize);
+        //do {
+            secondRequest = rnd.nextInt(firstRouteSize);
+        //} while (firstRequest == secondRequest);
+        indexes.add(firstRequest);
+        indexes.add(secondRequest);
+        Collections.sort(indexes);
+        return indexes;
+    }
+
+    private boolean isRouteForOnlyOneRequest(List<Integer> idSequence) {
+        int sequenceSize = idSequence.size();
+        if (sequenceSize == 4 && idSequence.get(0) == 0 && idSequence.get(sequenceSize - 1) == 0) {
+            return true;
+        } else if(sequenceSize == 1){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

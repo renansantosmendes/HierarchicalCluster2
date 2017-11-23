@@ -503,9 +503,16 @@ public class Route implements Cloneable {
                         data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
             }
             //inserir método de correção aqui
-            
+            //rescheduleDeliveriesDuringConstruction()
         }
+        // ou aqui
+        //rescheduleDeliveriesAfterConstruction()
         return currentTimeForDelivery;
+    }
+    
+    private void rescheduleDeliveriesAfterConstruction(int positionInSequenceOfFirstDelivery, List<Integer> idSequence,
+            Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery, ProblemData data){
+        
     }
 
     private int getTimeForDifferentRequests(Set<Integer> visitedIds, int originPassengerId, int destinationPassengerId, ProblemData data, Request originRequest, Request destinationRequest, List<Integer> deliveryTimes, int currentTimeForDelivery) {

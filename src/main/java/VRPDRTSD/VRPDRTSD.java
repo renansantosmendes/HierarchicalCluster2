@@ -298,9 +298,11 @@ public class VRPDRTSD implements Heuristic {
         List<Integer> deliverySequence = getOnlyIdSequence();
         List<Integer> pickupSequence = getOnlyIdSequence();
         List<Integer> idSequence = new ArrayList<>();
-
-        idSequence.addAll(deliverySequence);
+        //inserir a forma gulosa de se inserir as solicitações nessa parte
+        buildPickupSequence(deliverySequence);
         idSequence.addAll(pickupSequence);
+        idSequence.addAll(deliverySequence);
+        
         idSequence.add(0);
         idSequence.add(0, 0);
 
@@ -308,6 +310,11 @@ public class VRPDRTSD implements Heuristic {
         currentRoute.setIntegerRouteRepresetation(idSequence);
     }
 
+    private void buildPickupSequence(List<Integer> deliverySequence){
+        Request firstDelivery = getRequestUsingId(deliverySequence.get(0));
+        
+    }
+    
     public void scheduleRoute() {
         currentRoute.scheduleRoute2(data);
     }

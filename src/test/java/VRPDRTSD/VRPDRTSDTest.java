@@ -312,20 +312,30 @@ public class VRPDRTSDTest {
         //problem.localSearch(10);
         //problem.perturbation(1, 1);
         //problem.getSolution().printAllInformations();
-//        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             problem.buildGreedySolution();
-            System.out.println(problem.getSolution());
+            //System.out.println(problem.getSolution());
             problem.perturbation(3, 1);
 //            problem.localSearch(8);
-            System.out.println(problem.getSolution());
-            problem.getSolution().printAllInformations();
-//        }
+            //   System.out.println(problem.getSolution());
+            //     problem.getSolution().printAllInformations();
+        }
 
+    }
+    
+    
+    @Test
+    public void newBuildGreedySolution(){
+        System.out.println("------ Testing ADDROUTES movement ------");
+        String instanceName = "r010n12tw10";
+        String nodesData = "bh_n12s";
+        String adjacenciesData = "bh_adj_n12s";
+        int numberOfVehicles = 250;
+        int vehicleCapacity = 11;
 
-            for (int i = 0; i < 100; i++) {
-                Random rnd = new Random();
-                System.out.println(rnd.nextInt(3));
-            }
-            
+        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
+        problem.buildGreedySolution();
+        
+        
     }
 }

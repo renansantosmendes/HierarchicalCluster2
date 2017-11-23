@@ -426,6 +426,46 @@ public class Route implements Cloneable {
         setIntegerRepresentation(idSequence, times, data);
         capacityAnalysis(data);
     }
+    
+    public void scheduleRoute2(ProblemData data) {
+        List<Integer> deliveryIdSequence = getOnlyIdSequence();
+        List<Integer> pickupIdSequence = getOnlyIdSequence();
+        List<Integer> idSequence = new ArrayList<>();
+        Set<Integer> visitedIds = new HashSet<>();
+        int positionInSequenceOfFirstDelivery = 0;
+
+        idSequence.addAll(pickupIdSequence);
+
+        positionInSequenceOfFirstDelivery = findFirstDelivery(idSequence, visitedIds, positionInSequenceOfFirstDelivery);
+
+        deliveryIdSequence.subList(0, positionInSequenceOfFirstDelivery).clear();
+        pickupIdSequence.subList(positionInSequenceOfFirstDelivery, pickupIdSequence.size()).clear();
+
+        List<Integer> deliveryTimes = new ArrayList<>();
+        List<Integer> pickupTimes = new ArrayList<>();
+
+        int currentTimeForDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery), data)
+                .getDeliveryTimeWindowLowerInMinutes();
+        int currentTimeForPickup = -currentTimeForDelivery;
+        deliveryTimes.add(-currentTimeForDelivery);
+
+        // alteração começa aqui
+        currentTimeForDelivery = scheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
+                idSequence, visitedIds, deliveryTimes, currentTimeForDelivery, data);
+
+        addDepotInPickupAndDeliverySequences(deliveryIdSequence, pickupIdSequence);
+
+        int timeBetween = (int) data.getDuration()[getRequestUsingId(idSequence.get(idSequence.size() - 1), data).getDestination().getId()][0]
+                .getSeconds() / 60;
+        deliveryTimes.add(-currentTimeForDelivery - timeBetween);
+
+        List<Integer> times = schedulePassengerPickups(pickupIdSequence, idSequence, positionInSequenceOfFirstDelivery,
+                currentTimeForPickup, deliveryTimes, data);
+
+        addDepotInPickupAndDeliverySequences(idSequence, idSequence);
+        setIntegerRepresentation(idSequence, times, data);
+        capacityAnalysis(data);
+    }
 
     private List<Integer> getOnlyIdSequence() {
         List<Integer> idSequence = this.getIntegerRouteRepresetation()
@@ -462,6 +502,8 @@ public class Route implements Cloneable {
                 currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId,
                         data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
             }
+            //inserir método de correção aqui
+            
         }
         return currentTimeForDelivery;
     }
@@ -476,6 +518,7 @@ public class Route implements Cloneable {
                 timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getOrigin().getId()]
                         .getSeconds() / 60;
             }
+            originRequest.setDeliveryTime(-currentTimeForDelivery - timeBetween);
             deliveryTimes.add(-currentTimeForDelivery - timeBetween);
             currentTimeForDelivery -= -timeBetween;
         } else {
@@ -498,6 +541,7 @@ public class Route implements Cloneable {
         int timeBetween;
         timeBetween = (int) data.getDuration()[originRequest.getOrigin().getId()][destinationRequest.getDestination().getId()]
                 .getSeconds() / 60;
+        originRequest.setDeliveryTime(-currentTimeForDelivery - timeBetween);
         deliveryTimes.add(-currentTimeForDelivery - timeBetween);
         currentTimeForDelivery -= -timeBetween;
         return currentTimeForDelivery;

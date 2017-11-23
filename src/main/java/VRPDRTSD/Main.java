@@ -17,6 +17,11 @@ public class Main {
         System.out.println("Testing VRPDRTSD class");
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
 
+        
+        problem.buildSelfishSolution();
+        System.out.println(problem.getSolution());
+        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
+        
         problem.buildGreedySolution();
         System.out.println(problem.getSolution());
         problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);

@@ -309,7 +309,7 @@ public class VRPDRTSD implements Heuristic {
     }
 
     public void scheduleRoute() {
-        currentRoute.scheduleRoute(data);
+        currentRoute.scheduleRoute2(data);
     }
 
     private List<Integer> getOnlyIdSequence() {
@@ -973,7 +973,7 @@ public class VRPDRTSD implements Heuristic {
         List<Integer> idSequenceToRemoveRequest = new ArrayList<>();
         List<Integer> idSequenceToInsertRequest = new ArrayList<>();
         idSequenceToRemoveRequest.addAll(returnUsedIds(solution, firstRoute));
-        idSequenceToInsertRequest.addAll(returnUsedIds(solution, secondRoute));
+        idSequenceToInsertRequest.addAll(solution.getRoute(secondRoute).getIntegerSequenceOfAttendedRequests());
 
         List<Integer> newIdSequence = new ArrayList<>();
         List<Integer> indexesToRemove = generateTwoDiffentRequestsToOneRoute(idSequenceToRemoveRequest);
@@ -985,7 +985,7 @@ public class VRPDRTSD implements Heuristic {
         newIdSequence.addAll(idSequenceToInsertRequest.subList(firstIndex, secondIndex - 1));
         newIdSequence.add(idSequenceToRemoveRequest.get(indexesToRemove.get(0)));
         newIdSequence.addAll(idSequenceToInsertRequest.subList(secondIndex - 1, idSequenceToInsertRequest.size()));
-//
+        System.out.println(newIdSequence);
 //        secondRoute.clear();
 //        secondRoute.rebuild(newIdSequence, data);
 //
@@ -997,15 +997,19 @@ public class VRPDRTSD implements Heuristic {
     private List<Integer> generateTwoDiffentRequestsToOneRoute(List<Integer> idSequence) {
         Random rnd = new Random();
         List<Integer> indexes = new ArrayList<>();
-        int firstRouteSize = idSequence.size();
+        int routeSize = idSequence.size();
         int firstRequest, secondRequest;
-        firstRequest = rnd.nextInt(firstRouteSize);
-        //do {
-            secondRequest = rnd.nextInt(firstRouteSize);
-        //} while (firstRequest == secondRequest);
+        if (idSequence.get(0) == 0 && idSequence.get(routeSize - 1) == 0) {
+            firstRequest = rnd.nextInt(routeSize - 1) + 1;
+            secondRequest = rnd.nextInt(routeSize - 1) + 1;
+        } else {
+            firstRequest = rnd.nextInt(routeSize);
+            secondRequest = rnd.nextInt(routeSize);
+        }
         indexes.add(firstRequest);
         indexes.add(secondRequest);
         Collections.sort(indexes);
+
         return indexes;
     }
 
@@ -1013,9 +1017,9 @@ public class VRPDRTSD implements Heuristic {
         int sequenceSize = idSequence.size();
         if (sequenceSize == 4 && idSequence.get(0) == 0 && idSequence.get(sequenceSize - 1) == 0) {
             return true;
-        } else if(sequenceSize == 1){
+        } else if (sequenceSize == 1) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

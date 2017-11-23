@@ -311,8 +311,19 @@ public class VRPDRTSD implements Heuristic {
     }
 
     private void buildPickupSequence(List<Integer> deliverySequence){
-        Request firstDelivery = getRequestUsingId(deliverySequence.get(0));
+        Request firstDeliveryRequest = getRequestUsingId(deliverySequence.get(0));
+        Set<Request> deliveryPassengers = new HashSet<>();
         
+        for(int i=0;i < deliverySequence.size(); i++){
+            Request requestToAdd = getRequestUsingId(deliverySequence.get(i));
+            if(requestToAdd.getId() != firstDeliveryRequest.getId()){
+                deliveryPassengers.add(requestToAdd);
+            }
+        }
+        Iterator<Request> iterator = deliveryPassengers.iterator();
+        while(iterator.hasNext()){
+            Request request = iterator.next();
+        }
     }
     
     public void scheduleRoute() {

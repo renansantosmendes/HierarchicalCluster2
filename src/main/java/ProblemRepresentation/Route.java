@@ -426,7 +426,7 @@ public class Route implements Cloneable {
         setIntegerRepresentation(idSequence, times, data);
         capacityAnalysis(data);
     }
-    
+
     public void scheduleRoute2(ProblemData data) {
         List<Integer> deliveryIdSequence = getOnlyIdSequence();
         List<Integer> pickupIdSequence = getOnlyIdSequence();
@@ -488,6 +488,7 @@ public class Route implements Cloneable {
 
     private int scheludePassengerDeliveries(int positionInSequenceOfFirstDelivery, List<Integer> idSequence,
             Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery, ProblemData data) {
+        List<Integer> anticipations = new ArrayList<>();
         for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size() - 1; i++) {
             int originPassengerId = idSequence.get(i);
             int destinationPassengerId = idSequence.get(i + 1);
@@ -502,20 +503,58 @@ public class Route implements Cloneable {
                 currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId,
                         data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
             }
-            //inserir método de correção aqui
-            //rescheduleDeliveriesDuringConstruction()
+
+            saveAnticipations(originRequest, anticipations);
         }
-        // ou aqui
-        //rescheduleDeliveriesAfterConstruction()
+
+        rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
+                visitedIds, deliveryTimes, currentTimeForDelivery, data);
+
         return currentTimeForDelivery;
     }
-    
-    private void rescheduleDeliveriesAfterConstruction(int positionInSequenceOfFirstDelivery, List<Integer> idSequence,
-            Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery, ProblemData data){
-        
+
+    private void saveAnticipations(Request originRequest, List<Integer> anticipations) {
+        int anticipation = (int) (Duration.between(originRequest.getDeliveryTime(), originRequest.getDeliveryTimeWindowLower()).getSeconds() / 60);
+        if (anticipation < 0) {
+            anticipations.add(anticipation);
+        }
     }
 
-    private int getTimeForDifferentRequests(Set<Integer> visitedIds, int originPassengerId, int destinationPassengerId, ProblemData data, Request originRequest, Request destinationRequest, List<Integer> deliveryTimes, int currentTimeForDelivery) {
+    private void rescheduleDeliveriesAfterConstruction(List<Integer> anticipations, int positionInSequenceOfFirstDelivery,
+            List<Integer> idSequence, Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery,
+            ProblemData data) {
+        boolean improveRoute = false;
+        for (Integer anticipation : anticipations) {
+            for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size() - 1; i++) {
+                Request request = getRequestUsingId(idSequence.get(i), data);
+                request.setDeliveryTime(request.getDeliveryTimeInMinutes() - anticipation);
+                
+                
+//                for(Integer deliveryTime: deliveryTimes){
+//                    deliveryTime -= anticipation; 
+//                }
+                
+                for(int j = 0; j < deliveryTimes.size(); j++){
+                    deliveryTimes.set(j,deliveryTimes.get(j) + anticipation);
+                }
+                //deliveryTimes.add(i, -request.getDeliveryTimeInMinutes());
+                //deliveryTimes.add(-currentTimeForDelivery - timeBetween);
+                //currentTimeForDelivery -= -timeBetween;
+            }
+
+            if (!improveRoute) {
+                //antecipa todo mundo
+            }
+        }
+    }
+
+    private void rescheduleDeliveriesDuringConstruction() {
+
+    }
+
+    private int getTimeForDifferentRequests(Set<Integer> visitedIds, int originPassengerId, int destinationPassengerId,
+            ProblemData data, Request originRequest, Request destinationRequest, List<Integer> deliveryTimes,
+            int currentTimeForDelivery) {
         int timeBetween;
         if (visitedIds.contains(originPassengerId)) {
             if (visitedIds.contains(destinationPassengerId)) {

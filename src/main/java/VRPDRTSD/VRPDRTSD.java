@@ -298,11 +298,10 @@ public class VRPDRTSD implements Heuristic {
         List<Integer> deliverySequence = getOnlyIdSequence();
         List<Integer> pickupSequence = getOnlyIdSequence();
         List<Integer> idSequence = new ArrayList<>();
-        //inserir a forma gulosa de se inserir as solicitações nessa parte
-        buildPickupSequence(deliverySequence);
+        //buildPickupSequence(pickupSequence,deliverySequence);
         idSequence.addAll(pickupSequence);
         idSequence.addAll(deliverySequence);
-        
+
         idSequence.add(0);
         idSequence.add(0, 0);
 
@@ -310,22 +309,20 @@ public class VRPDRTSD implements Heuristic {
         currentRoute.setIntegerRouteRepresetation(idSequence);
     }
 
-    private void buildPickupSequence(List<Integer> deliverySequence){
+    private void buildPickupSequence(List<Integer> pickupSequence, List<Integer> deliverySequence) {
         Request firstDeliveryRequest = getRequestUsingId(deliverySequence.get(0));
-        Set<Request> deliveryPassengers = new HashSet<>();
-        
-        for(int i=0;i < deliverySequence.size(); i++){
+        List<Request> deliveryPassengers = new ArrayList<>();
+
+        for (int i = 0; i < deliverySequence.size(); i++) {
             Request requestToAdd = getRequestUsingId(deliverySequence.get(i));
-            if(requestToAdd.getId() != firstDeliveryRequest.getId()){
-                deliveryPassengers.add(requestToAdd);
-            }
+            deliveryPassengers.add(requestToAdd);
         }
-        Iterator<Request> iterator = deliveryPassengers.iterator();
-        while(iterator.hasNext()){
-            Request request = iterator.next();
-        }
+        
+        deliveryPassengers.sort(Comparator.comparing(Request::getDeliveryTimeWindowLowerInMinutes));
+        pickupSequence.clear();
+        pickupSequence.addAll(deliveryPassengers.stream().map(Request::getId).collect(Collectors.toCollection(ArrayList::new)));
     }
-    
+
     public void scheduleRoute() {
         currentRoute.scheduleRoute2(data);
     }

@@ -503,7 +503,7 @@ public class Route implements Cloneable {
                 currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId,
                         data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
             }
-
+            //originRequest.setDeliveryTime(currentTimeForDelivery);
             saveAnticipations(originRequest, anticipations);
         }
 
@@ -524,27 +524,40 @@ public class Route implements Cloneable {
             List<Integer> idSequence, Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery,
             ProblemData data) {
         boolean improveRoute = false;
+        int lastAnticipation = 0;
+        int totalAnticipation = anticipations.stream().mapToInt(Integer::valueOf).sum();
+        List<Request> requests = new ArrayList<>();
+
+        getDeliveryRequests(positionInSequenceOfFirstDelivery, idSequence, data, requests);
+        int delay = requests.stream().mapToInt(u -> (int) u.getAnticipation().toMinutes()).sum();
+        
         for (Integer anticipation : anticipations) {
-            for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size() - 1; i++) {
-                Request request = getRequestUsingId(idSequence.get(i), data);
-                request.setDeliveryTime(request.getDeliveryTimeInMinutes() - anticipation);
-                
-                
-//                for(Integer deliveryTime: deliveryTimes){
-//                    deliveryTime -= anticipation; 
-//                }
-                
-                for(int j = 0; j < deliveryTimes.size(); j++){
-                    deliveryTimes.set(j,deliveryTimes.get(j) + anticipation);
-                }
-                //deliveryTimes.add(i, -request.getDeliveryTimeInMinutes());
-                //deliveryTimes.add(-currentTimeForDelivery - timeBetween);
-                //currentTimeForDelivery -= -timeBetween;
+
+            for (int i = 0; i < requests.size(); i++) {
+                Request request = requests.get(i);
+                request.setDeliveryTime(request.getDeliveryTimeInMinutes() - anticipation + lastAnticipation);
             }
 
-            if (!improveRoute) {
-                //antecipa todo mundo
+            for (int j = 0; j < deliveryTimes.size(); j++) {
+                deliveryTimes.set(j, deliveryTimes.get(j) + anticipation - lastAnticipation);
             }
+
+            int newAnticipation = requests.stream().mapToInt(u -> (int) u.getAnticipation().toMinutes()).sum();
+
+            if (newAnticipation < totalAnticipation) {
+                for (int j = 0; j < deliveryTimes.size(); j++) {
+                    deliveryTimes.set(j, deliveryTimes.get(j) - anticipation);
+                }
+            } else {
+                lastAnticipation = anticipation;
+            }
+        }
+    }
+
+    private void getDeliveryRequests(int positionInSequenceOfFirstDelivery, List<Integer> idSequence, ProblemData data, List<Request> requests) {
+        for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size(); i++) {
+            Request request = getRequestUsingId(idSequence.get(i), data);
+            requests.add((Request) request.clone());
         }
     }
 

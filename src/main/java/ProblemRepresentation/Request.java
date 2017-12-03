@@ -17,6 +17,8 @@ public class Request implements Cloneable {
     private LocalDateTime deliveryTime;
     private LocalDateTime deliveryTimeWindowLower;
     private LocalDateTime deliveryTimeWindowUpper;
+    private Duration delay;
+    private Duration anticipation;
     private boolean feasible;
     private boolean boarded;
     private double requestRankingFunction;
@@ -50,8 +52,8 @@ public class Request implements Cloneable {
 
     public Request(Integer id, Node origin, Node destination, LocalDateTime dayRequestWasMade, LocalDateTime pickUpTime,
             LocalDateTime deliveryTime, LocalDateTime deliveryTimeWindowLower, LocalDateTime deliveryTimeWindowUpper,
-            boolean feasible, boolean boarded, double requestRankingFunction, double distanceRankingFunction,
-            double distanceToAttendThisRequest, double deliveryTimeWindowLowerRankingFunction,
+            Duration anticipation, Duration delay, boolean feasible, boolean boarded, double requestRankingFunction, 
+            double distanceRankingFunction, double distanceToAttendThisRequest, double deliveryTimeWindowLowerRankingFunction,
             double deliveryTimeWindowUpperRankingFunction, double originNodeRankingFunction,
             double destinationNodeRankingFunction) {
         this.id = id;
@@ -62,6 +64,8 @@ public class Request implements Cloneable {
         this.deliveryTime = deliveryTime;
         this.deliveryTimeWindowLower = deliveryTimeWindowLower;
         this.deliveryTimeWindowUpper = deliveryTimeWindowUpper;
+        this.anticipation = anticipation;
+        this.delay = delay;
         this.feasible = feasible;
         this.boarded = boarded;
         this.requestRankingFunction = requestRankingFunction;
@@ -104,10 +108,14 @@ public class Request implements Cloneable {
             int hour = deliveryTime / 60;
             int minute = deliveryTime % 60;
             this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            this.anticipation = Duration.between(this.deliveryTime, this.deliveryTimeWindowLower);
+            this.delay = Duration.between(this.deliveryTime, this.deliveryTimeWindowUpper);
         } else {
             int hour = deliveryTime / 60;
             int minute = deliveryTime % 60;
             this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            this.anticipation = Duration.between(this.deliveryTime, this.deliveryTimeWindowLower);
+            this.delay = Duration.between(this.deliveryTime, this.deliveryTimeWindowUpper);
         }
     }
 
@@ -250,6 +258,14 @@ public class Request implements Cloneable {
     public double getDestinationNodeRankingFunction() {
         return destinationNodeRankingFunction;
     }
+    
+    public Duration getAnticipation(){
+        return this.anticipation;
+    }
+    
+    public Duration getDelay(){
+        return this.delay;
+    }
 
     public void determineInicialFeasibility(LocalDateTime currentTime, Node currentNode, Duration timeMatrix[][]) {
 
@@ -306,7 +322,7 @@ public class Request implements Cloneable {
 
     public Object clone() {
         return new Request(id, (Node) origin.clone(), (Node) destination.clone(), dayRequestWasMade, pickUpTime, deliveryTime,
-                deliveryTimeWindowLower, deliveryTimeWindowUpper, feasible, boarded, requestRankingFunction,
+                deliveryTimeWindowLower, deliveryTimeWindowUpper, anticipation, delay, feasible, boarded, requestRankingFunction,
                 distanceRankingFunction, distanceToAttendThisRequest, deliveryTimeWindowLowerRankingFunction,
                 deliveryTimeWindowUpperRankingFunction, originNodeRankingFunction, destinationNodeRankingFunction);
     }

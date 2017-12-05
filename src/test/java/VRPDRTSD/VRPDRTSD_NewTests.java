@@ -19,7 +19,7 @@ public class VRPDRTSD_NewTests {
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;
-        int vehicleCapacity = 4;
+        int vehicleCapacity = 11;
 
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.buildGreedySolution();

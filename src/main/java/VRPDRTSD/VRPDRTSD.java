@@ -218,9 +218,11 @@ public class VRPDRTSD implements Heuristic {
     public void addCandidateIntoRoute() {
         if (currentRoute.getIntegerRouteRepresetation().size() == 0) {
             data.setCurrentTime(candidate.getDeliveryTimeWindowLower());
+            candidate.setDeliveryTime(data.getCurrentTime());
         } else {
             Duration displacementTime = data.getDuration()[data.getLastPassengerAddedToRoute().getDestination().getId()][candidate.getDestination().getId()];
             data.setCurrentTime(data.getCurrentTime().plus(displacementTime));
+            candidate.setDeliveryTime(data.getCurrentTime());
         }
 
         int indexOfCandidate = candidates.indexOf(candidate);

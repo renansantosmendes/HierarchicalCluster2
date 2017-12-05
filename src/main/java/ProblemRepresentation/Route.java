@@ -523,34 +523,53 @@ public class Route implements Cloneable {
     private void rescheduleDeliveriesAfterConstruction(List<Integer> anticipations, int positionInSequenceOfFirstDelivery,
             List<Integer> idSequence, Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery,
             ProblemData data) {
-        boolean improveRoute = false;
+
         int lastAnticipation = 0;
         int totalAnticipation = anticipations.stream().mapToInt(Integer::valueOf).sum();
         List<Request> requests = new ArrayList<>();
 
         getDeliveryRequests(positionInSequenceOfFirstDelivery, idSequence, data, requests);
-        int delay = requests.stream().mapToInt(u -> (int) u.getAnticipation().toMinutes()).sum();
+        int oldDelay = getTotalDelay(requests);
         
         for (Integer anticipation : anticipations) {
 
-            for (int i = 0; i < requests.size(); i++) {
-                Request request = requests.get(i);
-                request.setDeliveryTime(request.getDeliveryTimeInMinutes() - anticipation + lastAnticipation);
-            }
+            addAnticipationToRequestsDeliveries(requests, anticipation, lastAnticipation);
+            addAnticipationToTimesList(deliveryTimes, anticipation, lastAnticipation);
 
-            for (int j = 0; j < deliveryTimes.size(); j++) {
-                deliveryTimes.set(j, deliveryTimes.get(j) + anticipation - lastAnticipation);
-            }
-
-            int newAnticipation = requests.stream().mapToInt(u -> (int) u.getAnticipation().toMinutes()).sum();
-
+            int newAnticipation = getTotalAnticipationAfterTimeAdded(requests);
+            int newDelay = getTotalDelay(requests);
             if (newAnticipation < totalAnticipation) {
-                for (int j = 0; j < deliveryTimes.size(); j++) {
-                    deliveryTimes.set(j, deliveryTimes.get(j) - anticipation);
-                }
+                removeAnticipationAdded(deliveryTimes, anticipation);
             } else {
                 lastAnticipation = anticipation;
             }
+        }
+    }
+
+    private int getTotalDelay(List<Request> requests) {
+        return requests.stream().mapToInt(u -> (int) u.getAnticipation().toMinutes()/60).sum();
+    }
+
+    private void removeAnticipationAdded(List<Integer> deliveryTimes, Integer anticipation) {
+        for (int j = 0; j < deliveryTimes.size(); j++) {
+            deliveryTimes.set(j, deliveryTimes.get(j) - anticipation);
+        }
+    }
+
+    private int getTotalAnticipationAfterTimeAdded(List<Request> requests) {
+        return requests.stream().mapToInt(u -> (int) u.getAnticipation().toMinutes()).sum();
+    }
+
+    private void addAnticipationToTimesList(List<Integer> deliveryTimes, Integer anticipation, int lastAnticipation) {
+        for (int j = 0; j < deliveryTimes.size(); j++) {
+            deliveryTimes.set(j, deliveryTimes.get(j) + anticipation - lastAnticipation);
+        }
+    }
+
+    private void addAnticipationToRequestsDeliveries(List<Request> requests, Integer anticipation, int lastAnticipation) {
+        for (int i = 0; i < requests.size(); i++) {
+            Request request = requests.get(i);
+            request.setDeliveryTime(request.getDeliveryTimeInMinutes() - anticipation + lastAnticipation);
         }
     }
 

@@ -52,7 +52,7 @@ public class Request implements Cloneable {
 
     public Request(Integer id, Node origin, Node destination, LocalDateTime dayRequestWasMade, LocalDateTime pickUpTime,
             LocalDateTime deliveryTime, LocalDateTime deliveryTimeWindowLower, LocalDateTime deliveryTimeWindowUpper,
-            Duration anticipation, Duration delay, boolean feasible, boolean boarded, double requestRankingFunction, 
+            Duration anticipation, Duration delay, boolean feasible, boolean boarded, double requestRankingFunction,
             double distanceRankingFunction, double distanceToAttendThisRequest, double deliveryTimeWindowLowerRankingFunction,
             double deliveryTimeWindowUpperRankingFunction, double originNodeRankingFunction,
             double destinationNodeRankingFunction) {
@@ -100,6 +100,8 @@ public class Request implements Cloneable {
 
     public void setDeliveryTime(LocalDateTime deliveryTime) {
         this.deliveryTime = deliveryTime;
+        this.anticipation = Duration.between(this.deliveryTime, this.deliveryTimeWindowLower);
+        this.delay = Duration.between(this.deliveryTime, this.deliveryTimeWindowUpper);
     }
 
     public void setDeliveryTime(Integer deliveryTime) {
@@ -258,12 +260,12 @@ public class Request implements Cloneable {
     public double getDestinationNodeRankingFunction() {
         return destinationNodeRankingFunction;
     }
-    
-    public Duration getAnticipation(){
+
+    public Duration getAnticipation() {
         return this.anticipation;
     }
-    
-    public Duration getDelay(){
+
+    public Duration getDelay() {
         return this.delay;
     }
 
@@ -285,14 +287,14 @@ public class Request implements Cloneable {
         Duration durationFromCurrentNodeToOrigin = timeMatrix[this.getDestination().getId()][0];
 
         Duration durationBetweenTimeWindows = Duration.between(this.deliveryTimeWindowLower, lastRequestAdded.getDeliveryTimeWindowUpper());
-        long test = durationFromCurrentNodeToOrigin.getSeconds()/60;
-        long test2 = durationBetweenTimeWindows.getSeconds()/60;
+        long test = durationFromCurrentNodeToOrigin.getSeconds() / 60;
+        long test2 = durationBetweenTimeWindows.getSeconds() / 60;
         if (test2 < 0) {
             test2 = -test2;
         }
         if (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isBefore(this.getDeliveryTimeWindowUpper())
                 && (currentTime.plus(durationFromCurrentNodeToThisDeliveryNode).isAfter(this.getDeliveryTimeWindowLower()
-                        .minusMinutes(toleranceTime)))) {
+                .minusMinutes(toleranceTime)))) {
             if (durationBetweenTimeWindows.getSeconds() <= 0) {
                 this.setFeasible(true);
             } else if (test2 < test) {

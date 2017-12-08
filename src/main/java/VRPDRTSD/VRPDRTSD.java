@@ -290,8 +290,9 @@ public class VRPDRTSD implements Heuristic {
 
     public void finalizeRoute() {
         addPickupSequence();
-        scheduleRoute();
+        
         buildSequenceOfAttendedRequests();
+        scheduleRoute();
         buildNodesSequence();
         evaluateRoute();
     }

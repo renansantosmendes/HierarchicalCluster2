@@ -506,7 +506,9 @@ public class Route implements Cloneable {
             //originRequest.setDeliveryTime(currentTimeForDelivery);
             saveAnticipations(originRequest, anticipations);
         }
-
+        Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
+        saveAnticipations(lastRequest, anticipations);
+        
         rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
                 visitedIds, deliveryTimes, currentTimeForDelivery, data);
 
@@ -514,13 +516,13 @@ public class Route implements Cloneable {
     }
 
     private void saveAnticipations(Request originRequest, List<Integer> anticipations) {
-        int anticipation = (int) (Duration.between(originRequest.getDeliveryTime(), originRequest.getDeliveryTimeWindowLower()).getSeconds() / 60);
+        int anticipation = (int) (Duration.between(originRequest.getDeliveryTimeWindowLower(),originRequest.getDeliveryTime()).getSeconds() / 60);
         if (anticipation < 0) {
             anticipations.add(anticipation);
         }
     }
-
-    private void rescheduleDeliveriesAfterConstruction(List<Integer> anticipations, int positionInSequenceOfFirstDelivery,
+    
+     private void rescheduleDeliveriesAfterConstruction(List<Integer> anticipations, int positionInSequenceOfFirstDelivery,
             List<Integer> idSequence, Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery,
             ProblemData data) {
 
@@ -538,10 +540,11 @@ public class Route implements Cloneable {
 
             int newAnticipation = getTotalAnticipationAfterTimeAdded(requests);
             int newDelay = getTotalDelay(requests);
-            if (newAnticipation < totalAnticipation) {
+            if (newAnticipation < totalAnticipation && newDelay > oldDelay) {
                 removeAnticipationAdded(deliveryTimes, anticipation);
             } else {
                 lastAnticipation = anticipation;
+                totalAnticipation = newAnticipation;
             }
         }
     }
@@ -569,7 +572,7 @@ public class Route implements Cloneable {
     private void addAnticipationToRequestsDeliveries(List<Request> requests, Integer anticipation, int lastAnticipation) {
         for (int i = 0; i < requests.size(); i++) {
             Request request = requests.get(i);
-            request.setDeliveryTime(request.getDeliveryTimeInMinutes() - anticipation + lastAnticipation);
+            request.setDeliveryTime(request.getDeliveryTimeInMinutes() + anticipation + lastAnticipation);
         }
     }
 
@@ -596,7 +599,7 @@ public class Route implements Cloneable {
                 timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getOrigin().getId()]
                         .getSeconds() / 60;
             }
-            originRequest.setDeliveryTime(-currentTimeForDelivery - timeBetween);
+            //originRequest.setDeliveryTime(-currentTimeForDelivery - timeBetween);
             deliveryTimes.add(-currentTimeForDelivery - timeBetween);
             currentTimeForDelivery -= -timeBetween;
         } else {

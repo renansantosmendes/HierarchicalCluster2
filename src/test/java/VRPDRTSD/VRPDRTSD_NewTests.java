@@ -15,7 +15,7 @@ public class VRPDRTSD_NewTests {
     @Test
     public void newBuildGreedySolution(){
         System.out.println("------ Testing newBuildGreedySolution ------");
-        String instanceName = "r010n12tw10";
+        String instanceName = "r050n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;

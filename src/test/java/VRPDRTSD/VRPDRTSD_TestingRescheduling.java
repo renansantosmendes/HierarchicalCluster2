@@ -11,23 +11,23 @@ import org.junit.Test;
  *
  * @author renansantos
  */
-public class VRPDRTSD_NewTests {
+public class VRPDRTSD_TestingRescheduling {
     @Test
     public void newBuildGreedySolution(){
         System.out.println("------ Testing newBuildGreedySolution ------");
-        String instanceName = "r050n12tw10";
+        String instanceName = "r010n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 250;
-        int vehicleCapacity = 11;
+        int vehicleCapacity = 4;
 
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.buildGreedySolution();
         problem.getSolution().printAllInformations();
         
-//        problem.localSearch(8);
-//        problem.localSearch(2);
-//        problem.getSolution().printAllInformations();
+        
+        problem.localSearch(2);
+        //problem.getSolution().printAllInformations();
         
     }
 }

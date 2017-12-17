@@ -508,7 +508,7 @@ public class Route implements Cloneable {
         }
         Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
         saveAnticipations(lastRequest, anticipations);
-        
+
         rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
                 visitedIds, deliveryTimes, currentTimeForDelivery, data);
 
@@ -516,13 +516,13 @@ public class Route implements Cloneable {
     }
 
     private void saveAnticipations(Request originRequest, List<Integer> anticipations) {
-        int anticipation = (int) (Duration.between(originRequest.getDeliveryTimeWindowLower(),originRequest.getDeliveryTime()).getSeconds() / 60);
+        int anticipation = (int) (Duration.between(originRequest.getDeliveryTimeWindowLower(), originRequest.getDeliveryTime()).getSeconds() / 60);
         if (anticipation < 0) {
             anticipations.add(anticipation);
         }
     }
-    
-     private void rescheduleDeliveriesAfterConstruction(List<Integer> anticipations, int positionInSequenceOfFirstDelivery,
+
+    private void rescheduleDeliveriesAfterConstruction(List<Integer> anticipations, int positionInSequenceOfFirstDelivery,
             List<Integer> idSequence, Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery,
             ProblemData data) {
 
@@ -532,7 +532,7 @@ public class Route implements Cloneable {
 
         getDeliveryRequests(positionInSequenceOfFirstDelivery, idSequence, data, requests);
         int oldDelay = getTotalDelay(requests);
-        
+
         for (Integer anticipation : anticipations) {
 
             addAnticipationToRequestsDeliveries(requests, anticipation, lastAnticipation);
@@ -550,7 +550,7 @@ public class Route implements Cloneable {
     }
 
     private int getTotalDelay(List<Request> requests) {
-        return requests.stream().mapToInt(u -> (int) u.getAnticipation().toMinutes()/60).sum();
+        return requests.stream().mapToInt(u -> (int) u.getAnticipation().toMinutes() / 60).sum();
     }
 
     private void removeAnticipationAdded(List<Integer> deliveryTimes, Integer anticipation) {
@@ -699,8 +699,6 @@ public class Route implements Cloneable {
             }
             vehicleOccupation.add(busySeats);
         }
-//        System.out.println(vehicleOccupation);
-//        System.out.println(idSequence + "\n");
     }
 
     private void penalizeRoute() {

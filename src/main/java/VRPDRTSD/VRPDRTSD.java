@@ -327,7 +327,7 @@ public class VRPDRTSD implements Heuristic {
     }
 
     public void scheduleRoute() {
-        currentRoute.scheduleRoute2(data);
+        currentRoute.scheduleRouteUsingBestScheduling(data);
     }
 
     private List<Integer> getOnlyIdSequence() {
@@ -518,6 +518,8 @@ public class VRPDRTSD implements Heuristic {
                     if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                         route.swapRequests(j, k, data);
                         actualizeSolution(solution, i, route);
+                    }else{
+                        evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
                     }
                 }
             }

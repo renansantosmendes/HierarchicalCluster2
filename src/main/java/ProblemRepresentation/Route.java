@@ -356,7 +356,8 @@ public class Route implements Cloneable {
 
     public void rebuild(List<Integer> idSequence, ProblemData data) {
         this.setIntegerRouteRepresetation(idSequence);
-        this.scheduleRoute(data);
+//        this.scheduleRoute(data);
+        this.scheduleRouteUsingBestScheduling(data);
         this.buildSequenceOfAttendedRequests(data);
         this.buildNodesSequence(data);
         this.evaluateRoute(data);
@@ -427,7 +428,7 @@ public class Route implements Cloneable {
         capacityAnalysis(data);
     }
 
-    public void scheduleRoute2(ProblemData data) {
+    public void scheduleRouteUsingBestScheduling(ProblemData data) {
         List<Integer> deliveryIdSequence = getOnlyIdSequence();
         List<Integer> pickupIdSequence = getOnlyIdSequence();
         List<Integer> idSequence = new ArrayList<>();
@@ -449,8 +450,8 @@ public class Route implements Cloneable {
         int currentTimeForPickup = -currentTimeForDelivery;
         deliveryTimes.add(-currentTimeForDelivery);
 
-        // alteração começa aqui
-        currentTimeForDelivery = scheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
+        
+        currentTimeForDelivery = bestScheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
                 idSequence, visitedIds, deliveryTimes, currentTimeForDelivery, data);
 
         addDepotInPickupAndDeliverySequences(deliveryIdSequence, pickupIdSequence);
@@ -487,6 +488,35 @@ public class Route implements Cloneable {
     }
 
     private int scheludePassengerDeliveries(int positionInSequenceOfFirstDelivery, List<Integer> idSequence,
+            Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery, ProblemData data) {
+        List<Integer> anticipations = new ArrayList<>();
+        for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size() - 1; i++) {
+            int originPassengerId = idSequence.get(i);
+            int destinationPassengerId = idSequence.get(i + 1);
+            Request originRequest = getRequestUsingId(originPassengerId, data);
+            Request destinationRequest = getRequestUsingId(destinationPassengerId, data);
+            int timeBetween;
+
+            if (originPassengerId == destinationPassengerId) {
+                currentTimeForDelivery = getTimeForTheSameRequest(data, originRequest, destinationRequest,
+                        deliveryTimes, currentTimeForDelivery);
+            } else {
+                currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId,
+                        data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
+            }
+            //originRequest.setDeliveryTime(currentTimeForDelivery);
+            saveAnticipations(originRequest, anticipations);
+        }
+        Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
+        saveAnticipations(lastRequest, anticipations);
+
+//        rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
+//                visitedIds, deliveryTimes, currentTimeForDelivery, data);
+
+        return currentTimeForDelivery;
+    }
+    
+    private int bestScheludePassengerDeliveries(int positionInSequenceOfFirstDelivery, List<Integer> idSequence,
             Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery, ProblemData data) {
         List<Integer> anticipations = new ArrayList<>();
         for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size() - 1; i++) {

@@ -26,8 +26,8 @@ public class VRPDRTSD_TestingRescheduling {
         problem.getSolution().printAllInformations();
         
         
-        problem.localSearch(2);
-        //problem.getSolution().printAllInformations();
+        problem.localSearch(8);
+        problem.getSolution().printAllInformations();
         
     }
 }

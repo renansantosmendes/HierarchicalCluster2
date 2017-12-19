@@ -450,7 +450,6 @@ public class Route implements Cloneable {
         int currentTimeForPickup = -currentTimeForDelivery;
         deliveryTimes.add(-currentTimeForDelivery);
 
-        
         currentTimeForDelivery = bestScheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
                 idSequence, visitedIds, deliveryTimes, currentTimeForDelivery, data);
 
@@ -512,10 +511,9 @@ public class Route implements Cloneable {
 
 //        rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
 //                visitedIds, deliveryTimes, currentTimeForDelivery, data);
-
         return currentTimeForDelivery;
     }
-    
+
     private int bestScheludePassengerDeliveries(int positionInSequenceOfFirstDelivery, List<Integer> idSequence,
             Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery, ProblemData data) {
         List<Integer> anticipations = new ArrayList<>();
@@ -533,7 +531,6 @@ public class Route implements Cloneable {
                 currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId,
                         data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
             }
-            //originRequest.setDeliveryTime(currentTimeForDelivery);
             saveAnticipations(originRequest, anticipations);
         }
         Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
@@ -556,25 +553,29 @@ public class Route implements Cloneable {
             List<Integer> idSequence, Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery,
             ProblemData data) {
 
-        int lastAnticipation = 0;
-        int totalAnticipation = anticipations.stream().mapToInt(Integer::valueOf).sum();
-        List<Request> requests = new ArrayList<>();
+        if (idSequence.size() > 2) {
+            int lastAnticipation = 0;
+            int totalAnticipation = anticipations.stream().mapToInt(Integer::valueOf).sum();
+            List<Request> requests = new ArrayList<>();
 
-        getDeliveryRequests(positionInSequenceOfFirstDelivery, idSequence, data, requests);
-        int oldDelay = getTotalDelay(requests);
+            getDeliveryRequests(positionInSequenceOfFirstDelivery, idSequence, data, requests);
+            int oldDelay = getTotalDelay(requests);
 
-        for (Integer anticipation : anticipations) {
+            for (Integer anticipation : anticipations) {
 
-            addAnticipationToRequestsDeliveries(requests, anticipation, lastAnticipation);
-            addAnticipationToTimesList(deliveryTimes, anticipation, lastAnticipation);
+                addAnticipationToRequestsDeliveries(requests, anticipation, lastAnticipation);
+                addAnticipationToTimesList(deliveryTimes, anticipation, lastAnticipation);
 
-            int newAnticipation = getTotalAnticipationAfterTimeAdded(requests);
-            int newDelay = getTotalDelay(requests);
-            if (newAnticipation < totalAnticipation && newDelay > oldDelay) {
-                removeAnticipationAdded(deliveryTimes, anticipation);
-            } else {
-                lastAnticipation = anticipation;
-                totalAnticipation = newAnticipation;
+                int newAnticipation = getTotalAnticipationAfterTimeAdded(requests);
+                int newDelay = getTotalDelay(requests);
+                if (newAnticipation < totalAnticipation && newDelay > oldDelay) {
+                    removeAnticipationAdded(deliveryTimes, anticipation);
+                } else {
+//                    currentTimeForDelivery 
+                    lastAnticipation = anticipation;
+                    totalAnticipation = newAnticipation;
+                    //subtractAddedAnticipationFromSet(anticipations,lastAnticipation);
+                }
             }
         }
     }
@@ -586,6 +587,14 @@ public class Route implements Cloneable {
     private void removeAnticipationAdded(List<Integer> deliveryTimes, Integer anticipation) {
         for (int j = 0; j < deliveryTimes.size(); j++) {
             deliveryTimes.set(j, deliveryTimes.get(j) - anticipation);
+        }
+    }
+
+    private void subtractAddedAnticipationFromSet(List<Integer> anticipations, int lastAnticipation) {
+        if (anticipations.size() != 0) {
+            for (int i = 0; i < anticipations.size(); i++) {
+                anticipations.set(i, anticipations.get(i) - lastAnticipation);
+            }
         }
     }
 

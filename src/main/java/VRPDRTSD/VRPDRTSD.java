@@ -290,7 +290,7 @@ public class VRPDRTSD implements Heuristic {
 
     public void finalizeRoute() {
         addPickupSequence();
-        
+
         buildSequenceOfAttendedRequests();
         scheduleRoute();
         buildNodesSequence();
@@ -320,7 +320,7 @@ public class VRPDRTSD implements Heuristic {
             Request requestToAdd = getRequestUsingId(deliverySequence.get(i));
             deliveryPassengers.add(requestToAdd);
         }
-        
+
         deliveryPassengers.sort(Comparator.comparing(Request::getDeliveryTimeWindowLowerInMinutes));
         pickupSequence.clear();
         pickupSequence.addAll(deliveryPassengers.stream().map(Request::getId).collect(Collectors.toCollection(ArrayList::new)));
@@ -518,7 +518,7 @@ public class VRPDRTSD implements Heuristic {
                     if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                         route.swapRequests(j, k, data);
                         actualizeSolution(solution, i, route);
-                    }else{
+                    } else {
                         evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
                     }
                 }
@@ -685,12 +685,15 @@ public class VRPDRTSD implements Heuristic {
 
                 for (int k = 0; k < firstRoute.size(); k++) {
                     for (int l = 0; l < secondRoute.size(); l++) {
+
                         swapRequestsInDifferentRoutes(solution, i, firstRoute, k, secondRoute, l, j);
                         long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
-
+                        
+//                        solution.getRoutes().forEach(System.out::println);
                         if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                             swapRequestsInDifferentRoutes(solution, i, secondRoute, l, firstRoute, k, j);
                         } else {
+                            System.out.println(solution);
                             evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
                             int removedIdFromFirstRoute = firstRoute.get(k);
                             int removedIdFromSecondRoute = secondRoute.get(l);

@@ -24,10 +24,12 @@ public class VRPDRTSD_TestingRescheduling {
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.buildGreedySolution();
         problem.getSolution().printAllInformations();
+        problem.getSolution().getRoutes().forEach(System.out::println);
         
-        
-        problem.localSearch(8);
-        problem.getSolution().printAllInformations();
+//        problem.localSearch(2);
+//        problem.getSolution().printAllInformations();
+//        
+//        problem.getSolution().getRoutes().forEach(System.out::println);
         
     }
 }

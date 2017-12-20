@@ -26,9 +26,9 @@ public class VRPDRTSD_TestingRescheduling {
         problem.getSolution().printAllInformations();
         problem.getSolution().getRoutes().forEach(System.out::println);
         
-//        problem.localSearch(2);
+//        problem.localSearch(8);
 //        problem.getSolution().printAllInformations();
-//        
+////        
 //        problem.getSolution().getRoutes().forEach(System.out::println);
         
     }

@@ -447,12 +447,12 @@ public class Route implements Cloneable {
 
         int currentTimeForDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery), data)
                 .getDeliveryTimeWindowLowerInMinutes();
-        int currentTimeForPickup = -currentTimeForDelivery;
-        deliveryTimes.add(-currentTimeForDelivery);
 
         currentTimeForDelivery = bestScheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
                 idSequence, visitedIds, deliveryTimes, currentTimeForDelivery, data);
-
+//        int currentTimeForPickup = -currentTimeForDelivery;
+        int currentTimeForPickup = deliveryTimes.get(0);
+        deliveryTimes.add(-currentTimeForDelivery);
         addDepotInPickupAndDeliverySequences(deliveryIdSequence, pickupIdSequence);
 
         int timeBetween = (int) data.getDuration()[getRequestUsingId(idSequence.get(idSequence.size() - 1), data).getDestination().getId()][0]
@@ -509,8 +509,6 @@ public class Route implements Cloneable {
         Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
         saveAnticipations(lastRequest, anticipations);
 
-//        rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
-//                visitedIds, deliveryTimes, currentTimeForDelivery, data);
         return currentTimeForDelivery;
     }
 
@@ -536,10 +534,21 @@ public class Route implements Cloneable {
         Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
         saveAnticipations(lastRequest, anticipations);
 
-        rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
-                visitedIds, deliveryTimes, currentTimeForDelivery, data);
+        if (isNotARouteForOnePassenger(idSequence)) {
+            currentTimeForDelivery = rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
+                    visitedIds, deliveryTimes, currentTimeForDelivery, data);
+        }else{
+            Request request = getRequestUsingId(idSequence.get(0), data);
+            deliveryTimes.add(-request.getDeliveryTimeWindowLowerInMinutes());
+            //change this part
+            deliveryTimes.add(-1);
+        }
 
         return currentTimeForDelivery;
+    }
+
+    private static boolean isNotARouteForOnePassenger(List<Integer> idSequence) {
+        return idSequence.size() > 2;
     }
 
     private void saveAnticipations(Request originRequest, List<Integer> anticipations) {
@@ -549,35 +558,33 @@ public class Route implements Cloneable {
         }
     }
 
-    private void rescheduleDeliveriesAfterConstruction(List<Integer> anticipations, int positionInSequenceOfFirstDelivery,
+    private int rescheduleDeliveriesAfterConstruction(List<Integer> anticipations, int positionInSequenceOfFirstDelivery,
             List<Integer> idSequence, Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery,
             ProblemData data) {
 
-        if (idSequence.size() > 2) {
-            int lastAnticipation = 0;
-            int totalAnticipation = anticipations.stream().mapToInt(Integer::valueOf).sum();
-            List<Request> requests = new ArrayList<>();
+        int lastAnticipation = 0;
+        int totalAnticipation = anticipations.stream().mapToInt(Integer::valueOf).sum();
+        List<Request> requests = new ArrayList<>();
 
-            getDeliveryRequests(positionInSequenceOfFirstDelivery, idSequence, data, requests);
-            int oldDelay = getTotalDelay(requests);
+        getDeliveryRequests(positionInSequenceOfFirstDelivery, idSequence, data, requests);
+        int oldDelay = getTotalDelay(requests);
 
-            for (Integer anticipation : anticipations) {
+        for (Integer anticipation : anticipations) {
 
-                addAnticipationToRequestsDeliveries(requests, anticipation, lastAnticipation);
-                addAnticipationToTimesList(deliveryTimes, anticipation, lastAnticipation);
+            addAnticipationToRequestsDeliveries(requests, anticipation, lastAnticipation);
+            addAnticipationToTimesList(deliveryTimes, anticipation, lastAnticipation);
 
-                int newAnticipation = getTotalAnticipationAfterTimeAdded(requests);
-                int newDelay = getTotalDelay(requests);
-                if (newAnticipation < totalAnticipation && newDelay > oldDelay) {
-                    removeAnticipationAdded(deliveryTimes, anticipation);
-                } else {
-//                    currentTimeForDelivery 
-                    lastAnticipation = anticipation;
-                    totalAnticipation = newAnticipation;
-                    //subtractAddedAnticipationFromSet(anticipations,lastAnticipation);
-                }
+            int newAnticipation = getTotalAnticipationAfterTimeAdded(requests);
+            int newDelay = getTotalDelay(requests);
+            if (newAnticipation < totalAnticipation && newDelay > oldDelay) {
+                removeAnticipationAdded(deliveryTimes, anticipation);
+            } else {
+                lastAnticipation = anticipation;
+                totalAnticipation = newAnticipation;
             }
         }
+        return -deliveryTimes.get(deliveryTimes.size() - 1);
+
     }
 
     private int getTotalDelay(List<Request> requests) {
@@ -611,7 +618,8 @@ public class Route implements Cloneable {
     private void addAnticipationToRequestsDeliveries(List<Request> requests, Integer anticipation, int lastAnticipation) {
         for (int i = 0; i < requests.size(); i++) {
             Request request = requests.get(i);
-            request.setDeliveryTime(request.getDeliveryTimeInMinutes() + anticipation + lastAnticipation);
+            request.setDeliveryTime(request.getDeliveryTimeInMinutes() - anticipation - lastAnticipation);
+            int k = 0;
         }
     }
 

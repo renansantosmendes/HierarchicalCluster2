@@ -447,10 +447,9 @@ public class Route implements Cloneable {
 
         int currentTimeForDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery), data)
                 .getDeliveryTimeWindowLowerInMinutes();
-
+        deliveryTimes.add(-currentTimeForDelivery);
         currentTimeForDelivery = bestScheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
                 idSequence, visitedIds, deliveryTimes, currentTimeForDelivery, data);
-//        int currentTimeForPickup = -currentTimeForDelivery;
         int currentTimeForPickup = deliveryTimes.get(0);
         deliveryTimes.add(-currentTimeForDelivery);
         addDepotInPickupAndDeliverySequences(deliveryIdSequence, pickupIdSequence);
@@ -515,6 +514,7 @@ public class Route implements Cloneable {
     private int bestScheludePassengerDeliveries(int positionInSequenceOfFirstDelivery, List<Integer> idSequence,
             Set<Integer> visitedIds, List<Integer> deliveryTimes, int currentTimeForDelivery, ProblemData data) {
         List<Integer> anticipations = new ArrayList<>();
+
         for (int i = positionInSequenceOfFirstDelivery; i < idSequence.size() - 1; i++) {
             int originPassengerId = idSequence.get(i);
             int destinationPassengerId = idSequence.get(i + 1);
@@ -537,11 +537,11 @@ public class Route implements Cloneable {
         if (isNotARouteForOnePassenger(idSequence)) {
             currentTimeForDelivery = rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
                     visitedIds, deliveryTimes, currentTimeForDelivery, data);
-        }else{
+        } else {
             Request request = getRequestUsingId(idSequence.get(0), data);
             deliveryTimes.add(-request.getDeliveryTimeWindowLowerInMinutes());
-            //change this part
-            deliveryTimes.add(-1);
+            int time = (int) -data.getDuration()[request.getDestination().getId()][0].getSeconds() / 60;
+            deliveryTimes.add(-currentTimeForDelivery - time);
         }
 
         return currentTimeForDelivery;
@@ -646,7 +646,6 @@ public class Route implements Cloneable {
                 timeBetween = (int) data.getDuration()[originRequest.getDestination().getId()][destinationRequest.getOrigin().getId()]
                         .getSeconds() / 60;
             }
-            //originRequest.setDeliveryTime(-currentTimeForDelivery - timeBetween);
             deliveryTimes.add(-currentTimeForDelivery - timeBetween);
             currentTimeForDelivery -= -timeBetween;
         } else {

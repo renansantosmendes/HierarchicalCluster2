@@ -356,7 +356,6 @@ public class Route implements Cloneable {
 
     public void rebuild(List<Integer> idSequence, ProblemData data) {
         this.setIntegerRouteRepresetation(idSequence);
-//        this.scheduleRoute(data);
         this.scheduleRouteUsingBestScheduling(data);
         this.buildSequenceOfAttendedRequests(data);
         this.buildNodesSequence(data);

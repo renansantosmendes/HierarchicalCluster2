@@ -36,7 +36,6 @@ public class Solution implements Cloneable {
         this.routes.clear();
         this.routes.addAll(solution.getRoutes());
         this.nonAttendedRequests = solution.getNonAttendedRequests();
-
     }
 
     private void initializeAttributesWithEmptyLists() {
@@ -86,6 +85,19 @@ public class Solution implements Cloneable {
 
     public void setRoute(int position, Route route) {
         routes.get(position).setRoute(route);
+    }
+    
+    public void setSolution(Solution solution) {
+        initializeAttributesWithEmptyLists();
+        clearAttributeValues();
+        this.totalDistanceTraveled = solution.getTotalDistanceTraveled();
+        this.totalTravelTime = solution.getTotalTravelTime();
+        this.totalTimeWindowAnticipation = solution.getTotalTimeWindowAnticipation();
+        this.totalTimeWindowDelay = solution.getTotalTimeWindowDelay();
+        this.evaluationFunction = solution.getEvaluationFunction();
+        this.routes.clear();
+        this.routes.addAll(solution.getRoutes());
+        this.nonAttendedRequests = solution.getNonAttendedRequests();
     }
 
     public Set<Request> getNonAttendedRequests() {

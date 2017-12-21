@@ -688,12 +688,12 @@ public class VRPDRTSD implements Heuristic {
 
                         swapRequestsInDifferentRoutes(solution, i, firstRoute, k, secondRoute, l, j);
                         long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
-                        
+
 //                        solution.getRoutes().forEach(System.out::println);
                         if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                             swapRequestsInDifferentRoutes(solution, i, secondRoute, l, firstRoute, k, j);
                         } else {
-                            System.out.println(solution);
+                            System.out.println("iteration = " + solution);
                             evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
                             int removedIdFromFirstRoute = firstRoute.get(k);
                             int removedIdFromSecondRoute = secondRoute.get(l);
@@ -706,9 +706,9 @@ public class VRPDRTSD implements Heuristic {
         }
 
         if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
-            return solution;
+            return (Solution) solution.clone();
         } else {
-            return this.solution;
+            return (Solution) this.solution.clone();
         }
     }
 

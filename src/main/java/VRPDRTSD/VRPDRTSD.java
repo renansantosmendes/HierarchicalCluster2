@@ -445,18 +445,18 @@ public class VRPDRTSD implements Heuristic {
             case 2:
                 this.solution = swapIntraBestImprovement();
                 break;
-//            case 3:
-//                this.solution = addMinutesInSolutionScheduleFirstImprovement();
-//                break;
-//            case 4:
-//                this.solution = addMinutesInSolutionScheduleBestImprovement();
-//                break;
-//            case 5:
-//                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
-//                break;
-//            case 6:
-//                this.solution = removeMinutesInSolutionScheduleBestImprovement();
-//                break;
+            case 3:
+                this.solution = addMinutesInSolutionScheduleFirstImprovement();
+                break;
+            case 4:
+                this.solution = addMinutesInSolutionScheduleBestImprovement();
+                break;
+            case 5:
+                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
+                break;
+            case 6:
+                this.solution = removeMinutesInSolutionScheduleBestImprovement();
+                break;
             case 7:
                 this.solution = swapInterRouteFirstImprovement();
                 break;
@@ -476,6 +476,7 @@ public class VRPDRTSD implements Heuristic {
 //                this.solution = addRouteBestImprovement();
                 break;
         }
+        this.solution.buildIntegerRepresentation();
     }
 
     private Solution swapIntraRouteFirstImprovement() {

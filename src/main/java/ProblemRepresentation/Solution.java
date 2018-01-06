@@ -18,7 +18,7 @@ public class Solution implements Cloneable {
     private long evaluationFunction;
     private List<Route> routes;
     private Set<Request> nonAttendedRequests;
-    private List<Integer> integerRepresentation;
+    private List<Integer> integerRepresentation = new ArrayList<>();
 
     public Solution() {
         initializeAttributesWithEmptyLists();
@@ -125,7 +125,7 @@ public class Solution implements Cloneable {
         }
     }
     
-    private void buildIntegerRepresentation(){
+    public void buildIntegerRepresentation(){
         this.integerRepresentation.clear();
         for(Route route: this.routes){
             this.integerRepresentation.addAll(route.getIntegerRouteRepresetation());

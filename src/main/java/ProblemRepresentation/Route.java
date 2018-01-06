@@ -447,7 +447,9 @@ public class Route implements Cloneable {
         int currentTimeForDelivery = getRequestUsingId(idSequence.get(positionInSequenceOfFirstDelivery), data)
                 .getDeliveryTimeWindowLowerInMinutes();
         deliveryTimes.add(-currentTimeForDelivery);
-        currentTimeForDelivery = bestScheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
+//        currentTimeForDelivery = bestScheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
+//                idSequence, visitedIds, deliveryTimes, currentTimeForDelivery, data);
+        currentTimeForDelivery = scheludePassengerDeliveries(positionInSequenceOfFirstDelivery,
                 idSequence, visitedIds, deliveryTimes, currentTimeForDelivery, data);
         int currentTimeForPickup = deliveryTimes.get(0);
         deliveryTimes.add(-currentTimeForDelivery);

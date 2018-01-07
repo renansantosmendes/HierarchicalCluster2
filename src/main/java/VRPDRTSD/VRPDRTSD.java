@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  *
  * @author renansantos
  */
-public class VRPDRTSD implements Heuristic {
+public class VRPDRTSD implements Metaheuristic {
 
     private ProblemData data;
     private String instanceName;
@@ -295,6 +295,7 @@ public class VRPDRTSD implements Heuristic {
         scheduleRoute();
         buildNodesSequence();
         evaluateRoute();
+
     }
 
     private void addPickupSequence() {
@@ -392,6 +393,7 @@ public class VRPDRTSD implements Heuristic {
 
     private void finalizeSolution() {
         solution.calculateEvaluationFunction();
+        solution.buildIntegerRepresentation();
     }
 
     @Override
@@ -478,7 +480,7 @@ public class VRPDRTSD implements Heuristic {
         }
         this.solution.buildIntegerRepresentation();
     }
-
+    
     private Solution swapIntraRouteFirstImprovement() {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
@@ -1046,5 +1048,69 @@ public class VRPDRTSD implements Heuristic {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void MultiStart() {
+
+    }
+
+    @Override
+    public void SimulatedAnnealing() {
+
+    }
+
+    @Override
+    public void VND() {
+        buildGreedySolution();
+        Solution initialSolution = new Solution(this.getSolution());
+        Solution currentSolution = new Solution(this.getSolution());
+        int numberOfNeighborhoods = 10;
+        int currentNeighborhood = 1;
+        List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods);
+        while (currentNeighborhood < numberOfNeighborhoods) {
+            printAlgorithmInformations(solution, currentNeighborhood);
+            localSearch(currentNeighborhood);
+            if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
+                initialSolution.setSolution(solution);
+                currentNeighborhood = 1;
+            } else {
+                currentNeighborhood++;
+            }
+        }
+        solution.setSolution(initialSolution);
+        //initialSolution.printAllInformations();
+    }
+    
+    private void printAlgorithmInformations(Solution solution, int currentNeighborhood){
+        System.out.println("Objective Function = " + solution.getEvaluationFunction() + "\t Neighborhood = " + currentNeighborhood);
+    }
+
+    private List<Integer> generateNeighborhoodList(int numberOfNeighborhoods) {
+        List<Integer> neighborhoods = new ArrayList<>();
+        for (int i = 1; i <= numberOfNeighborhoods; i++) {
+            neighborhoods.add(i);
+        }
+        return neighborhoods;
+    }
+
+    @Override
+    public void VNS() {
+
+    }
+
+    @Override
+    public void GRASP() {
+
+    }
+
+    @Override
+    public void ILS() {
+
+    }
+
+    @Override
+    public void TabuSearch() {
+
     }
 }

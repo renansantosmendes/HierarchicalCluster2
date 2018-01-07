@@ -11,7 +11,7 @@ package Algorithms;
  */
 public interface Metaheuristic extends Heuristic {
 
-    public void MutiStart();
+    public void MultiStart();
 
     public void SimulatedAnnealing();
 

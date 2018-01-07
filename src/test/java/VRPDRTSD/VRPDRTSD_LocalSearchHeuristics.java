@@ -17,15 +17,15 @@ public class VRPDRTSD_LocalSearchHeuristics {
 
     @Test
     public void VND_Test() {
-        String instanceName = "r010n12tw10";
+        String instanceName = "r250n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 50;
-        int vehicleCapacity = 11;
+        int vehicleCapacity = 4;
         System.out.println("Testing Metaheuristics");
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.VND();
-        problem.getSolution().printAllInformations();
+        //problem.getSolution().printAllInformations();
         assertNotNull(problem.getSolution());
     }
 

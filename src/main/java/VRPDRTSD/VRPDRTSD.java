@@ -696,7 +696,7 @@ public class VRPDRTSD implements Metaheuristic {
                         if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
                             swapRequestsInDifferentRoutes(solution, i, secondRoute, l, firstRoute, k, j);
                         } else {
-                            System.out.println("iteration = " + solution);
+                            //System.out.println("iteration = " + solution);
                             evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
                             int removedIdFromFirstRoute = firstRoute.get(k);
                             int removedIdFromSecondRoute = secondRoute.get(l);
@@ -1064,12 +1064,12 @@ public class VRPDRTSD implements Metaheuristic {
     public void VND() {
         buildGreedySolution();
         Solution initialSolution = new Solution(this.getSolution());
-        Solution currentSolution = new Solution(this.getSolution());
+        initialSolution.printAllInformations();
         int numberOfNeighborhoods = 10;
         int currentNeighborhood = 1;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods);
         while (currentNeighborhood < numberOfNeighborhoods) {
-            printAlgorithmInformations(solution, currentNeighborhood);
+            printAlgorithmInformations(initialSolution, currentNeighborhood);
             localSearch(currentNeighborhood);
             if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
@@ -1079,7 +1079,7 @@ public class VRPDRTSD implements Metaheuristic {
             }
         }
         solution.setSolution(initialSolution);
-        //initialSolution.printAllInformations();
+        initialSolution.printAllInformations();
     }
     
     private void printAlgorithmInformations(Solution solution, int currentNeighborhood){

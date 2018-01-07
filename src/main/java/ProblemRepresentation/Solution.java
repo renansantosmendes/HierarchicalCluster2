@@ -99,6 +99,7 @@ public class Solution implements Cloneable {
         this.routes.clear();
         this.routes.addAll(solution.getRoutes());
         this.nonAttendedRequests = solution.getNonAttendedRequests();
+        this.integerRepresentation.addAll(solution.getIntegerRepresentation());
     }
 
     public Set<Request> getNonAttendedRequests() {

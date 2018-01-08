@@ -28,7 +28,7 @@ public class Request implements Cloneable {
     private double deliveryTimeWindowUpperRankingFunction;
     private double originNodeRankingFunction;
     private double destinationNodeRankingFunction;
-    static int toleranceTime = 10;
+    static int toleranceTime = 30;
 
     public Request(Integer requestId, Node passengerOrigin, Node passengerDestination, LocalDateTime dayRequestWasMade,
             LocalDateTime pickUpTime, LocalDateTime deliveryTimeWindowLower, LocalDateTime deliveryTimeWindowUpper) {

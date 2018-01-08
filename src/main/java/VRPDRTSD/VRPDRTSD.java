@@ -753,7 +753,7 @@ public class VRPDRTSD implements Metaheuristic {
                                 long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
                                 if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
-                                    System.out.println("entrou");
+                                    //System.out.println("entrou");
                                     return solution;
                                 } else {
                                     secondRoute.removeReallocatedRequest(requestId, data);

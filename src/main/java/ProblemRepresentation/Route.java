@@ -288,8 +288,11 @@ public class Route implements Cloneable {
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime * this.totalTimeWindowDelay
                     + this.totalTimeWindowAnticipation;
+//            this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime * this.totalTimeWindowDelay
+//                    * (1 + this.totalTimeWindowAnticipation);
         } else {
             this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime + this.totalTimeWindowAnticipation;
+//            this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime*(1 + this.totalTimeWindowAnticipation);
         }
 
     }

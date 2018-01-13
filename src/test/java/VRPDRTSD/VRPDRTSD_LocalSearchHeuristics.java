@@ -25,7 +25,10 @@ public class VRPDRTSD_LocalSearchHeuristics {
         System.out.println("Testing Metaheuristics");
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.VND();
-        //problem.getSolution().printAllInformations();
+//        problem.buildGreedySolution();
+//        problem.getSolution().printAllInformations();
+//        problem.localSearch(4);
+        problem.getSolution().printAllInformations();
         assertNotNull(problem.getSolution());
     }
 

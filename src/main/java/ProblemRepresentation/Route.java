@@ -506,22 +506,21 @@ public class Route implements Cloneable {
                 currentTimeForDelivery = getTimeForDifferentRequests(visitedIds, originPassengerId, destinationPassengerId,
                         data, originRequest, destinationRequest, deliveryTimes, currentTimeForDelivery);
             }
-            //originRequest.setDeliveryTime(currentTimeForDelivery);
             saveAnticipations(originRequest, anticipations);
         }
         addTimeToDepot(deliveryTimes, currentTimeForDelivery, data, idSequence);
         Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
         saveAnticipations(lastRequest, anticipations);
 
-        if (isNotARouteForOnePassenger(idSequence)) {
-            currentTimeForDelivery = rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
-                    visitedIds, deliveryTimes, currentTimeForDelivery, data);
-        } else {
-            Request request = getRequestUsingId(idSequence.get(0), data);
-            deliveryTimes.add(-request.getDeliveryTimeWindowLowerInMinutes());
-            int time = (int) -data.getDuration()[request.getDestination().getId()][0].getSeconds() / 60;
-            deliveryTimes.add(-currentTimeForDelivery - time);
-        }
+//        if (isNotARouteForOnePassenger(idSequence)) {
+//            currentTimeForDelivery = rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
+//                    visitedIds, deliveryTimes, currentTimeForDelivery, data);
+//        } else {
+//            Request request = getRequestUsingId(idSequence.get(0), data);
+//            deliveryTimes.add(-request.getDeliveryTimeWindowLowerInMinutes());
+//            int time = (int) -data.getDuration()[request.getDestination().getId()][0].getSeconds() / 60;
+//            deliveryTimes.add(-currentTimeForDelivery - time);
+//        }
 
         return currentTimeForDelivery;
     }

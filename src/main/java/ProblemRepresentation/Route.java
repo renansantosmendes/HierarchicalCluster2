@@ -509,10 +509,27 @@ public class Route implements Cloneable {
             //originRequest.setDeliveryTime(currentTimeForDelivery);
             saveAnticipations(originRequest, anticipations);
         }
+        addTimeToDepot(deliveryTimes, currentTimeForDelivery, data, idSequence);
         Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
         saveAnticipations(lastRequest, anticipations);
 
+        if (isNotARouteForOnePassenger(idSequence)) {
+            currentTimeForDelivery = rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
+                    visitedIds, deliveryTimes, currentTimeForDelivery, data);
+        } else {
+            Request request = getRequestUsingId(idSequence.get(0), data);
+            deliveryTimes.add(-request.getDeliveryTimeWindowLowerInMinutes());
+            int time = (int) -data.getDuration()[request.getDestination().getId()][0].getSeconds() / 60;
+            deliveryTimes.add(-currentTimeForDelivery - time);
+        }
+
         return currentTimeForDelivery;
+    }
+
+    private void addTimeToDepot(List<Integer> deliveryTimes, int currentTimeForDelivery, ProblemData data, List<Integer> idSequence) {
+        deliveryTimes.add(-currentTimeForDelivery - (int) data
+                .getDuration()[getRequestUsingId(idSequence.get(idSequence.size() - 1), data)
+                .getDestination().getId()][data.getNodes().get(0).getId()].getSeconds() / 60);
     }
 
     private int bestScheludePassengerDeliveries(int positionInSequenceOfFirstDelivery, List<Integer> idSequence,

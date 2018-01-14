@@ -5,31 +5,26 @@
  */
 package VRPDRTSD;
 
-import junit.framework.Assert;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  *
  * @author renansantos
  */
-public class VRPDRTSD_LocalSearchHeuristics {
+public class VRPDRTSD_buildGreedySolutionTest {
 
     @Test
-    public void VND_Test() {
-        String instanceName = "r250n12tw10";
+    public void greedySolutionTest() {
+        int numberOfRequests = 250;
+        String instanceName = "r" + numberOfRequests + "n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
         int numberOfVehicles = 50;
         int vehicleCapacity = 4;
         System.out.println("Testing Metaheuristics");
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-        problem.VND();
-//        problem.buildGreedySolution();
-//        problem.getSolution().printAllInformations();
-//        problem.localSearch(4);
-        problem.getSolution().printAllInformations();
-        assertNotNull(problem.getSolution());
+        problem.buildGreedySolution();
+        //problem.getSolution().printAllInformations();
+        Assert.assertEquals(numberOfRequests, problem.getData().getRequests().size());
     }
-
 }

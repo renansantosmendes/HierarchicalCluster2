@@ -27,7 +27,7 @@ public class Main {
         problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 //        problem.localSearch(2);
 //        problem.getSolution().printAllInformations();
-        problem.localSearch(8);
+        problem.VND();
         problem.getSolution().printAllInformations();
         problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
     }

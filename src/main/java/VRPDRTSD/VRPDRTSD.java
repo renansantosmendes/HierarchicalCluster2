@@ -65,6 +65,7 @@ public class VRPDRTSD implements Metaheuristic {
 
     public void requestsFeasibilityAnalysis() {
         data.setCurrentNode(data.getNodes().get(0));
+        System.out.println(getRequestUsingId(230).isFeasible());         
         for (Request request : candidates) {
             request.determineInicialFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }

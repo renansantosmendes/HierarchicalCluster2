@@ -65,17 +65,22 @@ public class VRPDRTSD implements Metaheuristic {
 
     public void requestsFeasibilityAnalysis() {
         data.setCurrentNode(data.getNodes().get(0));
-        System.out.println(getRequestUsingId(230).isFeasible());         
+                 
         for (Request request : candidates) {
             request.determineInicialFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }
+    //System.out.println(getRequestUsingId(230).isFeasible());
     }
 
     public void requestsFeasibilityAnalysisInConstructionFase() {
+//        for (Request request : candidates) {
+//            request.determineInicialFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
+//        }
         for (Request request : candidates) {
             request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getLastPassengerAddedToRoute(),
                     data.getCurrentNode(), data.getDuration());
         }
+        System.out.println(getRequestUsingId(230).isFeasible());
     }
 
     public void setDistanceToAttendEveryRequest() {
@@ -291,12 +296,10 @@ public class VRPDRTSD implements Metaheuristic {
 
     public void finalizeRoute() {
         addPickupSequence();
-
         buildSequenceOfAttendedRequests();
         scheduleRoute();
         buildNodesSequence();
         evaluateRoute();
-
     }
 
     private void addPickupSequence() {

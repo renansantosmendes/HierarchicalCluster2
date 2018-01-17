@@ -798,6 +798,7 @@ public class VRPDRTSD implements Metaheuristic {
                     if (firstRouteIdSequence.size() != 0) {
                         for (int k = 0; k < firstRouteIdSequence.size(); k++) {
                             int requestId = firstRouteIdSequence.get(k);
+                            //firstRoute.removeReallocatedRequest(requestId, data);
                             List<Integer> idSequenceToInsertRequest = new ArrayList<>();
                             idSequenceToInsertRequest.addAll(secondRoute.getIntegerSequenceOfAttendedRequests());
 

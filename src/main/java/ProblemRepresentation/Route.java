@@ -244,7 +244,7 @@ public class Route implements Cloneable {
             totalDistance += data.getDistance()[this.nodesSequence.get(i).getId()][this.nodesSequence.get(i + 1).getId()];
         }
 
-        this.totalDistanceTraveled = totalDistance;
+        this.totalDistanceTraveled = totalDistance/1000;
     }
 
     public void calculateTotalDeliveryAnticipation() {
@@ -288,11 +288,8 @@ public class Route implements Cloneable {
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime * this.totalTimeWindowDelay
                     + this.totalTimeWindowAnticipation;
-//            this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime * this.totalTimeWindowDelay
-//                    * (1 + this.totalTimeWindowAnticipation);
         } else {
             this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime + this.totalTimeWindowAnticipation;
-//            this.evaluationFunction = this.totalDistanceTraveled + this.routeTravelTime*(1 + this.totalTimeWindowAnticipation);
         }
 
     }
@@ -818,7 +815,7 @@ public class Route implements Cloneable {
 
     @Override
     public String toString() {
-        return "Route - Evaluation Function = " + this.evaluationFunction + " - Total Distance = " + this.totalDistanceTraveled + " meters - Travel Time = " + this.routeTravelTime
+        return "Route - Evaluation Function = " + this.evaluationFunction + " - Total Distance = " + this.totalDistanceTraveled + " km - Travel Time = " + this.routeTravelTime
                 + " min - Total of Anticipation  = " + this.totalTimeWindowAnticipation + " min"
                 + " - Total of Delay  = " + this.totalTimeWindowDelay + " min";
     }

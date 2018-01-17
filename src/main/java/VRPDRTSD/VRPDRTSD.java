@@ -33,6 +33,7 @@ public class VRPDRTSD implements Metaheuristic {
     private List<Request> feasibleRequests = new ArrayList<>();
     private Request candidate;
     private Route currentRoute;
+    private int localSearchType = 2;
 
     public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
             int numberOfVehicles, int vehicleCapacity) {
@@ -65,11 +66,11 @@ public class VRPDRTSD implements Metaheuristic {
 
     public void requestsFeasibilityAnalysis() {
         data.setCurrentNode(data.getNodes().get(0));
-                 
+
         for (Request request : candidates) {
             request.determineInicialFeasibility(data.getCurrentTime(), data.getCurrentNode(), data.getDuration());
         }
-    //System.out.println(getRequestUsingId(230).isFeasible());
+        //System.out.println(getRequestUsingId(230).isFeasible());
     }
 
     public void requestsFeasibilityAnalysisInConstructionFase() {
@@ -80,7 +81,7 @@ public class VRPDRTSD implements Metaheuristic {
             request.determineFeasibilityInConstructionFase(data.getCurrentTime(), data.getLastPassengerAddedToRoute(),
                     data.getCurrentNode(), data.getDuration());
         }
-        System.out.println(getRequestUsingId(230).isFeasible());
+        //System.out.println(getRequestUsingId(230).isFeasible());
     }
 
     public void setDistanceToAttendEveryRequest() {
@@ -479,12 +480,12 @@ public class VRPDRTSD implements Metaheuristic {
                 this.solution = addRouteFirstImprovement();
                 break;
             case 12:
-//                this.solution = addRouteBestImprovement();
+                this.solution = addRouteBestImprovement();
                 break;
         }
         this.solution.buildIntegerRepresentation();
     }
-    
+
     private Solution swapIntraRouteFirstImprovement() {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
@@ -877,6 +878,12 @@ public class VRPDRTSD implements Metaheuristic {
         }
         return this.solution;
     }
+    
+    private Solution addRouteBestImprovement() {
+        Solution solution = new Solution((Solution) this.solution.clone());
+        
+        return this.solution;
+    }
 
     @Override
     public void perturbation(int typeOfPerturbation, int intensity) {
@@ -1070,29 +1077,32 @@ public class VRPDRTSD implements Metaheuristic {
         Solution initialSolution = new Solution(this.getSolution());
         initialSolution.printAllInformations();
         int numberOfNeighborhoods = 10;
-        int currentNeighborhood = 1;
-        List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods);
-        while (currentNeighborhood < numberOfNeighborhoods) {
+        List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType);
+        int currentIndex = 0;
+        int currentNeighborhood = neighborhoods.get(currentIndex);
+        int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
+        while (currentNeighborhood <= lastNeighborhood) {
             printAlgorithmInformations(initialSolution, currentNeighborhood);
             localSearch(currentNeighborhood);
             if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
-                currentNeighborhood = 1;
-            } else {
-                currentNeighborhood++;
+                currentIndex = 0;
+                currentNeighborhood = neighborhoods.get(0);
+            } else{
+                currentNeighborhood = currentNeighborhood + 2;
             }
         }
         solution.setSolution(initialSolution);
         initialSolution.printAllInformations();
     }
-    
-    private void printAlgorithmInformations(Solution solution, int currentNeighborhood){
+
+    private void printAlgorithmInformations(Solution solution, int currentNeighborhood) {
         System.out.println("Objective Function = " + solution.getEvaluationFunction() + "\t Neighborhood = " + currentNeighborhood);
     }
 
-    private List<Integer> generateNeighborhoodList(int numberOfNeighborhoods) {
+    private List<Integer> generateNeighborhoodList(int numberOfNeighborhoods, int localSearchType) {
         List<Integer> neighborhoods = new ArrayList<>();
-        for (int i = 1; i <= numberOfNeighborhoods; i++) {
+        for (int i = localSearchType; i <= numberOfNeighborhoods; i = i + 2) {
             neighborhoods.add(i);
         }
         return neighborhoods;

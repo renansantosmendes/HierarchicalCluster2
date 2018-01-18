@@ -27,7 +27,7 @@ public class VRPDRTSD_buildGreedySolutionTest {
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.buildGreedySolution();
         problem.getSolution().printAllInformations();
-        problem.localSearch(10);
+        problem.localSearch(13);
         problem.getSolution().printAllInformations();
 //        Solution solution = new Solution();
 //        solution.setSolution(problem.getSolution());

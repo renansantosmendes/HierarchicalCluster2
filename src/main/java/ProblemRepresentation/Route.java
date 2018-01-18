@@ -244,7 +244,7 @@ public class Route implements Cloneable {
             totalDistance += data.getDistance()[this.nodesSequence.get(i).getId()][this.nodesSequence.get(i + 1).getId()];
         }
 
-        this.totalDistanceTraveled = totalDistance/1000;
+        this.totalDistanceTraveled = totalDistance / 1000;
     }
 
     public void calculateTotalDeliveryAnticipation() {
@@ -518,7 +518,6 @@ public class Route implements Cloneable {
 //            int time = (int) -data.getDuration()[request.getDestination().getId()][0].getSeconds() / 60;
 //            deliveryTimes.add(-currentTimeForDelivery - time);
 //        }
-
         return currentTimeForDelivery;
     }
 
@@ -803,6 +802,18 @@ public class Route implements Cloneable {
         this.rebuild(integerRouteRepresetation.stream()
                 .filter(u -> u.intValue() >= 0 && u.intValue() != requestId)
                 .collect(Collectors.toCollection(ArrayList::new)), data);
+    }
+
+    public void removeRequest(int requestId, ProblemData data) {
+        List<Integer> idSequence = new ArrayList<>();
+        if (this.integerRouteRepresetation.size() > 2) {
+            idSequence.addAll(this.integerRouteRepresetation.stream()
+                    .filter(u -> u.intValue() >= 0 && u.intValue() != requestId)
+                    .collect(Collectors.toCollection(ArrayList::new)));
+        }
+        idSequence.remove((Integer) requestId);
+        this.clear();
+        this.rebuild(idSequence, data);
     }
 
     public void removeAddedRequests(List<Integer> idSequence, ProblemData data) {

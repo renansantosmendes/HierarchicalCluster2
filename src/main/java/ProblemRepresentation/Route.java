@@ -219,14 +219,30 @@ public class Route implements Cloneable {
     }
 
     public void evaluateRoute(ProblemData data) {
-        calculateTravelTime(data);
-        calculateDistanceTraveled(data);
-        calculateTotalDeliveryAnticipation();
-        calculateTotalDeliveryDelay();
-        calculateEvaluationFunction();
-        if (this.violatedSomeConstraint) {
-            penalizeRoute();
+        if (this.integerRouteRepresetation.size() > 2) {
+            calculateTravelTime(data);
+            calculateDistanceTraveled(data);
+            calculateTotalDeliveryAnticipation();
+            calculateTotalDeliveryDelay();
+            calculateEvaluationFunction();
+            if (this.violatedSomeConstraint) {
+                penalizeRoute();
+            }
+        } else {
+            clearAtributes();
         }
+    }
+
+    private void clearAtributes() {
+        this.totalDistanceTraveled = 0;
+        this.routeTravelTime = 0;
+        this.totalTimeWindowAnticipation = 0;
+        this.totalTimeWindowDelay = 0;
+        this.evaluationFunction = 0;
+        this.notServedRequests = null;
+        this.nodesSequence = null;
+        this.sequenceOfAttendedRequests = null;
+        this.integerRouteRepresetation = null;
     }
 
     public void calculateTravelTime(ProblemData data) {
@@ -765,7 +781,7 @@ public class Route implements Cloneable {
 
     private void penalizeRoute() {
         this.evaluationFunction = this.totalDistanceTraveled * this.routeTravelTime * this.routeTravelTime;
-        this.totalDistanceTraveled = this.totalDistanceTraveled * this.routeTravelTime * this.routeTravelTime;
+        //this.totalDistanceTraveled = this.totalDistanceTraveled * this.routeTravelTime * this.routeTravelTime;
     }
 
     private List<Integer> buildIntegerRepresentation(List<Integer> idSequence, List<Integer> times) {
@@ -813,7 +829,11 @@ public class Route implements Cloneable {
         }
         idSequence.remove((Integer) requestId);
         this.clear();
-        this.rebuild(idSequence, data);
+        if(idSequence.stream().mapToInt(u -> u.intValue()).sum() == 0){
+            this.clearAtributes();
+        }else{
+            this.rebuild(idSequence, data);
+        }
     }
 
     public void removeAddedRequests(List<Integer> idSequence, ProblemData data) {

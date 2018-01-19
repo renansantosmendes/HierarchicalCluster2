@@ -17,7 +17,7 @@ public class VRPDRTSD_buildGreedySolutionTest {
 
     @Test
     public void greedySolutionTest() {
-        int numberOfRequests = 50;
+        int numberOfRequests = 10;
         String instanceName = "r0" + numberOfRequests + "n12tw10";
         String nodesData = "bh_n12s";
         String adjacenciesData = "bh_adj_n12s";
@@ -29,22 +29,5 @@ public class VRPDRTSD_buildGreedySolutionTest {
         problem.getSolution().printAllInformations();
         problem.localSearch(13);
         problem.getSolution().printAllInformations();
-//        Solution solution = new Solution();
-//        solution.setSolution(problem.getSolution());
-//        System.out.println(solution);
-//        solution.getRoutes().forEach(System.out::println);
-        
-        //Assert.assertEquals(numberOfRequests, getSolutionRequestSet(solution).size());
-        //Assert.assertEquals(numberOfRequests, problem.getData().getRequests().size());
-    }
-
-    private Set<Request> getSolutionRequestSet(Solution solution) {
-        Set<Request> set = new HashSet<>();
-        for (Route route : solution.getRoutes()) {
-            for (Request request : route.getSequenceOfAttendedRequests()) {
-                set.add(request);
-            }
-        }
-        return set;
     }
 }

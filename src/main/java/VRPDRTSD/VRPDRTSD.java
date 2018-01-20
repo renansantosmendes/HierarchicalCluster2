@@ -514,6 +514,7 @@ public class VRPDRTSD implements Metaheuristic {
     private void actualizeSolution(Solution solution, int i, Route route) {
         //solution.setRoute(i, route);
         solution.getRoute(i).setRoute(route);
+        //solution.getRoute(i).rebuild(route.getIntegerSequenceOfAttendedRequests(), data);
         solution.calculateEvaluationFunction();
 //        solution.getRoutes().forEach(r -> r.rebuild(r.getIntegerSequenceOfAttendedRequests(), this.data));
     }
@@ -924,42 +925,35 @@ public class VRPDRTSD implements Metaheuristic {
                                     secondRoute.clear();
                                     secondRoute.rebuild(newIdSequence, data);
                                     
+                                    System.out.println(firstRoute.getIntegerSequenceOfAttendedRequests());
+                                    System.out.println(secondRoute.getIntegerSequenceOfAttendedRequests());
+                                    
                                     actualizeSolution(solution, i, firstRoute);
                                     actualizeSolution(solution, j, secondRoute);
-                                    
-                                    
-                                    secondRoute.setRoute(secondRouteOriginal);
-                                    firstRoute.setRoute(firstRouteOriginal);
 
+                                    secondRoute.setRoute(secondRouteOriginal);
                                     
-                                    if(solution.getEvaluationFunction()==4215){
-                                         System.out.println(solution.getEvaluationFunction());
+                                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                                    
+                                    if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement){
+                                        bestSolution.setSolution(solution);
                                     }
-                                   
                                     
+                                    System.out.println(solution.getEvaluationFunction());
+
                                     actualizeSolution(solution, i, firstRoute);
                                     actualizeSolution(solution, j, secondRoute);
-//                                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
-//
-//                                    if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
-//                                        secondRoute.removeReallocatedRequest(requestId, data);
-//                                        actualizeSolution(solution, i, firstRouteOriginal);
-//                                        actualizeSolution(solution, j, secondRoute);
-//                                    } else {
-////                                        firstRouteIdSequence.remove(k);
-//                                        bestSolution.setSolution(solution);
-//                                        //k = 0;
-//                                    }
                                 }
                             }
+                            firstRoute.setRoute(firstRouteOriginal);
                         }
                     }
                 }
             }
         }
 
-        if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
-            return solution;
+        if (bestSolution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
+            return bestSolution;
         } else {
             return this.solution;
         }

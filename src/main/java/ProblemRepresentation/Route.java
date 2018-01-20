@@ -242,7 +242,7 @@ public class Route implements Cloneable {
         this.notServedRequests = null;
         this.nodesSequence = null;
         this.sequenceOfAttendedRequests = null;
-        this.integerRouteRepresetation = null;
+        //this.integerRouteRepresetation = null;
     }
 
     public void calculateTravelTime(ProblemData data) {

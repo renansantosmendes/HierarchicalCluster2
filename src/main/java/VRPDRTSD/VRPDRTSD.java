@@ -898,11 +898,11 @@ public class VRPDRTSD implements Metaheuristic {
         for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
             Route firstRouteOriginal = new Route(solution.getRoute(i));
             long evaluationFunctionBeforeMovement = bestSolution.getEvaluationFunction();
-
+            List<Integer> firstRouteIdSequence = new ArrayList<>();
+            firstRouteIdSequence.addAll(returnUsedIds(solution, i));
             for (int j = 0; j < solution.getNumberOfRoutes(); j++) {
                 if (i != j) {
-                    List<Integer> firstRouteIdSequence = new ArrayList<>();
-                    firstRouteIdSequence.addAll(returnUsedIds(solution, i));
+
                     Route secondRouteOriginal = new Route(solution.getRoute(j));
 
                     if (!firstRouteIdSequence.isEmpty()) {
@@ -910,7 +910,7 @@ public class VRPDRTSD implements Metaheuristic {
                             Route secondRoute = new Route(secondRouteOriginal);
 
                             int requestId = firstRouteIdSequence.get(k);
-
+                            System.out.println(firstRouteIdSequence);
                             Route firstRoute = new Route(firstRouteOriginal);
                             firstRoute.removeRequest(requestId, data);
                             //System.out.println(firstRoute);
@@ -924,25 +924,24 @@ public class VRPDRTSD implements Metaheuristic {
                                     insertIdInNewSequence(newIdSequence, idSequenceToInsertRequest, l, requestId, m);
                                     secondRoute.clear();
                                     secondRoute.rebuild(newIdSequence, data);
-                                    
-                                    System.out.println(firstRoute.getIntegerSequenceOfAttendedRequests());
-                                    System.out.println(secondRoute.getIntegerSequenceOfAttendedRequests());
-                                    
+
+//                                    System.out.println(firstRoute.getIntegerSequenceOfAttendedRequests());
+//                                    System.out.println(secondRoute.getIntegerSequenceOfAttendedRequests());
                                     actualizeSolution(solution, i, firstRoute);
                                     actualizeSolution(solution, j, secondRoute);
 
                                     secondRoute.setRoute(secondRouteOriginal);
-                                    
+
                                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
-                                    
-                                    if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement){
+
+                                    if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
                                         bestSolution.setSolution(solution);
                                     }
-                                    
+
                                     System.out.println(solution.getEvaluationFunction());
 
-                                    actualizeSolution(solution, i, firstRoute);
-                                    actualizeSolution(solution, j, secondRoute);
+                                    actualizeSolution(solution, i, firstRouteOriginal);
+                                    actualizeSolution(solution, j, secondRouteOriginal);
                                 }
                             }
                             firstRoute.setRoute(firstRouteOriginal);

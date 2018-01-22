@@ -72,14 +72,14 @@ public class ReadDataInExcelFile {
             Node passengerOrigin = new Node(Integer.parseInt(origin.getContents()), 0.0, 0.0, null);
             Node passengerDestination = new Node(Integer.parseInt(destination.getContents()), 0.0, 0.0, null);
 
-            Request request = new Request(Integer.parseInt(id.getContents()),
-                    passengerOrigin,
-                    passengerDestination,
-                    Integer.parseInt(pickupTimeWindowLower.getContents()),
-                    Integer.parseInt(deliveryTimeWindowLower.getContents()),
-                    Integer.parseInt(deliveryTimeWindowUpper.getContents()));
-
-            requests.add(request);
+//            Request request = new Request(Integer.parseInt(id.getContents()),
+//                    passengerOrigin,
+//                    passengerDestination,
+//                    Integer.parseInt(pickupTimeWindowLower.getContents()),
+//                    Integer.parseInt(deliveryTimeWindowLower.getContents()),
+//                    Integer.parseInt(deliveryTimeWindowUpper.getContents()));
+//
+//            requests.add(request);
 
         }
         return requests;

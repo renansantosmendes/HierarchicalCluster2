@@ -7,6 +7,7 @@ package VRPDRTSD;
 
 import InstanceReader.Instance;
 import ProblemRepresentation.*;
+import java.io.FileNotFoundException;
 import java.util.*;
 import org.junit.*;
 
@@ -17,7 +18,7 @@ import org.junit.*;
 public class VRPDRTSD_buildGreedySolutionTest {
 
     @Test
-    public void greedySolutionTest() {
+    public void greedySolutionTest() throws FileNotFoundException {
         System.out.println("Testing Metaheuristics");
 
         Instance instance = new Instance();
@@ -29,6 +30,6 @@ public class VRPDRTSD_buildGreedySolutionTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance);
-        problem.MultiStart();
+        problem.MultiStartForExperiment();
     }
 }

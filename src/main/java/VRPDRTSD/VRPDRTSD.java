@@ -2,7 +2,10 @@ package VRPDRTSD;
 
 import ProblemRepresentation.*;
 import Algorithms.*;
+import InstanceReader.DataOutput;
 import InstanceReader.Instance;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,10 +46,8 @@ public class VRPDRTSD implements Metaheuristic {
         this.numberOfVehicles = instance.getNumberOfVehicles();
         this.vehicleCapacity = instance.getVehicleCapacity();
         this.readInstance();
-
     }
 
-    
     public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
             int numberOfVehicles, int vehicleCapacity) {
         this.instanceName = instanceName;
@@ -55,7 +56,6 @@ public class VRPDRTSD implements Metaheuristic {
         this.numberOfVehicles = numberOfVehicles;
         this.vehicleCapacity = vehicleCapacity;
         this.readInstance();
-
     }
 
     public ProblemData getData() {
@@ -457,8 +457,6 @@ public class VRPDRTSD implements Metaheuristic {
             request.setRequestRankingFunction(RRF);
         }
     }
-    
-    
 
     @Override
     public void localSearch(int localSearchType) {
@@ -1159,20 +1157,50 @@ public class VRPDRTSD implements Metaheuristic {
         while (currentIteration < numberOfIterations) {
             buildRandomSolution();
             initialSolution.setSolution(this.getSolution());
-            //System.out.println(initialSolution);
             VND();
-            
-            if(initialSolution.getEvaluationFunction() > solution.getEvaluationFunction()){
+
+            if (initialSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
             }
-            //initialSolution.printAllInformations();
-            
             currentIteration++;
         }
         System.out.println("final solution");
         System.out.println(initialSolution);
         initialSolution.printAllInformations();
+    }
 
+    public void MultiStartForExperiment() throws FileNotFoundException {
+        int numberOfExecutions = 3;
+        int numberOfIterations = 500;
+        Solution bestSolutionFound = new Solution();
+        for (int execution = 0; execution < numberOfExecutions; execution++) {
+            String algorithmName = "MultiStart";
+            DataOutput output = new DataOutput(algorithmName, execution);
+            int currentIteration = 0;
+            Solution initialSolution = new Solution();
+            Solution bestSolution = new Solution();
+            buildRandomSolution();
+            bestSolution.setSolution(this.getSolution());
+
+            while (currentIteration < numberOfIterations) {
+                initialSolution.setSolution(this.getSolution());
+                VND();
+
+                if (initialSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
+                    initialSolution.setSolution(solution);
+
+                }
+                if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
+                    bestSolution.setSolution(solution);
+                    bestSolutionFound.setSolution(solution);
+                }
+                output.saveBestSolutionFoundInTxtFile(bestSolution, currentIteration);
+                currentIteration++;
+                buildRandomSolution();
+            }
+        }
+        System.out.println("final solution");
+        System.out.println(bestSolutionFound);
     }
 
     @Override

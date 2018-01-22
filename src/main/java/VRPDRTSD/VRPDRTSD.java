@@ -2,6 +2,7 @@ package VRPDRTSD;
 
 import ProblemRepresentation.*;
 import Algorithms.*;
+import InstanceReader.Instance;
 import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,6 +36,17 @@ public class VRPDRTSD implements Metaheuristic {
     private Route currentRoute;
     private int localSearchType = 2;
 
+    public VRPDRTSD(Instance instance) {
+        this.instanceName = instance.getInstanceName();
+        this.nodesInstanceName = instance.getNodesData();
+        this.adjacenciesInstanceName = instance.getAdjacenciesData();
+        this.numberOfVehicles = instance.getNumberOfVehicles();
+        this.vehicleCapacity = instance.getVehicleCapacity();
+        this.readInstance();
+
+    }
+
+    
     public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
             int numberOfVehicles, int vehicleCapacity) {
         this.instanceName = instanceName;
@@ -445,6 +457,8 @@ public class VRPDRTSD implements Metaheuristic {
             request.setRequestRankingFunction(RRF);
         }
     }
+    
+    
 
     @Override
     public void localSearch(int localSearchType) {

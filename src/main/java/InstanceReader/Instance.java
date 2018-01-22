@@ -121,4 +121,8 @@ public class Instance {
 
         return instanceName;
     }
+    
+    public String toString(){
+        return this.instanceName;
+    }
 }

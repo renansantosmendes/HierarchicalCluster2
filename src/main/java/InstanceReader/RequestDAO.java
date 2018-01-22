@@ -80,8 +80,8 @@ public class RequestDAO {
                 double destinationLatitude = resultSetForRequests.getDouble("destinationLatitude");
                 double destinationLongitude = resultSetForRequests.getDouble("destinationLongitude");
 
-                Node passengerOrigin = new Node(passengerOriginId, originLatitude, originLongitude,null);
-                Node passengerDestination = new Node(passengerDestinationId, destinationLatitude, destinationLongitude,null);
+                Node passengerOrigin = new Node(passengerOriginId, originLatitude, originLongitude, null);
+                Node passengerDestination = new Node(passengerDestinationId, destinationLatitude, destinationLongitude, null);
 
                 LocalDate requestDay = resultSetForRequests.getDate("requestDay").toLocalDate();
 
@@ -107,11 +107,11 @@ public class RequestDAO {
         try {
 
             List<Request> listOfRequests = new ArrayList<Request>();
-            
-            String sql = "select * from " + instanceName +";";
+
+            String sql = "select * from " + instanceName + ";";
             PreparedStatement statement = this.connection.prepareStatement(sql);
             //statement.setString(1, instanceName);
-            
+
             ResultSet resultSetForRequests = statement.executeQuery();
 
             while (resultSetForRequests.next()) {

@@ -312,6 +312,11 @@ public class Request implements Cloneable {
     public void setRequest(Request request) {
 
     }
+    
+    public String getStringToFile(){
+        String string = id + "\t" + origin + "\t" + destination + "\t" + deliveryTimeWindowLower + "\t" + deliveryTimeWindowUpper;
+        return string;
+    }
 
     public String toString() {
         return "Request: id = " + this.id + " Passenger Origin = " + this.origin.getId()

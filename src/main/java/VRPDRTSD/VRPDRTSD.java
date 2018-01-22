@@ -1170,12 +1170,14 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     public void MultiStartForExperiment() throws FileNotFoundException {
-        int numberOfExecutions = 3;
-        int numberOfIterations = 500;
+        int numberOfExecutions = 30;
+        int numberOfIterations = 100;
+        String algorithmName = "MultiStart";
         Solution bestSolutionFound = new Solution();
+        DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
         for (int execution = 0; execution < numberOfExecutions; execution++) {
-            String algorithmName = "MultiStart";
-            DataOutput output = new DataOutput(algorithmName, execution);
+            
+            DataOutput output = new DataOutput(algorithmName, instanceName, execution);
             int currentIteration = 0;
             Solution initialSolution = new Solution();
             Solution bestSolution = new Solution();
@@ -1194,11 +1196,13 @@ public class VRPDRTSD implements Metaheuristic {
                     bestSolution.setSolution(solution);
                     bestSolutionFound.setSolution(solution);
                 }
-                output.saveBestSolutionFoundInTxtFile(bestSolution, currentIteration);
+                output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
                 currentIteration++;
                 buildRandomSolution();
             }
+            outputForBestSolutions.saveBestSolutionFoundInTxtFile(solution);
         }
+        
         System.out.println("final solution");
         System.out.println(bestSolutionFound);
     }
@@ -1212,7 +1216,6 @@ public class VRPDRTSD implements Metaheuristic {
     public void VND() {
         //buildGreedySolution();
         Solution initialSolution = new Solution(this.getSolution());
-        //initialSolution.printAllInformations();
         int numberOfNeighborhoods = 8;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType);
         int currentIndex = 0;

@@ -209,6 +209,7 @@ public class VRPDRTSD implements Metaheuristic {
 
     public void initializeCandidates() {
         data.getRequests().sort(Comparator.comparing(Request::getRequestRankingFunction).reversed());
+        candidates.clear();
         candidates.addAll(data.getRequests());
     }
 
@@ -434,12 +435,14 @@ public class VRPDRTSD implements Metaheuristic {
         prepareAndSetRequestsData();
         setRequestRandomParameters();
         initializeCandidates();
+        data.startVehiclesData();
     }
 
     public void setRequestRandomParameters() {
         Random rnd = new Random();
         for (Request request : data.getRequests()) {
-            request.setRequestRankingFunction(rnd.nextDouble());
+            Double RRF = rnd.nextDouble();
+            request.setRequestRankingFunction(RRF);
         }
     }
 
@@ -453,22 +456,22 @@ public class VRPDRTSD implements Metaheuristic {
                 this.solution = swapIntraBestImprovement();
                 break;
             case 3:
-                this.solution = addMinutesInSolutionScheduleFirstImprovement();
-                break;
-            case 4:
-                this.solution = addMinutesInSolutionScheduleBestImprovement();
-                break;
-            case 5:
-                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
-                break;
-            case 6:
-                this.solution = removeMinutesInSolutionScheduleBestImprovement();
-                break;
-            case 7:
                 this.solution = swapInterRouteFirstImprovement();
                 break;
-            case 8:
+            case 4:
                 this.solution = swapInterRouteBestImprovement();
+                break;
+            case 5://
+                this.solution = addMinutesInSolutionScheduleFirstImprovement();
+                break;
+            case 6:
+                this.solution = addMinutesInSolutionScheduleBestImprovement();
+                break;
+            case 7:
+                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
+                break;
+            case 8:
+                this.solution = removeMinutesInSolutionScheduleBestImprovement();
                 break;
             case 9:
                 this.solution = requestReallocationFirstImprovement();
@@ -900,6 +903,7 @@ public class VRPDRTSD implements Metaheuristic {
             long evaluationFunctionBeforeMovement = bestSolution.getEvaluationFunction();
             List<Integer> firstRouteIdSequence = new ArrayList<>();
             firstRouteIdSequence.addAll(returnUsedIds(solution, i));
+            System.out.println(solution.getRoute(i).getIntegerSequenceOfAttendedRequests());
             for (int j = 0; j < solution.getNumberOfRoutes(); j++) {
                 if (i != j) {
 
@@ -910,7 +914,7 @@ public class VRPDRTSD implements Metaheuristic {
                             Route secondRoute = new Route(secondRouteOriginal);
 
                             int requestId = firstRouteIdSequence.get(k);
-                            System.out.println(firstRouteIdSequence);
+
                             Route firstRoute = new Route(firstRouteOriginal);
                             firstRoute.removeRequest(requestId, data);
                             //System.out.println(firstRoute);
@@ -938,8 +942,7 @@ public class VRPDRTSD implements Metaheuristic {
                                         bestSolution.setSolution(solution);
                                     }
 
-                                    System.out.println(solution.getEvaluationFunction());
-
+//                                    System.out.println(solution.getEvaluationFunction());
                                     actualizeSolution(solution, i, firstRouteOriginal);
                                     actualizeSolution(solution, j, secondRouteOriginal);
                                 }
@@ -1136,6 +1139,25 @@ public class VRPDRTSD implements Metaheuristic {
 
     @Override
     public void MultiStart() {
+        int numberOfIterations = 10;
+        int currentIteration = 0;
+        Solution initialSolution = new Solution();
+        while (currentIteration < numberOfIterations) {
+            buildRandomSolution();
+            initialSolution.setSolution(this.getSolution());
+            //System.out.println(initialSolution);
+            VND();
+            
+            if(initialSolution.getEvaluationFunction() > solution.getEvaluationFunction()){
+                initialSolution.setSolution(solution);
+            }
+            //initialSolution.printAllInformations();
+            
+            currentIteration++;
+        }
+        System.out.println("final solution");
+        System.out.println(initialSolution);
+        initialSolution.printAllInformations();
 
     }
 
@@ -1146,16 +1168,16 @@ public class VRPDRTSD implements Metaheuristic {
 
     @Override
     public void VND() {
-        buildGreedySolution();
+        //buildGreedySolution();
         Solution initialSolution = new Solution(this.getSolution());
-        initialSolution.printAllInformations();
-        int numberOfNeighborhoods = 10;
+        //initialSolution.printAllInformations();
+        int numberOfNeighborhoods = 8;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType);
         int currentIndex = 0;
         int currentNeighborhood = neighborhoods.get(currentIndex);
         int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
         while (currentNeighborhood <= lastNeighborhood) {
-            printAlgorithmInformations(initialSolution, currentNeighborhood);
+            //printAlgorithmInformations(initialSolution, currentNeighborhood);
             localSearch(currentNeighborhood);
             if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
@@ -1166,7 +1188,7 @@ public class VRPDRTSD implements Metaheuristic {
             }
         }
         solution.setSolution(initialSolution);
-        initialSolution.printAllInformations();
+        //initialSolution.printAllInformations();
     }
 
     private void printAlgorithmInformations(Solution solution, int currentNeighborhood) {

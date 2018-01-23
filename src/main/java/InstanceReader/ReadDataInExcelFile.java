@@ -39,6 +39,14 @@ public class ReadDataInExcelFile {
         this.filePath = filePath;
     }
 
+    public ReadDataInExcelFile(String filePath, Instance instance) {
+        this.filePath = filePath;
+        instance.buildInstaceNames();
+        this.requestsData = instance.getInstanceName();
+        this.nodesData = instance.getNodesData();
+        this.adjacenciesData = instance.getAdjacenciesData();
+    }
+
     public ReadDataInExcelFile(String filePath, String requestsData, String nodesData, String adjacenciesData) {
         this.filePath = filePath;
         this.requestsData = requestsData;
@@ -80,7 +88,6 @@ public class ReadDataInExcelFile {
 //                    Integer.parseInt(deliveryTimeWindowUpper.getContents()));
 //
 //            requests.add(request);
-
         }
         return requests;
     }

@@ -9,11 +9,15 @@ import ProblemRepresentation.Node;
 import ProblemRepresentation.Request;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -88,6 +92,46 @@ public class ReadDataInExcelFile {
 //                    Integer.parseInt(deliveryTimeWindowUpper.getContents()));
 //
 //            requests.add(request);
+        }
+        return requests;
+    }
+
+    public List<Request> getRequests(List<Node> nodes) throws IOException, BiffException {
+        WorkbookSettings conf = new WorkbookSettings();
+        conf.setEncoding("ISO-8859-1");
+        Workbook workbook = Workbook.getWorkbook(new File(this.filePath + this.requestsFile), conf);
+        Sheet sheet = workbook.getSheet(requestsData);
+        int rows = sheet.getRows();
+        int columns = sheet.getColumns();
+
+        List<Request> requests = new ArrayList<>();
+
+        for (int i = 1; i < rows; i++) {
+            Cell id = sheet.getCell(0, i);
+            Cell origin = sheet.getCell(1, i);
+            Cell destination = sheet.getCell(2, i);
+            Cell pickupTimeWindowLower = sheet.getCell(3, i);
+            Cell pickupTimeWindowUpper = sheet.getCell(4, i);
+            Cell deliveryTimeWindowLowerCell = sheet.getCell(5, i);
+            Cell deliveryTimeWindowUpperCell = sheet.getCell(6, i);
+
+            Node passengerOrigin = nodes.stream().filter(u -> u.getId() == Integer.parseInt(origin.getContents())).collect(Collectors.toList()).get(0);
+            Node passengerDestination = nodes.stream().filter(u -> u.getId() == Integer.parseInt(destination.getContents())).collect(Collectors.toList()).get(0);
+
+            LocalDate day = LocalDate.of(2017, 1, 1);
+            LocalDateTime requestDay = LocalDateTime.of(day, LocalTime.MIN);
+            LocalTime timeWindowLower = LocalTime.of(Integer.parseInt(deliveryTimeWindowLowerCell.getContents()) / 60,
+                    Integer.parseInt(deliveryTimeWindowLowerCell.getContents()) % 60);
+            LocalTime timeWindowUpper = LocalTime.of(Integer.parseInt(deliveryTimeWindowUpperCell.getContents()) / 60,
+                    Integer.parseInt(deliveryTimeWindowUpperCell.getContents()) % 60);
+
+            LocalDateTime deliveryTimeWindowLower = LocalDateTime.of(day, timeWindowLower);
+            LocalDateTime deliveryTimeWindowUpper = LocalDateTime.of(day, timeWindowUpper);
+
+            Request request = new Request(Integer.parseInt(id.getContents()), passengerOrigin, passengerDestination, requestDay,
+                    requestDay, deliveryTimeWindowLower, deliveryTimeWindowUpper);
+
+            requests.add(request);
         }
         return requests;
     }

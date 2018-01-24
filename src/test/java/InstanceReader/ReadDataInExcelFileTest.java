@@ -19,8 +19,11 @@ public class ReadDataInExcelFileTest {
 
     @Test
     public void testExcelReader() throws IOException, BiffException {
+        
+        int requestsNumber = 10;
+        
         Instance instance = new Instance();
-        instance.setNumberOfRequests(10)
+        instance.setNumberOfRequests(requestsNumber)
                 .setRequestTimeWindows(10)
                 .setInstanceSize("s")
                 .setNumberOfNodes(12)
@@ -29,7 +32,12 @@ public class ReadDataInExcelFileTest {
         
         ReadDataInExcelFile reader = new ReadDataInExcelFile("/home/renansantos/Área de Trabalho/Excel Instances/",instance);
         reader.getListOfNodes().forEach(System.out::println);
+        reader.getRequests(reader.getListOfNodes()).forEach(System.out::println);
+        
         Assert.assertEquals(12, reader.getListOfNodes().size());
+        
+        Assert.assertEquals(requestsNumber,reader.getRequests(reader.getListOfNodes()).size());
+        
     }
 
 }

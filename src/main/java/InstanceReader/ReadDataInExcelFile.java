@@ -9,6 +9,7 @@ import ProblemRepresentation.Node;
 import ProblemRepresentation.Request;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -219,9 +220,10 @@ public class ReadDataInExcelFile {
         }
     }
 
-    public List<List<Long>> getAdjacenciesListOfTimes() throws IOException, BiffException {
+    public Duration[][] getDurationBetweenNodes(int numberOfNodes) throws IOException, BiffException {
 
         initializaNumberOfNodesIfEqualsZero();
+        Duration[][] durationBetweenNodes = new Duration[numberOfNodes][numberOfNodes];
 
         WorkbookSettings conf = new WorkbookSettings();
         conf.setEncoding("ISO-8859-1");
@@ -232,15 +234,51 @@ public class ReadDataInExcelFile {
 
         List<List<Long>> timeBetweenNodes = new LinkedList<>();
         initializeAdjacenciesWithZeros(timeBetweenNodes);
-
+        int k = 0, j = 0;
         for (int i = 1; i < rows; i++) {
-            Integer originNode = Integer.parseInt(sheet.getCell(0, i).getContents());//)resultSet.getInt("originNode");
+            Integer originNode = Integer.parseInt(sheet.getCell(0, i).getContents());
             Integer destinationNode = Integer.parseInt(sheet.getCell(1, i).getContents());
-            Long timeTo = (long) Double.parseDouble(sheet.getCell(2, i).getContents()) / 60;
-            timeBetweenNodes.get(originNode).set(destinationNode, timeTo);
+            Long timeTo = (long) Double.parseDouble(sheet.getCell(2, i).getContents());
+            Duration durationTo = Duration.ofSeconds(timeTo);
+            durationBetweenNodes[k][j] = durationTo;
+            j++;
+            if (j == numberOfNodes) {
+                k++;
+                j = 0;
+            }
         }
 
-        return timeBetweenNodes;
+        return durationBetweenNodes;
+    }
+
+    public long[][] getDistanceBetweenNodes(int numberOfNodes) throws IOException, BiffException {
+
+        initializaNumberOfNodesIfEqualsZero();
+        long[][] distanceBetweenNodes = new long[numberOfNodes][numberOfNodes];
+
+        WorkbookSettings conf = new WorkbookSettings();
+        conf.setEncoding("ISO-8859-1");
+        Workbook workbook = Workbook.getWorkbook(new File(this.filePath + this.adjacenciesFile), conf);
+        Sheet sheet = workbook.getSheet(adjacenciesData);
+        int rows = sheet.getRows();
+        int columns = sheet.getColumns();
+
+        List<List<Long>> timeBetweenNodes = new LinkedList<>();
+        initializeAdjacenciesWithZeros(timeBetweenNodes);
+        int k = 0, j = 0;
+        for (int i = 1; i < rows; i++) {
+            Integer originNode = Integer.parseInt(sheet.getCell(0, i).getContents());
+            Integer destinationNode = Integer.parseInt(sheet.getCell(1, i).getContents());
+            Long distance = (long) Double.parseDouble(sheet.getCell(3, i).getContents());
+            distanceBetweenNodes[k][j] = distance;
+            j++;
+            if (j == numberOfNodes) {
+                k++;
+                j = 0;
+            }
+        }
+
+        return distanceBetweenNodes;
     }
 
     public int getNumberOfNodes() throws IOException, BiffException {

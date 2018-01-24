@@ -31,9 +31,9 @@ public class ReadDataInExcelFileTest {
                 .setVehicleCapacity(4);
         
         ReadDataInExcelFile reader = new ReadDataInExcelFile("/home/renansantos/Área de Trabalho/Excel Instances/",instance);
-        reader.getListOfNodes().forEach(System.out::println);
-        reader.getRequests(reader.getListOfNodes()).forEach(System.out::println);
-        
+//        reader.getListOfNodes().forEach(System.out::println);
+//        reader.getRequests(reader.getListOfNodes()).forEach(System.out::println);
+        reader.getDistanceBetweenNodes(12);
         Assert.assertEquals(12, reader.getListOfNodes().size());
         
         Assert.assertEquals(requestsNumber,reader.getRequests(reader.getListOfNodes()).size());

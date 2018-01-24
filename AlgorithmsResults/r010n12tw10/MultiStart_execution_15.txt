@@ -1,7 +1,7 @@
-0	Solution - 173	34	139	0	0	4
-1	Solution - 173	34	139	0	0	4
-2	Solution - 173	34	139	0	0	4
-3	Solution - 173	34	139	0	0	4
+0	Solution - 161	31	130	0	0	3
+1	Solution - 161	31	130	0	0	3
+2	Solution - 161	31	130	0	0	3
+3	Solution - 161	31	130	0	0	3
 4	Solution - 161	31	130	0	0	3
 5	Solution - 161	31	130	0	0	3
 6	Solution - 161	31	130	0	0	3

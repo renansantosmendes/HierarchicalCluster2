@@ -7,6 +7,8 @@ package VRPDRTSD;
 
 import InstanceReader.Instance;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import jxl.read.biff.BiffException;
 
 /**
  *
@@ -32,6 +34,24 @@ public class ExperimentalDesign {
                         .setVehicleCapacity(4);
 
                 VRPDRTSD problem = new VRPDRTSD(instance);
+                System.out.println(instance);
+                problem.MultiStartForExperiment();
+            }
+        }
+    }
+    
+    public void runMultiStartExperimentWithExcelData(String path) throws FileNotFoundException, IOException, BiffException {
+        for (int i = 0; i < requestNumber.length; i++) {
+            for (int j = 0; j < timeWindows.length; j++) {
+                instance = new Instance();
+                instance.setNumberOfRequests(requestNumber[i])
+                        .setRequestTimeWindows(timeWindows[j])
+                        .setInstanceSize("s")
+                        .setNumberOfNodes(12)
+                        .setNumberOfVehicles(250)
+                        .setVehicleCapacity(4);
+
+                VRPDRTSD problem = new VRPDRTSD(instance, path);
                 System.out.println(instance);
                 problem.MultiStartForExperiment();
             }

@@ -11,8 +11,8 @@
 10	Solution - 173	34	139	0	0	4
 11	Solution - 173	34	139	0	0	4
 12	Solution - 173	34	139	0	0	4
-13	Solution - 161	31	130	0	0	3
-14	Solution - 161	31	130	0	0	3
+13	Solution - 173	34	139	0	0	4
+14	Solution - 173	34	139	0	0	4
 15	Solution - 161	31	130	0	0	3
 16	Solution - 161	31	130	0	0	3
 17	Solution - 161	31	130	0	0	3

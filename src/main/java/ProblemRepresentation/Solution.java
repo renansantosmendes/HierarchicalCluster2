@@ -212,8 +212,8 @@ public class Solution implements Cloneable {
         System.out.println(integerRepresentation);
         System.out.println(idSequence);
         System.out.println(this.integerRepresentation);
-        System.out.println(this.integerRepresentation.stream().filter(u -> u.intValue() >= 0)
-                .collect(Collectors.toCollection(ArrayList::new)));
+//        System.out.println(this.integerRepresentation.stream().filter(u -> u.intValue() >= 0)
+//                .collect(Collectors.toCollection(ArrayList::new)));
     }
 
     @Override

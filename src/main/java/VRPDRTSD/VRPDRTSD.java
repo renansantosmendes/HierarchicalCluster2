@@ -6,9 +6,11 @@ import InstanceReader.DataOutput;
 import InstanceReader.Instance;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import jxl.read.biff.BiffException;
 
 /**
  *
@@ -38,14 +40,28 @@ public class VRPDRTSD implements Metaheuristic {
     private Request candidate;
     private Route currentRoute;
     private int localSearchType = 2;
+    private String excelDataFilesPath;
+    private Instance instance;
 
     public VRPDRTSD(Instance instance) {
+        this.instance = instance;
         this.instanceName = instance.getInstanceName();
         this.nodesInstanceName = instance.getNodesData();
         this.adjacenciesInstanceName = instance.getAdjacenciesData();
         this.numberOfVehicles = instance.getNumberOfVehicles();
         this.vehicleCapacity = instance.getVehicleCapacity();
         this.readInstance();
+    }
+    
+    public VRPDRTSD(Instance instance, String excelDataFilesPath) throws IOException, BiffException {
+        this.instance = instance;
+        this.instanceName = instance.getInstanceName();
+        this.nodesInstanceName = instance.getNodesData();
+        this.adjacenciesInstanceName = instance.getAdjacenciesData();
+        this.numberOfVehicles = instance.getNumberOfVehicles();
+        this.vehicleCapacity = instance.getVehicleCapacity();
+        this.excelDataFilesPath = excelDataFilesPath;
+        this.readExcelInstance();
     }
 
     public VRPDRTSD(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
@@ -154,6 +170,10 @@ public class VRPDRTSD implements Metaheuristic {
     @Override
     public void readInstance() {
         data = new ProblemData(instanceName, nodesInstanceName, adjacenciesInstanceName, numberOfVehicles, vehicleCapacity);
+    }
+    
+    public void readExcelInstance() throws IOException, BiffException{
+        data = new ProblemData(instance, this.excelDataFilesPath);
     }
 
     @Override

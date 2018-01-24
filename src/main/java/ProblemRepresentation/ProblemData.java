@@ -5,17 +5,11 @@
  */
 package ProblemRepresentation;
 
-import InstanceReader.AdjacenciesDAO;
-import InstanceReader.NodeDAO;
-import InstanceReader.NumberOfNodesDAO;
-import InstanceReader.RequestDAO;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import InstanceReader.*;
+import java.io.IOException;
+import java.time.*;
+import java.util.*;
+import jxl.read.biff.BiffException;
 
 /**
  *
@@ -40,6 +34,8 @@ public class ProblemData {
     private List<Vehicle> avaibleVehicles;
     private List<Vehicle> allocatedVehicles;
     private Vehicle currentVehicle = new Vehicle();
+    private Instance instance;
+    private String excelDataFilesPath;
 
     public ProblemData(String instanceName, String nodesInstanceName, String adjacenciesInstanceName,
             int numberOfVehicles, int vehicleCapacity) {
@@ -49,6 +45,18 @@ public class ProblemData {
         this.numberOfVehicles = numberOfVehicles;
         this.vehicleCapacity = vehicleCapacity;
         this.readInstance();
+        this.startVehiclesData();
+    }
+    
+    public ProblemData(Instance instance, String excelDataFilesPath) throws IOException, BiffException {
+        this.instance = instance;
+        this.instanceName = instance.getInstanceName();
+        this.nodesInstanceName = instance.getNodesData();
+        this.adjacenciesInstanceName = instance.getAdjacenciesData();
+        this.numberOfVehicles = instance.getNumberOfVehicles();
+        this.vehicleCapacity = instance.getVehicleCapacity();
+        this.excelDataFilesPath = excelDataFilesPath;
+        this.readExcelInstance();
         this.startVehiclesData();
     }
 
@@ -182,6 +190,17 @@ public class ProblemData {
         this.currentNode.setNode(this.nodes.get(0));
     }
 
+    public void readExcelInstance() throws IOException, BiffException {
+        ReadDataInExcelFile reader = new ReadDataInExcelFile(this.excelDataFilesPath, instance);
+        this.numberOfNodes = reader.getNumberOfNodes();
+        this.nodes = reader.getListOfNodes();
+        this.requests = reader.getRequests(nodes);
+        this.duration = reader.getDurationBetweenNodes(numberOfNodes);
+        this.distance = reader.getDistanceBetweenNodes(numberOfNodes);
+        this.instanceRequests.addAll(this.requests);
+        this.currentNode.setNode(this.nodes.get(0));
+    }
+    
     public void startVehiclesData() {
         avaibleVehicles = new LinkedList<>();
         allocatedVehicles = new LinkedList<>();

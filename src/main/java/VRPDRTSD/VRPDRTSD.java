@@ -1244,7 +1244,7 @@ public class VRPDRTSD implements Metaheuristic {
                 generateRandomNeighborhood(rnd);
                 long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
                 VND();
-                
+                System.out.println(solution);
                 if (delta < 0) {
                     solutionBefore.setSolution(solution);
                     if (solutionBefore.getEvaluationFunction() < bestSolution.getEvaluationFunction()) {
@@ -1261,7 +1261,8 @@ public class VRPDRTSD implements Metaheuristic {
             currentIteration = 0;
         }
         System.out.println("Best Solution Found");
-        System.out.println(bestSolution);
+//        System.out.println(bestSolution);
+        bestSolution.printAllInformations();
     }
 
     private void generateRandomNeighborhood(Random rnd) {

@@ -52,7 +52,7 @@ public class VRPDRTSD implements Metaheuristic {
         this.vehicleCapacity = instance.getVehicleCapacity();
         this.readInstance();
     }
-    
+
     public VRPDRTSD(Instance instance, String excelDataFilesPath) throws IOException, BiffException {
         this.instance = instance;
         this.instanceName = instance.getInstanceName();
@@ -171,8 +171,8 @@ public class VRPDRTSD implements Metaheuristic {
     public void readInstance() {
         data = new ProblemData(instanceName, nodesInstanceName, adjacenciesInstanceName, numberOfVehicles, vehicleCapacity);
     }
-    
-    public void readExcelInstance() throws IOException, BiffException{
+
+    public void readExcelInstance() throws IOException, BiffException {
         data = new ProblemData(instance, this.excelDataFilesPath);
     }
 
@@ -1196,7 +1196,7 @@ public class VRPDRTSD implements Metaheuristic {
         Solution bestSolutionFound = new Solution();
         DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
         for (int execution = 0; execution < numberOfExecutions; execution++) {
-            
+
             DataOutput output = new DataOutput(algorithmName, instanceName, execution);
             int currentIteration = 0;
             Solution initialSolution = new Solution();
@@ -1222,14 +1222,47 @@ public class VRPDRTSD implements Metaheuristic {
             }
             outputForBestSolutions.saveBestSolutionFoundInTxtFile(solution);
         }
-        
+
         System.out.println("final solution");
         System.out.println(bestSolutionFound);
     }
 
     @Override
     public void SimulatedAnnealing() {
+        buildGreedySolution();
+        int numberOfIterations = 100;
+        int currentIteration = 0;
+        int initialTemperature = 1000;
+        int currentTemperature = initialTemperature;
+        Random rnd = new Random();
 
+        while (currentTemperature > 0) {
+            while (currentIteration < numberOfIterations) {
+                currentIteration++;
+                Solution solutionBefore = new Solution(solution);
+                generateRandomNeighborhood(rnd);
+                long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
+                System.out.println(delta);
+                
+                if(delta < 0){
+                    
+                }
+            }
+            currentTemperature = currentTemperature / 2;
+            currentIteration = 0;
+        }
+    }
+
+    private void generateRandomNeighborhood(Random rnd) {
+        int type = rnd.nextInt(2) + 1;
+        int intensity = rnd.nextInt(3) + 1;
+        perturbation(type, intensity);
+    }
+
+    public void SimulatedAnnealingForExperiment() {
+        int numberOfExecutions = 30;
+        int numberOfIterations = 100;
+        String algorithmName = "MultiStart";
     }
 
     @Override

@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, FileNotFoundException, BiffException {
         String path = "/home/rmendes/VRPDRT/";
-        new ScriptGenerator("MultiStart","2d","small");
+        new ScriptGenerator("MultiStart","3d","small");
         new ExperimentalDesign().runMultiStartExperimentWithExcelData(path);
     }
 }

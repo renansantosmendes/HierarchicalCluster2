@@ -1230,6 +1230,7 @@ public class VRPDRTSD implements Metaheuristic {
     @Override
     public void SimulatedAnnealing() {
         buildGreedySolution();
+        Solution bestSolution = new Solution(solution);
         int numberOfIterations = 100;
         int currentIteration = 0;
         int initialTemperature = 1000;
@@ -1242,15 +1243,25 @@ public class VRPDRTSD implements Metaheuristic {
                 Solution solutionBefore = new Solution(solution);
                 generateRandomNeighborhood(rnd);
                 long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
-                System.out.println(delta);
+                VND();
                 
-                if(delta < 0){
-                    
+                if (delta < 0) {
+                    solutionBefore.setSolution(solution);
+                    if (solutionBefore.getEvaluationFunction() < bestSolution.getEvaluationFunction()) {
+                        bestSolution.setSolution(solution);
+                    }
+                } else {
+                    double x = rnd.nextDouble();
+                    if (x < Math.pow(Math.E, (-delta / currentTemperature))) {
+                        solutionBefore.setSolution(solution);
+                    }
                 }
             }
             currentTemperature = currentTemperature / 2;
             currentIteration = 0;
         }
+        System.out.println("Best Solution Found");
+        System.out.println(bestSolution);
     }
 
     private void generateRandomNeighborhood(Random rnd) {

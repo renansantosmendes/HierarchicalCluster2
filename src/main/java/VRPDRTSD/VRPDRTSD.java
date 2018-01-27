@@ -1229,9 +1229,9 @@ public class VRPDRTSD implements Metaheuristic {
         Solution bestSolutionFound = new Solution(solution);
         int numberOfIterations = 100;
         int currentIteration = 0;
-        int initialTemperature = 70000; // worst objective function in 10 random neighborhoods
+        int initialTemperature = 50000; // worst objective function in 10 random neighborhoods
         double currentTemperature = initialTemperature;
-        double alpha = 0.99;
+        double alpha = 0.70;
         Random rnd = new Random();
 
         while (currentTemperature > 0.01) {

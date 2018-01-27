@@ -1229,20 +1229,21 @@ public class VRPDRTSD implements Metaheuristic {
         Solution bestSolutionFound = new Solution(solution);
         int numberOfIterations = 100;
         int currentIteration = 0;
-        int initialTemperature = 1000;
-        int currentTemperature = initialTemperature;
+        int initialTemperature = 70000; // worst objective function in 10 random neighborhoods
+        double currentTemperature = initialTemperature;
+        double alpha = 0.99;
         Random rnd = new Random();
 
-        while (currentTemperature > 0) {
+        while (currentTemperature > 0.01) {
             while (currentIteration < numberOfIterations) {
                 currentIteration++;
                 Solution solutionBefore = new Solution(solution);
                 generateRandomNeighborhood(rnd);
                 long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
                 VND();
-                System.out.println(solution);
+                System.out.println(currentTemperature);
                 keepBestSolutionFound(bestSolutionFound);
-                
+
                 if (delta < 0) {
                     solutionBefore.setSolution(solution);
                     if (solutionBefore.getEvaluationFunction() < bestSolution.getEvaluationFunction()) {
@@ -1256,7 +1257,7 @@ public class VRPDRTSD implements Metaheuristic {
                     }
                 }
             }
-            currentTemperature = currentTemperature / 2;
+            currentTemperature = alpha * currentTemperature;
             currentIteration = 0;
         }
         System.out.println("Best Solution Found");

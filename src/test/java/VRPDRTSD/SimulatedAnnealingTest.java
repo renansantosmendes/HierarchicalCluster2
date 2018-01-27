@@ -14,9 +14,9 @@ import org.junit.Test;
  * @author renansantos
  */
 public class SimulatedAnnealingTest {
-    
+
     @Test
-    public void SA_Test(){
+    public void SA_Test() {
         int requestsNumber = 10;
 
         Instance instance = new Instance();
@@ -26,10 +26,16 @@ public class SimulatedAnnealingTest {
                 .setNumberOfNodes(12)
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
-        
+
         VRPDRTSD problem = new VRPDRTSD(instance);
         problem.SimulatedAnnealing();
-        
+//        problem.buildRandomSolution();
+//        problem.getSolution().printAllInformations();
+//        for (int i = 0; i < 10; i++) {
+//            problem.perturbation(2, 1);
+//            System.out.println(problem.getSolution().getEvaluationFunction());
+//        }
+
         //Assert.assertEquals(217,problem.getSolution().getEvaluationFunction());
     }
 }

@@ -1179,9 +1179,7 @@ public class VRPDRTSD implements Metaheuristic {
             initialSolution.setSolution(this.getSolution());
             VND();
 
-            if (initialSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
-                initialSolution.setSolution(solution);
-            }
+            keepBestSolutionFound(initialSolution);
             currentIteration++;
         }
         System.out.println("final solution");
@@ -1208,10 +1206,7 @@ public class VRPDRTSD implements Metaheuristic {
                 initialSolution.setSolution(this.getSolution());
                 VND();
 
-                if (initialSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
-                    initialSolution.setSolution(solution);
-
-                }
+                keepBestSolutionFound(initialSolution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
                     bestSolutionFound.setSolution(solution);
@@ -1231,6 +1226,7 @@ public class VRPDRTSD implements Metaheuristic {
     public void SimulatedAnnealing() {
         buildGreedySolution();
         Solution bestSolution = new Solution(solution);
+        Solution bestSolutionFound = new Solution(solution);
         int numberOfIterations = 100;
         int currentIteration = 0;
         int initialTemperature = 1000;
@@ -1245,11 +1241,14 @@ public class VRPDRTSD implements Metaheuristic {
                 long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
                 VND();
                 System.out.println(solution);
+                keepBestSolutionFound(bestSolutionFound);
+                
                 if (delta < 0) {
                     solutionBefore.setSolution(solution);
                     if (solutionBefore.getEvaluationFunction() < bestSolution.getEvaluationFunction()) {
                         bestSolution.setSolution(solution);
                     }
+
                 } else {
                     double x = rnd.nextDouble();
                     if (x < Math.pow(Math.E, (-delta / currentTemperature))) {
@@ -1262,7 +1261,13 @@ public class VRPDRTSD implements Metaheuristic {
         }
         System.out.println("Best Solution Found");
 //        System.out.println(bestSolution);
-        bestSolution.printAllInformations();
+        bestSolutionFound.printAllInformations();
+    }
+
+    private void keepBestSolutionFound(Solution bestSolutionFound) {
+        if (bestSolutionFound.getEvaluationFunction() > solution.getEvaluationFunction()) {
+            bestSolutionFound.setSolution(solution);
+        }
     }
 
     private void generateRandomNeighborhood(Random rnd) {

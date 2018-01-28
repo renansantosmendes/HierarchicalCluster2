@@ -1261,8 +1261,56 @@ public class VRPDRTSD implements Metaheuristic {
             currentIteration = 0;
         }
         System.out.println("Best Solution Found");
-//        System.out.println(bestSolution);
         bestSolutionFound.printAllInformations();
+    }
+
+    public void SimulatedAnnealingForExperiment() throws FileNotFoundException {
+        int numberOfExecutions = 30;
+        int numberOfIterations = 100;
+        String algorithmName = "SimulatedAnnealing";
+        DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
+        for (int execution = 0; execution < numberOfExecutions; execution++) {
+            buildGreedySolution();
+            Solution bestSolution = new Solution(solution);
+            Solution bestSolutionFound = new Solution(solution);
+            int currentIteration = 0;
+            int initialTemperature = 50000; // worst objective function in 10 random neighborhoods
+            double currentTemperature = initialTemperature;
+            double alpha = 0.70;
+            Random rnd = new Random();
+            DataOutput output = new DataOutput(algorithmName, instanceName, execution);
+
+            while (currentTemperature > 0.01) {
+                while (currentIteration < numberOfIterations) {
+                    currentIteration++;
+                    Solution solutionBefore = new Solution(solution);
+                    generateRandomNeighborhood(rnd);
+                    long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
+                    VND();
+                    //System.out.println(currentTemperature);
+                    keepBestSolutionFound(bestSolutionFound);
+
+                    if (delta < 0) {
+                        solutionBefore.setSolution(solution);
+                        if (solutionBefore.getEvaluationFunction() < bestSolution.getEvaluationFunction()) {
+                            bestSolution.setSolution(solution);
+                        }
+
+                    } else {
+                        double x = rnd.nextDouble();
+                        if (x < Math.pow(Math.E, (-delta / currentTemperature))) {
+                            solutionBefore.setSolution(solution);
+                        }
+                    }
+                }
+                currentTemperature = alpha * currentTemperature;
+                currentIteration = 0;
+                output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
+            }
+            
+            System.out.println("Best Solution Found");
+            System.out.println(bestSolutionFound);
+        }
     }
 
     private void keepBestSolutionFound(Solution bestSolutionFound) {
@@ -1275,12 +1323,6 @@ public class VRPDRTSD implements Metaheuristic {
         int type = rnd.nextInt(2) + 1;
         int intensity = rnd.nextInt(3) + 1;
         perturbation(type, intensity);
-    }
-
-    public void SimulatedAnnealingForExperiment() {
-        int numberOfExecutions = 30;
-        int numberOfIterations = 100;
-        String algorithmName = "MultiStart";
     }
 
     @Override

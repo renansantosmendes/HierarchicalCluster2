@@ -16,7 +16,7 @@ import jxl.read.biff.BiffException;
  */
 public class ExperimentalDesign {
 
-    private int requestNumber[] = {10, 50, 100, 150, 200, 250};//
+    private int requestNumber[] = {10, 50, 100, 150, 200};//250
     private int timeWindows[] = {10};//5
     private int vehicleCapacities[] = {4, 11};
     private String instanceSizes[] = {"s", "m", "l"};
@@ -54,6 +54,42 @@ public class ExperimentalDesign {
                 VRPDRTSD problem = new VRPDRTSD(instance, path);
                 System.out.println(instance);
                 problem.MultiStartForExperiment();
+            }
+        }
+    }
+    
+    public void runSimulatedAnnealingExperiment() throws FileNotFoundException {
+        for (int i = 0; i < requestNumber.length; i++) {
+            for (int j = 0; j < timeWindows.length; j++) {
+                instance = new Instance();
+                instance.setNumberOfRequests(requestNumber[i])
+                        .setRequestTimeWindows(timeWindows[j])
+                        .setInstanceSize("s")
+                        .setNumberOfNodes(12)
+                        .setNumberOfVehicles(250)
+                        .setVehicleCapacity(4);
+
+                VRPDRTSD problem = new VRPDRTSD(instance);
+                System.out.println(instance);
+                problem.SimulatedAnnealingForExperiment();
+            }
+        }
+    }
+    
+    public void runSimulatedAnnealingExperimentWithExcelData(String path) throws FileNotFoundException, IOException, BiffException {
+        for (int i = 0; i < requestNumber.length; i++) {
+            for (int j = 0; j < timeWindows.length; j++) {
+                instance = new Instance();
+                instance.setNumberOfRequests(requestNumber[i])
+                        .setRequestTimeWindows(timeWindows[j])
+                        .setInstanceSize("s")
+                        .setNumberOfNodes(12)
+                        .setNumberOfVehicles(250)
+                        .setVehicleCapacity(4);
+
+                VRPDRTSD problem = new VRPDRTSD(instance, path);
+                System.out.println(instance);
+                problem.SimulatedAnnealingForExperiment();
             }
         }
     }

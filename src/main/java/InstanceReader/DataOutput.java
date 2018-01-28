@@ -15,8 +15,9 @@ import java.io.PrintStream;
  * @author renansantos
  */
 public class DataOutput {
+
     private String algorithmName;
-    private String path ;
+    private String path;
     private String fileName;
     private PrintStream streamForTxt;
     private PrintStream streamForSolutions;
@@ -26,50 +27,49 @@ public class DataOutput {
 
     public DataOutput(String algorithmName, String instanceName, int execution) throws FileNotFoundException {
         this.algorithmName = algorithmName;
-        this.path = "AlgorithmsResults//" + instanceName + "//";
-        this.fileName = this.algorithmName + "_execution_" +execution;
+        this.path = "AlgorithmsResults//" + algorithmName + "//" + instanceName + "//";
+        this.fileName = this.algorithmName + "_execution_" + execution;
         initalizePathAndFiles();
         initalizeStreams();
     }
-    
+
     public DataOutput(String algorithmName, String instanceName) throws FileNotFoundException {
         this.algorithmName = algorithmName;
-        this.path = "AlgorithmsResults//" + instanceName + "//";
+        this.path = "AlgorithmsResults//" + algorithmName + "//" + instanceName + "//";
         this.fileName = this.algorithmName;
         initalizePathAndFiles();
         initalizeStreams();
     }
-    
-    private void initalizePathAndFiles(){
+
+    private void initalizePathAndFiles() {
         boolean success = (new File(this.path)).mkdirs();
         if (!success) {
             //System.out.println("Folder already exists!");
         }
     }
-    
-    private void initalizeStreams() throws FileNotFoundException{
-        streamForTxt  = new PrintStream(path + "/" + fileName + ".txt");
-        streamForSolutions  = new PrintStream(path + "/" + fileName + "_Solutions.txt");
-        streamForBestSolutions  = new PrintStream(path + "/" + fileName + "_BEST_Solutions.txt");
-        streamForConvergence  = new PrintStream(path + "/" + fileName + "_Convergence.txt");
+
+    private void initalizeStreams() throws FileNotFoundException {
+        streamForTxt = new PrintStream(path + "/" + fileName + ".txt");
+        streamForSolutions = new PrintStream(path + "/" + fileName + "_Solutions.txt");
+        streamForBestSolutions = new PrintStream(path + "/" + fileName + "_BEST_Solutions.txt");
+        streamForConvergence = new PrintStream(path + "/" + fileName + "_Convergence.txt");
         //streamForCsv  = new PrintStream(path + "/" + fileName + ".csv");
     }
-    
-    public void saveBestSolutionInTxtFile(Solution solution, int currentIteration){
+
+    public void saveBestSolutionInTxtFile(Solution solution, int currentIteration) {
         this.streamForTxt.print(currentIteration + "\t" + solution + "\n");
         this.streamForSolutions.print(solution.getIntegerRepresentation() + "\n");
         this.streamForConvergence.print(solution.getEvaluationFunction() + "\n");
     }
-    
-    public void saveBestSolutionFoundInTxtFile(Solution solution, int currentIteration){
+
+    public void saveBestSolutionFoundInTxtFile(Solution solution, int currentIteration) {
         this.streamForTxt.print(currentIteration + "\t" + solution + "\n");
         this.streamForSolutions.print(solution.getIntegerRepresentation() + "\n");
         this.streamForConvergence.print(solution.getEvaluationFunction() + "\n");
     }
-    
-    public void saveBestSolutionFoundInTxtFile(Solution solution){
+
+    public void saveBestSolutionFoundInTxtFile(Solution solution) {
         this.streamForBestSolutions.print(solution.getIntegerRepresentation() + "\n");
     }
-     
-     
+
 }

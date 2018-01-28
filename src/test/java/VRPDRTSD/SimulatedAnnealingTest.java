@@ -6,6 +6,7 @@
 package VRPDRTSD;
 
 import InstanceReader.Instance;
+import java.io.FileNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ import org.junit.Test;
 public class SimulatedAnnealingTest {
 
     @Test
-    public void SA_Test() {
+    public void SA_Test() throws FileNotFoundException {
         int requestsNumber = 10;
 
         Instance instance = new Instance();
@@ -27,8 +28,8 @@ public class SimulatedAnnealingTest {
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
 
-        VRPDRTSD problem = new VRPDRTSD(instance);
-        problem.SimulatedAnnealing();
+//        VRPDRTSD problem = new VRPDRTSD(instance);
+//        problem.SimulatedAnnealing();
 //        problem.buildRandomSolution();
 //        problem.getSolution().printAllInformations();
 //        for (int i = 0; i < 10; i++) {
@@ -37,5 +38,7 @@ public class SimulatedAnnealingTest {
 //        }
 
         //Assert.assertEquals(217,problem.getSolution().getEvaluationFunction());
+        
+//        new ExperimentalDesign().runSimulatedAnnealingExperiment();
     }
 }

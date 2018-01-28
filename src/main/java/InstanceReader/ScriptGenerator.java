@@ -49,7 +49,7 @@ public class ScriptGenerator {
     }
     
     public void generateScriptForExperiment(String timeOfExecution, String partition) throws FileNotFoundException {
-        PrintStream printStream = new PrintStream(folder + "/" + fileName);
+        PrintStream printStream = new PrintStream(folder + "/" + fileName + ".sh");
         printStream.print("#!/bin/bash \n");
         printStream.print("#SBATCH --qos=part" + timeOfExecution + "\n");
         printStream.print("#SBATCH --partition=" + partition + "\n");

@@ -1350,7 +1350,6 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     public void VNDforLocalSearchInVNS(Integer excludedNeighborhood) {
-        //buildGreedySolution();
         Solution initialSolution = new Solution(this.getSolution());
         int numberOfNeighborhoods = 8;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType);
@@ -1358,7 +1357,7 @@ public class VRPDRTSD implements Metaheuristic {
         int currentNeighborhood = neighborhoods.get(currentIndex);
         int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
         while (currentNeighborhood <= lastNeighborhood) {
-            if (currentNeighborhood != excludedNeighborhood) {
+            if (currentNeighborhood != excludedNeighborhood && currentNeighborhood != 0) {
                 localSearch(currentNeighborhood);
                 if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                     initialSolution.setSolution(solution);
@@ -1409,9 +1408,13 @@ public class VRPDRTSD implements Metaheuristic {
         while (currentIteration < numberOfIterations) {
             currentNeighborhood = 1;
             System.out.println(solution);
+            System.out.println(solution.getIntegerRepresentation());
             while (currentNeighborhood <= lastNeighborhood) {
                 perturbation(2, 1);
+                
+                
                 VNDforLocalSearchInVNS(excludedNeighborhood);
+//                /VND();
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     currentNeighborhood = 1;
                 } else {
@@ -1420,7 +1423,8 @@ public class VRPDRTSD implements Metaheuristic {
             }
             currentIteration++;
         }
-
+        System.out.println();
+        System.out.println(bestSolution);
         bestSolution.printAllInformations();
     }
 

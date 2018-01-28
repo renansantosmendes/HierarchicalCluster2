@@ -390,6 +390,13 @@ public class Route implements Cloneable {
                 this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) - timeInterval);
             }
         }
+        
+        for(int value : this.integerRouteRepresetation){
+            if(value < -1000){
+                int c = 0;
+            }
+        }
+        
         setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);
     }

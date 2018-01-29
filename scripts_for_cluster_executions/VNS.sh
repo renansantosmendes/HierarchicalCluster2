@@ -2,4 +2,4 @@
 #SBATCH --qos=part3d
 #SBATCH --partition=large
 module load jdk8_32
-java -jar SimulatedAnnealing.jar
+java -jar VNS.jar

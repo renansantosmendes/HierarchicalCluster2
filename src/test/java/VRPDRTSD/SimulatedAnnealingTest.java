@@ -30,9 +30,10 @@ public class SimulatedAnnealingTest {
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
 
-        VRPDRTSD problem = new VRPDRTSD(instance, "/home/renansantos/Área de Trabalho/Excel Instances/");
+//        VRPDRTSD problem = new VRPDRTSD(instance, "/home/renansantos/Área de Trabalho/Excel Instances/");
+        //VRPDRTSD problem = new VRPDRTSD(instance, "/home/renansantos/Área de Trabalho/Excel Instances/");
 
         //problem.simulatedAnnealing();
-        new ExperimentalDesign().runSimulatedAnnealingExperiment();
+        //new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData("/home/renansantos/Área de Trabalho/Excel Instances/");
     }
 }

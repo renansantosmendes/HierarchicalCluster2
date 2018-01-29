@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jxl.read.biff.BiffException;
 
@@ -1295,12 +1297,13 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     public void simulatedAnnealingForExperiment() throws FileNotFoundException {
-        int numberOfExecutions = 3;
+        int numberOfExecutions = 30;
         int numberOfIterations = 100;
         int numberOfMovements = 4;
         String algorithmName = "SimulatedAnnealing";
         DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
         for (int execution = 0; execution < numberOfExecutions; execution++) {
+            refreshInstanceData();
             buildGreedySolution();
             Solution bestSolution = new Solution(solution);
             Solution bestSolutionFound = new Solution(solution);
@@ -1343,6 +1346,20 @@ public class VRPDRTSD implements Metaheuristic {
 
             System.out.println("Best Solution Found");
             System.out.println(bestSolutionFound);
+        }
+    }
+
+    private void refreshInstanceData() {
+        if (this.excelDataFilesPath != null) {
+            try {
+                this.readExcelInstance();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (BiffException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            this.readInstance();
         }
     }
 
@@ -1485,6 +1502,7 @@ public class VRPDRTSD implements Metaheuristic {
         int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
 
         for (int execution = 0; execution < numberOfExecutions; execution++) {
+            refreshInstanceData();
             int currentIteration = 0;
             DataOutput output = new DataOutput(algorithmName, instanceName, execution);
             buildGreedySolution();

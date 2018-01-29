@@ -39,6 +39,6 @@ public class SimulatedAnnealingTest {
 
         //Assert.assertEquals(217,problem.getSolution().getEvaluationFunction());
         
-//        new ExperimentalDesign().runSimulatedAnnealingExperiment();
+        new ExperimentalDesign().runSimulatedAnnealingExperiment();
     }
 }

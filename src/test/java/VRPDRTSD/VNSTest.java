@@ -29,7 +29,8 @@ public class VNSTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance);
-        problem.vnsForExperiment();
+//        new ExperimentalDesign().runVnsExperiment();
+//        problem.vnsForExperiment();
 //        problem.VNS();
 //        problem.buildGreedySolution();
 //        System.out.println(problem.getSolution());
@@ -37,7 +38,7 @@ public class VNSTest {
 //        System.out.println(problem.getSolution());
 //        problem.VND();
 //        System.out.println(problem.getSolution());
-        
+
     }
 
 }

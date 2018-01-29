@@ -1306,6 +1306,7 @@ public class VRPDRTSD implements Metaheuristic {
                 currentTemperature = alpha * currentTemperature;
                 currentIteration = 0;
                 output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
+                outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
             }
 
             System.out.println("Best Solution Found");
@@ -1440,11 +1441,11 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     public void vnsForExperiment() throws FileNotFoundException {
-        int numberOfExecutions = 3;
+        int numberOfExecutions = 30;
         int numberOfIterations = 100;
         String algorithmName = "VNS";
         DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
-        int currentIteration = 0;
+
         int numberOfNeighborhoods = 8;
         int excludedNeighborhood = 4;
         int currentNeighborhood;
@@ -1452,6 +1453,7 @@ public class VRPDRTSD implements Metaheuristic {
         int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
 
         for (int execution = 0; execution < numberOfExecutions; execution++) {
+            int currentIteration = 0;
             DataOutput output = new DataOutput(algorithmName, instanceName, execution);
             buildGreedySolution();
             Solution bestSolution = new Solution(solution);
@@ -1461,7 +1463,7 @@ public class VRPDRTSD implements Metaheuristic {
                 while (currentNeighborhood <= lastNeighborhood) {
                     perturbation(2, 2);
                     vndForLocalSearchInVNS(excludedNeighborhood);
-                    
+
                     if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                         bestSolution.setSolution(solution);
                         currentNeighborhood = 1;
@@ -1472,8 +1474,7 @@ public class VRPDRTSD implements Metaheuristic {
                 currentIteration++;
             }
             output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
-            System.out.println();
-            System.out.println(bestSolution);
+            outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
         }
     }
 

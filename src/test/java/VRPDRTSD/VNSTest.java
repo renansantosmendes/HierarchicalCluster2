@@ -14,9 +14,9 @@ import org.junit.Test;
  * @author renansantos
  */
 public class VNSTest {
-    
+
     @Test
-    public void VNSTest(){
+    public void VNSTest() {
         int requestsNumber = 10;
 
         Instance instance = new Instance();
@@ -26,9 +26,16 @@ public class VNSTest {
                 .setNumberOfNodes(12)
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
-        
+
         VRPDRTSD problem = new VRPDRTSD(instance);
         problem.VNS();
+//        problem.buildGreedySolution();
+//        System.out.println(problem.getSolution());
+////        problem.localSearch(6);
+//        System.out.println(problem.getSolution());
+//        problem.VND();
+//        System.out.println(problem.getSolution());
+        
     }
-    
+
 }

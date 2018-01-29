@@ -1407,15 +1407,15 @@ public class VRPDRTSD implements Metaheuristic {
         Solution bestSolution = new Solution(solution);
         while (currentIteration < numberOfIterations) {
             currentNeighborhood = 1;
-            System.out.println(solution);
-            System.out.println(solution.getIntegerRepresentation());
+            
+            //System.out.println(solution.getIntegerRepresentation());
             while (currentNeighborhood <= lastNeighborhood) {
-                perturbation(2, 1);
-                
-                
-                VNDforLocalSearchInVNS(excludedNeighborhood);
-//                /VND();
+                perturbation(2, 2);
+                //VNDforLocalSearchInVNS(excludedNeighborhood);
+                VND();
+                System.out.println(solution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
+                    bestSolution.setSolution(solution);
                     currentNeighborhood = 1;
                 } else {
                     currentNeighborhood++;

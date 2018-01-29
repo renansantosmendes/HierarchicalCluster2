@@ -999,21 +999,17 @@ public class VRPDRTSD implements Metaheuristic {
             case 1:
                 this.solution = swapIntraRoutePerturbation(intensity);
                 break;
-
             case 2:
                 this.solution = swapInterRoutePerturbation(intensity);
                 break;
-
             case 3:
-                this.solution = reallocateRequestPerturbation(intensity);
+                this.solution = addMinutesInSolutionSchedulePerturbation(intensity);
                 break;
-
             case 4:
-                //this.solution = swapInterRouteFirstImprovement();
+                this.solution = removeMinutesInSolutionSchedulePerturbation(intensity);
                 break;
-
             case 5:
-                //this.solution = requestReallocationFirstImprovement();
+                this.solution = reallocateRequestPerturbation(intensity);
                 break;
 
         }
@@ -1158,6 +1154,38 @@ public class VRPDRTSD implements Metaheuristic {
         return indexes;
     }
 
+    public Solution addMinutesInSolutionSchedulePerturbation(int intensity) {
+        Solution solution = new Solution(this.solution);
+        Random rnd = new Random();
+        if (solution.getNumberOfRoutes() <= 0) {
+            int k = 0;
+        }
+        int routeIndex = rnd.nextInt(solution.getNumberOfRoutes());
+        int timeInterval = rnd.nextInt(6);
+        Route route = new Route(solution.getRoute(routeIndex));
+
+        route.addMinutesInRoute(timeInterval, data);
+        actualizeSolution(this.solution, routeIndex, route);
+
+        return this.solution;
+    }
+
+    public Solution removeMinutesInSolutionSchedulePerturbation(int intensity) {
+        Solution solution = new Solution(this.solution);
+        Random rnd = new Random();
+        if (solution.getNumberOfRoutes() <= 0) {
+            int k = 0;
+        }
+        int routeIndex = rnd.nextInt(solution.getNumberOfRoutes());
+        int timeInterval = rnd.nextInt(6);
+        Route route = new Route(solution.getRoute(routeIndex));
+
+        route.removeMinutesInRoute(timeInterval, data);
+        actualizeSolution(this.solution, routeIndex, route);
+
+        return this.solution;
+    }
+
     private boolean isRouteForOnlyOneRequest(List<Integer> idSequence) {
         int sequenceSize = idSequence.size();
         if (sequenceSize == 4 && idSequence.get(0) == 0 && idSequence.get(sequenceSize - 1) == 0) {
@@ -1228,8 +1256,9 @@ public class VRPDRTSD implements Metaheuristic {
         Solution bestSolution = new Solution(solution);
         Solution bestSolutionFound = new Solution(solution);
         int numberOfIterations = 100;
+        int numberOfMovements = 4;
         int currentIteration = 0;
-        int initialTemperature = 50000; // worst objective function in 10 random neighborhoods
+        int initialTemperature = 70000; // worst objective function in 10 random neighborhoods
         double currentTemperature = initialTemperature;
         double alpha = 0.70;
         Random rnd = new Random();
@@ -1238,10 +1267,11 @@ public class VRPDRTSD implements Metaheuristic {
             while (currentIteration < numberOfIterations) {
                 currentIteration++;
                 Solution solutionBefore = new Solution(solution);
-                generateRandomNeighborhood(rnd);
+                generateRandomNeighborhood(rnd, numberOfMovements);
                 long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
-                vnd();
-                System.out.println(currentTemperature);
+                //vnd();
+                localSearch(2);
+                System.out.println(solution);
                 keepBestSolutionFound(bestSolutionFound);
 
                 if (delta < 0) {
@@ -1265,8 +1295,9 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     public void simulatedAnnealingForExperiment() throws FileNotFoundException {
-        int numberOfExecutions = 30;
+        int numberOfExecutions = 3;
         int numberOfIterations = 100;
+        int numberOfMovements = 4;
         String algorithmName = "SimulatedAnnealing";
         DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
         for (int execution = 0; execution < numberOfExecutions; execution++) {
@@ -1284,9 +1315,10 @@ public class VRPDRTSD implements Metaheuristic {
                 while (currentIteration < numberOfIterations) {
                     currentIteration++;
                     Solution solutionBefore = new Solution(solution);
-                    generateRandomNeighborhood(rnd);
+                    generateRandomNeighborhood(rnd, numberOfMovements);
                     long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
-                    vnd();
+                    localSearch(2);
+                    //vnd();
                     //System.out.println(currentTemperature);
                     keepBestSolutionFound(bestSolutionFound);
 
@@ -1320,8 +1352,8 @@ public class VRPDRTSD implements Metaheuristic {
         }
     }
 
-    private void generateRandomNeighborhood(Random rnd) {
-        int type = rnd.nextInt(2) + 1;
+    private void generateRandomNeighborhood(Random rnd, int numberOfMovements) {
+        int type = rnd.nextInt(numberOfMovements) + 1;
         int intensity = rnd.nextInt(3) + 1;
         perturbation(type, intensity);
     }

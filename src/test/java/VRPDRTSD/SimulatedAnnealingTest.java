@@ -7,6 +7,8 @@ package VRPDRTSD;
 
 import InstanceReader.Instance;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import jxl.read.biff.BiffException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +19,7 @@ import org.junit.Test;
 public class SimulatedAnnealingTest {
 
     @Test
-    public void SA_Test() throws FileNotFoundException {
+    public void SA_Test() throws FileNotFoundException, IOException, BiffException {
         int requestsNumber = 10;
 
         Instance instance = new Instance();
@@ -28,17 +30,9 @@ public class SimulatedAnnealingTest {
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
 
-//        VRPDRTSD problem = new VRPDRTSD(instance);
-//        problem.SimulatedAnnealing();
-//        problem.buildRandomSolution();
-//        problem.getSolution().printAllInformations();
-//        for (int i = 0; i < 10; i++) {
-//            problem.perturbation(2, 1);
-//            System.out.println(problem.getSolution().getEvaluationFunction());
-//        }
+        VRPDRTSD problem = new VRPDRTSD(instance, "/home/renansantos/Área de Trabalho/Excel Instances/");
 
-        //Assert.assertEquals(217,problem.getSolution().getEvaluationFunction());
-        
+        //problem.simulatedAnnealing();
         new ExperimentalDesign().runSimulatedAnnealingExperiment();
     }
 }

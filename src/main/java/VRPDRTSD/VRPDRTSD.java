@@ -1170,14 +1170,14 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     @Override
-    public void MultiStart() {
+    public void multiStart() {
         int numberOfIterations = 10;
         int currentIteration = 0;
         Solution initialSolution = new Solution();
         while (currentIteration < numberOfIterations) {
             buildRandomSolution();
             initialSolution.setSolution(this.getSolution());
-            VND();
+            vnd();
 
             keepBestSolutionFound(initialSolution);
             currentIteration++;
@@ -1187,7 +1187,7 @@ public class VRPDRTSD implements Metaheuristic {
         initialSolution.printAllInformations();
     }
 
-    public void MultiStartForExperiment() throws FileNotFoundException {
+    public void multiStartForExperiment() throws FileNotFoundException {
         int numberOfExecutions = 30;
         int numberOfIterations = 100;
         String algorithmName = "MultiStart";
@@ -1204,7 +1204,7 @@ public class VRPDRTSD implements Metaheuristic {
 
             while (currentIteration < numberOfIterations) {
                 initialSolution.setSolution(this.getSolution());
-                VND();
+                vnd();
 
                 keepBestSolutionFound(initialSolution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
@@ -1223,7 +1223,7 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     @Override
-    public void SimulatedAnnealing() {
+    public void simulatedAnnealing() {
         buildGreedySolution();
         Solution bestSolution = new Solution(solution);
         Solution bestSolutionFound = new Solution(solution);
@@ -1240,7 +1240,7 @@ public class VRPDRTSD implements Metaheuristic {
                 Solution solutionBefore = new Solution(solution);
                 generateRandomNeighborhood(rnd);
                 long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
-                VND();
+                vnd();
                 System.out.println(currentTemperature);
                 keepBestSolutionFound(bestSolutionFound);
 
@@ -1264,7 +1264,7 @@ public class VRPDRTSD implements Metaheuristic {
         bestSolutionFound.printAllInformations();
     }
 
-    public void SimulatedAnnealingForExperiment() throws FileNotFoundException {
+    public void simulatedAnnealingForExperiment() throws FileNotFoundException {
         int numberOfExecutions = 30;
         int numberOfIterations = 100;
         String algorithmName = "SimulatedAnnealing";
@@ -1286,7 +1286,7 @@ public class VRPDRTSD implements Metaheuristic {
                     Solution solutionBefore = new Solution(solution);
                     generateRandomNeighborhood(rnd);
                     long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
-                    VND();
+                    vnd();
                     //System.out.println(currentTemperature);
                     keepBestSolutionFound(bestSolutionFound);
 
@@ -1326,7 +1326,7 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     @Override
-    public void VND() {
+    public void vnd() {
         //buildGreedySolution();
         Solution initialSolution = new Solution(this.getSolution());
         int numberOfNeighborhoods = 8;
@@ -1349,7 +1349,7 @@ public class VRPDRTSD implements Metaheuristic {
         //initialSolution.printAllInformations();
     }
 
-    public void VNDforLocalSearchInVNS(Integer excludedNeighborhood) {
+    public void vndForLocalSearchInVNS(Integer excludedNeighborhood) {
         Solution initialSolution = new Solution(this.getSolution());
         int numberOfNeighborhoods = 8;
         List<Integer> neighborhoods = generateNeighborhoodListWithout(numberOfNeighborhoods, localSearchType, excludedNeighborhood);
@@ -1406,7 +1406,7 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     @Override
-    public void VNS() {
+    public void vns() {
         int numberOfIterations = 100;
         int currentIteration = 0;
         int numberOfNeighborhoods = 8;
@@ -1422,7 +1422,7 @@ public class VRPDRTSD implements Metaheuristic {
             //System.out.println(solution.getIntegerRepresentation());
             while (currentNeighborhood <= lastNeighborhood) {
                 perturbation(2, 2);
-                VNDforLocalSearchInVNS(excludedNeighborhood);
+                vndForLocalSearchInVNS(excludedNeighborhood);
                 //VND();
                 System.out.println(solution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
@@ -1439,7 +1439,7 @@ public class VRPDRTSD implements Metaheuristic {
         bestSolution.printAllInformations();
     }
 
-    public void VNSForExperiment() throws FileNotFoundException {
+    public void vnsForExperiment() throws FileNotFoundException {
         int numberOfExecutions = 3;
         int numberOfIterations = 100;
         String algorithmName = "VNS";
@@ -1460,7 +1460,7 @@ public class VRPDRTSD implements Metaheuristic {
 
                 while (currentNeighborhood <= lastNeighborhood) {
                     perturbation(2, 2);
-                    VNDforLocalSearchInVNS(excludedNeighborhood);
+                    vndForLocalSearchInVNS(excludedNeighborhood);
                     
                     if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                         bestSolution.setSolution(solution);
@@ -1478,17 +1478,17 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     @Override
-    public void GRASP() {
+    public void grasp() {
 
     }
 
     @Override
-    public void ILS() {
+    public void ils() {
 
     }
 
     @Override
-    public void TabuSearch() {
+    public void tabuSearch() {
 
     }
 }

@@ -62,7 +62,7 @@ public class ReadDataInExcelFileTest {
         
         
         VRPDRTSD problem = new VRPDRTSD(instance, path);
-//        problem.MultiStartForExperiment();
+//        problem.multiStartForExperiment();
         //problem.getSolution().printAllInformations();
         Assert.assertEquals(requestsNumber, problem.getData().getRequests().size());
     }

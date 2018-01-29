@@ -30,6 +30,6 @@ public class VRPDRTSD_buildGreedySolutionTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance);
-        //problem.MultiStartForExperiment();
+        //problem.multiStartForExperiment();
     }
 }

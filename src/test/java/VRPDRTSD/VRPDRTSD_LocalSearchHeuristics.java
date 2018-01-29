@@ -8,6 +8,7 @@ package VRPDRTSD;
 import junit.framework.Assert;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -24,7 +25,7 @@ public class VRPDRTSD_LocalSearchHeuristics {
         int vehicleCapacity = 4;
         System.out.println("Testing Metaheuristics");
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
-        problem.VND();
+        problem.vnd();
 //        problem.buildGreedySolution();
 //        problem.getSolution().printAllInformations();
 //        problem.localSearch(4);

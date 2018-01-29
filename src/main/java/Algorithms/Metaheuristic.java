@@ -11,18 +11,18 @@ package Algorithms;
  */
 public interface Metaheuristic extends Heuristic {
 
-    public void MultiStart();
+    public void multiStart();
 
-    public void SimulatedAnnealing();
+    public void simulatedAnnealing();
 
-    public void VND();
+    public void vnd();
 
-    public void VNS();
+    public void vns();
 
-    public void GRASP();
+    public void grasp();
 
-    public void ILS();
+    public void ils();
 
-    public void TabuSearch();
+    public void tabuSearch();
 
 }

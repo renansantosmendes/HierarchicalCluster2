@@ -35,7 +35,7 @@ public class ExperimentalDesign {
 
                 VRPDRTSD problem = new VRPDRTSD(instance);
                 System.out.println(instance);
-                problem.MultiStartForExperiment();
+                problem.multiStartForExperiment();
             }
         }
     }
@@ -53,7 +53,7 @@ public class ExperimentalDesign {
 
                 VRPDRTSD problem = new VRPDRTSD(instance, path);
                 System.out.println(instance);
-                problem.MultiStartForExperiment();
+                problem.multiStartForExperiment();
             }
         }
     }
@@ -71,7 +71,7 @@ public class ExperimentalDesign {
 
                 VRPDRTSD problem = new VRPDRTSD(instance);
                 System.out.println(instance);
-                problem.SimulatedAnnealingForExperiment();
+                problem.simulatedAnnealingForExperiment();
             }
         }
     }
@@ -89,7 +89,7 @@ public class ExperimentalDesign {
 
                 VRPDRTSD problem = new VRPDRTSD(instance, path);
                 System.out.println(instance);
-                problem.SimulatedAnnealingForExperiment();
+                problem.simulatedAnnealingForExperiment();
             }
         }
     }

@@ -1352,24 +1352,21 @@ public class VRPDRTSD implements Metaheuristic {
     public void VNDforLocalSearchInVNS(Integer excludedNeighborhood) {
         Solution initialSolution = new Solution(this.getSolution());
         int numberOfNeighborhoods = 8;
-        List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType);
+        List<Integer> neighborhoods = generateNeighborhoodListWithout(numberOfNeighborhoods, localSearchType, excludedNeighborhood);
         int currentIndex = 0;
         int currentNeighborhood = neighborhoods.get(currentIndex);
         int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
         while (currentNeighborhood <= lastNeighborhood) {
-            if (currentNeighborhood != excludedNeighborhood && currentNeighborhood != 0) {
-                localSearch(currentNeighborhood);
-                if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
-                    initialSolution.setSolution(solution);
-                    currentIndex = 0;
-                    currentNeighborhood = neighborhoods.get(0);
-                } else {
-                    currentNeighborhood = currentNeighborhood + 2;
-                }
+            localSearch(currentNeighborhood);
+            if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
+                initialSolution.setSolution(solution);
+                currentIndex = 0;
+                currentNeighborhood = neighborhoods.get(0);
             } else {
                 currentNeighborhood = currentNeighborhood + 2;
             }
         }
+
         solution.setSolution(initialSolution);
     }
 
@@ -1380,7 +1377,21 @@ public class VRPDRTSD implements Metaheuristic {
     private List<Integer> generateNeighborhoodList(int numberOfNeighborhoods, int localSearchType) {
         List<Integer> neighborhoods = new ArrayList<>();
         for (int i = localSearchType; i <= numberOfNeighborhoods; i = i + 2) {
-            neighborhoods.add(i);
+            if (i != 4) {
+                neighborhoods.add(i);
+            }
+
+        }
+        return neighborhoods;
+    }
+
+    private List<Integer> generateNeighborhoodListWithout(int numberOfNeighborhoods, int localSearchType, int excluded) {
+        List<Integer> neighborhoods = new ArrayList<>();
+        for (int i = localSearchType; i <= numberOfNeighborhoods; i = i + 2) {
+            if (i != excluded) {
+                neighborhoods.add(i);
+            }
+
         }
         return neighborhoods;
     }
@@ -1407,12 +1418,12 @@ public class VRPDRTSD implements Metaheuristic {
         Solution bestSolution = new Solution(solution);
         while (currentIteration < numberOfIterations) {
             currentNeighborhood = 1;
-            
+
             //System.out.println(solution.getIntegerRepresentation());
             while (currentNeighborhood <= lastNeighborhood) {
                 perturbation(2, 2);
-                //VNDforLocalSearchInVNS(excludedNeighborhood);
-                VND();
+                VNDforLocalSearchInVNS(excludedNeighborhood);
+                //VND();
                 System.out.println(solution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
@@ -1426,6 +1437,44 @@ public class VRPDRTSD implements Metaheuristic {
         System.out.println();
         System.out.println(bestSolution);
         bestSolution.printAllInformations();
+    }
+
+    public void VNSForExperiment() throws FileNotFoundException {
+        int numberOfExecutions = 3;
+        int numberOfIterations = 100;
+        String algorithmName = "VNS";
+        DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
+        int currentIteration = 0;
+        int numberOfNeighborhoods = 8;
+        int excludedNeighborhood = 4;
+        int currentNeighborhood;
+        List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType, excludedNeighborhood);
+        int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
+
+        for (int execution = 0; execution < numberOfExecutions; execution++) {
+            DataOutput output = new DataOutput(algorithmName, instanceName, execution);
+            buildGreedySolution();
+            Solution bestSolution = new Solution(solution);
+            while (currentIteration < numberOfIterations) {
+                currentNeighborhood = 1;
+
+                while (currentNeighborhood <= lastNeighborhood) {
+                    perturbation(2, 2);
+                    VNDforLocalSearchInVNS(excludedNeighborhood);
+                    
+                    if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
+                        bestSolution.setSolution(solution);
+                        currentNeighborhood = 1;
+                    } else {
+                        currentNeighborhood++;
+                    }
+                }
+                currentIteration++;
+            }
+            output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
+            System.out.println();
+            System.out.println(bestSolution);
+        }
     }
 
     @Override

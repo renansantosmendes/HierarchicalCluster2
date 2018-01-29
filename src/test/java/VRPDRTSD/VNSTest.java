@@ -6,6 +6,7 @@
 package VRPDRTSD;
 
 import InstanceReader.Instance;
+import java.io.FileNotFoundException;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ import org.junit.Test;
 public class VNSTest {
 
     @Test
-    public void VNSTest() {
+    public void VNSTest() throws FileNotFoundException {
         int requestsNumber = 10;
 
         Instance instance = new Instance();
@@ -28,7 +29,8 @@ public class VNSTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance);
-        problem.VNS();
+        problem.VNSForExperiment();
+//        problem.VNS();
 //        problem.buildGreedySolution();
 //        System.out.println(problem.getSolution());
 ////        problem.localSearch(6);

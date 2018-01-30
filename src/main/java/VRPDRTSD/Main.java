@@ -13,6 +13,6 @@ public class Main {
     public static void main(String[] args) throws IOException, FileNotFoundException, BiffException {
         String path = "/home/rmendes/VRPDRT/";
         //new ScriptGenerator("VNS","3d","large");
-        new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData(path);
+        new ExperimentalDesign().runVnsExperimentWithExcelData(path);
     }
 }

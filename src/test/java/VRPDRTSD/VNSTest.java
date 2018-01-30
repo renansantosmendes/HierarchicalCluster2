@@ -28,7 +28,7 @@ public class VNSTest {
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
 
-        VRPDRTSD problem = new VRPDRTSD(instance);
+        //VRPDRTSD problem = new VRPDRTSD(instance);
 //        new ExperimentalDesign().runVnsExperiment();
 //        problem.vnsForExperiment();
 //        problem.VNS();

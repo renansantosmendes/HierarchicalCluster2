@@ -34,6 +34,6 @@ public class SimulatedAnnealingTest {
         //VRPDRTSD problem = new VRPDRTSD(instance, "/home/renansantos/Área de Trabalho/Excel Instances/");
 
         //problem.simulatedAnnealing();
-        //new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData("/home/renansantos/Área de Trabalho/Excel Instances/");
+//        new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData("/home/renansantos/Área de Trabalho/Excel Instances/");
     }
 }

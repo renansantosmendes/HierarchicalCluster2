@@ -22,6 +22,7 @@ public class DataOutput {
     private PrintStream streamForTxt;
     private PrintStream streamForSolutions;
     private PrintStream streamForBestSolutions;
+    private PrintStream streamForBestSolutionsObjectiveFunctions;
     private PrintStream streamForConvergence;
     private PrintStream streamForCsv;
 
@@ -52,6 +53,7 @@ public class DataOutput {
         streamForTxt = new PrintStream(path + "/" + fileName + ".txt");
         streamForSolutions = new PrintStream(path + "/" + fileName + "_Solutions.txt");
         streamForBestSolutions = new PrintStream(path + "/" + fileName + "_BEST_Solutions.txt");
+        streamForBestSolutionsObjectiveFunctions = new PrintStream(path + "/" + fileName + "_BEST_Solutions_Objectives.txt");
         streamForConvergence = new PrintStream(path + "/" + fileName + "_Convergence.txt");
         //streamForCsv  = new PrintStream(path + "/" + fileName + ".csv");
     }
@@ -70,6 +72,7 @@ public class DataOutput {
 
     public void saveBestSolutionFoundInTxtFile(Solution solution) {
         this.streamForBestSolutions.print(solution.getIntegerRepresentation() + "\n");
+        this.streamForBestSolutionsObjectiveFunctions.print(solution + "\n");
     }
 
 }

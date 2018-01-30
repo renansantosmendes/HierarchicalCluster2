@@ -1341,9 +1341,9 @@ public class VRPDRTSD implements Metaheuristic {
                 currentTemperature = alpha * currentTemperature;
                 currentIteration = 0;
                 output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
-                outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
+                
             }
-
+            outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
             System.out.println("Best Solution Found");
             System.out.println(bestSolutionFound);
         }
@@ -1520,10 +1520,11 @@ public class VRPDRTSD implements Metaheuristic {
                     } else {
                         currentNeighborhood++;
                     }
+                    
                 }
+                output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
                 currentIteration++;
             }
-            output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
             outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
         }
     }

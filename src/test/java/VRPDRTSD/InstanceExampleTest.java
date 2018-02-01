@@ -32,12 +32,10 @@ public class InstanceExampleTest {
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         //problem.getData().getRequests().forEach(r -> System.out.println(r.getId() + "\t" + r.getDeliveryTimeWindowLowerInMinutes()));
         problem.buildGreedySolution();
-        problem.localSearch(6);
+        problem.vnd();
+        //problem.localSearch(6);
         problem.getSolution().printAllInformations();
+        problem.getSolution().getRoutes().forEach(r -> System.out.println(r.getSequenceOfAttendedRequests()));
         problem.getSolution().getRoutes().forEach(System.out::println);
-//        problem.getSolution().printAllInformations();
-//        problem.vnd();
-//        problem.getSolution().printAllInformations();
-//        System.out.println(problem.getSolution());
     }
 }

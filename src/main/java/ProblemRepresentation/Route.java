@@ -391,6 +391,10 @@ public class Route implements Cloneable {
             }
         }
         
+        for(Request request: this.sequenceOfAttendedRequests){
+            request.setDeliveryTime(request.getDeliveryTimeInMinutes() + timeInterval);
+        }
+        
         for(int value : this.integerRouteRepresetation){
             if(value < -1000){
                 int c = 0;
@@ -406,6 +410,10 @@ public class Route implements Cloneable {
             if (this.integerRouteRepresetation.get(i) < 0) {
                 this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) + timeInterval);
             }
+        }
+        
+        for(Request request: this.sequenceOfAttendedRequests){
+            request.setDeliveryTime(request.getDeliveryTimeInMinutes() - timeInterval);
         }
         setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);

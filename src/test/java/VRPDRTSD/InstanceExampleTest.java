@@ -18,7 +18,7 @@ public class InstanceExampleTest {
 
     @Test
     public void instanceExample() throws IOException, BiffException {
-        int requestsNumber = 10;
+        int requestsNumber = 5;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
@@ -30,6 +30,14 @@ public class InstanceExampleTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
+        //problem.getData().getRequests().forEach(r -> System.out.println(r.getId() + "\t" + r.getDeliveryTimeWindowLowerInMinutes()));
         problem.buildGreedySolution();
+        problem.localSearch(6);
+        problem.getSolution().printAllInformations();
+        problem.getSolution().getRoutes().forEach(System.out::println);
+//        problem.getSolution().printAllInformations();
+//        problem.vnd();
+//        problem.getSolution().printAllInformations();
+//        System.out.println(problem.getSolution());
     }
 }

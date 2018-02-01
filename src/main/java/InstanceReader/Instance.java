@@ -10,6 +10,7 @@ package InstanceReader;
  * @author renansantos
  */
 public class Instance {
+
     private int numberOfRequests;
     private int requestTimeWindows;
     private Integer vehicleCapacity;
@@ -20,8 +21,6 @@ public class Instance {
     String instanceName;
     private int numberOfVehicles = numberOfRequests;
 
-    
-    
     public Instance setNumberOfRequests(int numberOfRequests) {
         this.numberOfRequests = numberOfRequests;
         return this;
@@ -51,7 +50,7 @@ public class Instance {
         this.numberOfVehicles = numberOfVehicles;
         return this;
     }
-    
+
     public void setNodesData(String nodesData) {
         this.nodesData = nodesData;
     }
@@ -100,11 +99,18 @@ public class Instance {
     public int getNumberOfVehicles() {
         return numberOfVehicles;
     }
-    
+
     public String buildInstaceNames() {
         String instanceName;
         if (numberOfRequests < 100) {
-            if (requestTimeWindows < 10) {
+
+            if (numberOfRequests < 10) {
+                if (requestTimeWindows < 10) {
+                    instanceName = "r00" + numberOfRequests + "n" + numberOfNodes + "tw0" + requestTimeWindows;
+                } else {
+                    instanceName = "r00" + numberOfRequests + "n" + numberOfNodes + "tw" + requestTimeWindows;
+                }
+            } else if (requestTimeWindows < 10) {
                 instanceName = "r0" + numberOfRequests + "n" + numberOfNodes + "tw0" + requestTimeWindows;
             } else {
                 instanceName = "r0" + numberOfRequests + "n" + numberOfNodes + "tw" + requestTimeWindows;
@@ -115,14 +121,14 @@ public class Instance {
         } else {
             instanceName = "r" + numberOfRequests + "n" + numberOfNodes + "tw" + requestTimeWindows;
         }
-        
+
         nodesData = "bh_n" + numberOfNodes + instanceSize;
         adjacenciesData = "bh_adj_n" + numberOfNodes + instanceSize;
 
         return instanceName;
     }
-    
-    public String toString(){
+
+    public String toString() {
         return this.instanceName;
     }
 }

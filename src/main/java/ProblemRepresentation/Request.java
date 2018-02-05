@@ -28,6 +28,7 @@ public class Request implements Cloneable {
     private double deliveryTimeWindowUpperRankingFunction;
     private double originNodeRankingFunction;
     private double destinationNodeRankingFunction;
+   
     static int toleranceTime = 10;
 
     public Request(Integer requestId, Node passengerOrigin, Node passengerDestination, LocalDateTime dayRequestWasMade,
@@ -330,7 +331,9 @@ public class Request implements Cloneable {
                 + "\nPickup Time = " + this.pickUpTime
                 + "\nDelivery Time = " + this.deliveryTime
                 + "\nRRF = " + this.requestRankingFunction
-                + "\nIs Feasible = " + this.feasible;
+                + "\nIs Feasible = " + this.feasible 
+                + "\nAnticipation = " + this.anticipation 
+                + "\n";
     }
 
     public Object clone() {

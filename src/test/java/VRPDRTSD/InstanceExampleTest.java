@@ -32,6 +32,8 @@ public class InstanceExampleTest {
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         //problem.getData().getRequests().forEach(r -> System.out.println(r.getId() + "\t" + r.getDeliveryTimeWindowLowerInMinutes()));
         problem.buildGreedySolution();
+        System.out.println("first solution");
+        System.out.println(problem.getSolution());
         problem.vnd();
         //problem.localSearch(6);
         problem.getSolution().printAllInformations();

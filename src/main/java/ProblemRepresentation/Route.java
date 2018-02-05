@@ -272,16 +272,23 @@ public class Route implements Cloneable {
         }
 
         for (Request request : attendedRequests) {
-            if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
-                Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
-                violations = violations.plus(time);
-                long diference = Math.abs(request.getDeliveryTime().getHour() * 60 + request.getDeliveryTime().getMinute()
-                        - request.getDeliveryTimeWindowLower().getHour() * 60 - request.getDeliveryTimeWindowLower().getMinute());
-                test += diference;
+            if (request.getAnticipation().getSeconds() > 0) {
+                test += request.getAnticipation().getSeconds() / 60;
             }
         }
+        //System.out.println(test);
+        this.totalTimeWindowAnticipation = test;
+//        for (Request request : attendedRequests) {
+//            if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
+//                Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
+//                violations = violations.plus(time);
+//                long diference = Math.abs(request.getDeliveryTime().getHour() * 60 + request.getDeliveryTime().getMinute()
+//                        - request.getDeliveryTimeWindowLower().getHour() * 60 - request.getDeliveryTimeWindowLower().getMinute());
+//                test += diference;
+//            }
+//        }
 
-        this.totalTimeWindowAnticipation = violations.getSeconds() / 60;
+        //this.totalTimeWindowAnticipation = violations.getSeconds() / 60;
     }
 
     public void calculateTotalDeliveryDelay() {
@@ -390,17 +397,17 @@ public class Route implements Cloneable {
                 this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) - timeInterval);
             }
         }
-        
-        for(Request request: this.sequenceOfAttendedRequests){
+
+        for (Request request : this.sequenceOfAttendedRequests) {
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() + timeInterval);
         }
-        
-        for(int value : this.integerRouteRepresetation){
-            if(value < -1000){
+
+        for (int value : this.integerRouteRepresetation) {
+            if (value < -1000) {
                 int c = 0;
             }
         }
-        
+
         setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);
     }
@@ -411,8 +418,8 @@ public class Route implements Cloneable {
                 this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) + timeInterval);
             }
         }
-        
-        for(Request request: this.sequenceOfAttendedRequests){
+
+        for (Request request : this.sequenceOfAttendedRequests) {
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() - timeInterval);
         }
         setPickupAndDeliveryTimeForEachAttendedRequest(data);
@@ -844,9 +851,9 @@ public class Route implements Cloneable {
         }
         idSequence.remove((Integer) requestId);
         this.clear();
-        if(idSequence.stream().mapToInt(u -> u.intValue()).sum() == 0){
+        if (idSequence.stream().mapToInt(u -> u.intValue()).sum() == 0) {
             this.clearAtributes();
-        }else{
+        } else {
             this.rebuild(idSequence, data);
         }
     }

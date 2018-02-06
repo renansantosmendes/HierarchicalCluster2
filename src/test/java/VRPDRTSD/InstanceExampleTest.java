@@ -28,16 +28,19 @@ public class InstanceExampleTest {
                 .setNumberOfNodes(12)
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
+        
+//        new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData(path);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
-        //problem.getData().getRequests().forEach(r -> System.out.println(r.getId() + "\t" + r.getDeliveryTimeWindowLowerInMinutes()));
+//        //problem.getData().getRequests().forEach(r -> System.out.println(r.getId() + "\t" + r.getDeliveryTimeWindowLowerInMinutes()));
         problem.buildGreedySolution();
         System.out.println("first solution");
         System.out.println(problem.getSolution());
-        problem.vnd();
+//        problem.vns();
+        //problem.multiStart();
         //problem.localSearch(6);
         problem.getSolution().printAllInformations();
-        problem.getSolution().getRoutes().forEach(r -> System.out.println(r.getSequenceOfAttendedRequests()));
+//        problem.getSolution().getRoutes().forEach(r -> System.out.println(r.getSequenceOfAttendedRequests()));
         problem.getSolution().getRoutes().forEach(System.out::println);
     }
 }

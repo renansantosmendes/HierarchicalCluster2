@@ -1,5 +1,0 @@
-0	Solution - 885	152	712	1	1	21
-1	Solution - 843	154	689	0	1	18
-2	Solution - 843	154	689	0	1	18
-3	Solution - 843	154	689	0	1	18
-4	Solution - 843	154	689	0	1	18

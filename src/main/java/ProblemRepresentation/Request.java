@@ -28,7 +28,7 @@ public class Request implements Cloneable {
     private double deliveryTimeWindowUpperRankingFunction;
     private double originNodeRankingFunction;
     private double destinationNodeRankingFunction;
-   
+
     static int toleranceTime = 10;
 
     public Request(Integer requestId, Node passengerOrigin, Node passengerDestination, LocalDateTime dayRequestWasMade,
@@ -110,9 +110,9 @@ public class Request implements Cloneable {
             deliveryTime = -deliveryTime;
             int hour = deliveryTime / 60;
             int minute = deliveryTime % 60;
-            
-            if(hour > 23){
-                int k= 0;
+
+            if (hour > 23) {
+                int k = 0;
             }
             this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
             this.anticipation = Duration.between(this.deliveryTime, this.deliveryTimeWindowLower);
@@ -177,13 +177,23 @@ public class Request implements Cloneable {
     }
 
     public void setOriginNodeRankingFunction(int maxLoadIndex, int minLoadIndex) {
-        this.originNodeRankingFunction
+        if (maxLoadIndex != minLoadIndex) {
+            this.originNodeRankingFunction
                 = (double) (this.getOrigin().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);
+        }else{
+            this.originNodeRankingFunction = 0;
+        }
+        
     }
 
     public void setDestinationNodeRankingFunction(int maxLoadIndex, int minLoadIndex) {
-        this.destinationNodeRankingFunction
-                = (double) (this.getDestination().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);;
+        if (maxLoadIndex != minLoadIndex) {
+            this.destinationNodeRankingFunction
+                = (double) (this.getDestination().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);
+        }else{
+            this.destinationNodeRankingFunction = 0;
+        }
+        
     }
 
     public Integer getId() {
@@ -283,7 +293,7 @@ public class Request implements Cloneable {
 
         if (currentTime.plus(totalDuration).isBefore(this.getDeliveryTimeWindowUpper())) {
             this.setFeasible(true);
-        }else{
+        } else {
             this.setFeasible(false);
         }
     }
@@ -317,8 +327,8 @@ public class Request implements Cloneable {
     public void setRequest(Request request) {
 
     }
-    
-    public String getStringToFile(){
+
+    public String getStringToFile() {
         String string = id + "\t" + origin + "\t" + destination + "\t" + deliveryTimeWindowLower + "\t" + deliveryTimeWindowUpper;
         return string;
     }
@@ -331,8 +341,8 @@ public class Request implements Cloneable {
                 + "\nPickup Time = " + this.pickUpTime
                 + "\nDelivery Time = " + this.deliveryTime
                 + "\nRRF = " + this.requestRankingFunction
-                + "\nIs Feasible = " + this.feasible 
-                + "\nAnticipation = " + this.anticipation 
+                + "\nIs Feasible = " + this.feasible
+                + "\nAnticipation = " + this.anticipation
                 + "\n";
     }
 

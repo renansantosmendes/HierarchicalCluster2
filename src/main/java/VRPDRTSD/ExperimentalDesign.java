@@ -16,8 +16,8 @@ import jxl.read.biff.BiffException;
  */
 public class ExperimentalDesign {
 
-    private int requestNumber[] = {10, 50, 100, 150, 200};//250
-    private int timeWindows[] = {10};//5
+    private int requestNumber[] = {10, 50, 100, 150};//200,250
+    private int timeWindows[] = {5,10};//5
     private int vehicleCapacities[] = {4, 11};
     private String instanceSizes[] = {"s", "m", "l"};
     private Instance instance = new Instance();

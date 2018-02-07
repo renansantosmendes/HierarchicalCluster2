@@ -1235,21 +1235,23 @@ public class VRPDRTSD implements Metaheuristic {
             while (currentIteration < numberOfIterations) {
                 initialSolution.setSolution(this.getSolution());
                 vnd();
-
+//                System.out.println(initialSolution);
                 keepBestSolutionFound(initialSolution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
                     bestSolutionFound.setSolution(solution);
                 }
-                output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
+
+                output.saveBestSolutionInTxtFile(bestSolution, currentIteration);//alterei aqui
                 currentIteration++;
                 buildRandomSolution();
             }
-            outputForBestSolutions.saveBestSolutionFoundInTxtFile(solution);
+            outputForBestSolutions.saveBestSolutionFoundInTxtFile(initialSolution);
+            System.out.println("final solution");
+            System.out.println(initialSolution);
+//            System.out.println(bestSolutionFound);
         }
 
-        System.out.println("final solution");
-        System.out.println(bestSolutionFound);
     }
 
     @Override
@@ -1341,7 +1343,7 @@ public class VRPDRTSD implements Metaheuristic {
                 currentTemperature = alpha * currentTemperature;
                 currentIteration = 0;
                 output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
-                
+
             }
             outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
             System.out.println("Best Solution Found");
@@ -1521,7 +1523,7 @@ public class VRPDRTSD implements Metaheuristic {
                     } else {
                         currentNeighborhood++;
                     }
-                    
+
                 }
                 output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
                 currentIteration++;

@@ -1,10 +1,10 @@
 0	Solution - 167	30	129	2	0	4
 1	Solution - 167	30	129	2	0	4
-2	Solution - 167	30	129	2	0	4
-3	Solution - 167	30	129	2	0	4
-4	Solution - 167	30	129	2	0	4
-5	Solution - 167	30	129	2	0	4
-6	Solution - 167	30	129	2	0	4
+2	Solution - 159	29	126	1	0	4
+3	Solution - 159	29	126	1	0	4
+4	Solution - 159	29	126	1	0	4
+5	Solution - 159	29	126	1	0	4
+6	Solution - 159	29	126	1	0	4
 7	Solution - 159	29	126	1	0	4
 8	Solution - 159	29	126	1	0	4
 9	Solution - 159	29	126	1	0	4

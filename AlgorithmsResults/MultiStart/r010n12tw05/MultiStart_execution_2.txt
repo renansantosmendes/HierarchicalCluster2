@@ -1,8 +1,8 @@
-0	Solution - 322	41	173	18	0	6
+0	Solution - 292	40	162	18	0	5
 1	Solution - 245	36	154	11	0	5
-2	Solution - 245	36	154	11	0	5
-3	Solution - 245	36	154	11	0	5
-4	Solution - 245	36	154	11	0	5
+2	Solution - 200	30	130	8	0	5
+3	Solution - 200	30	130	8	0	5
+4	Solution - 200	30	130	8	0	5
 5	Solution - 200	30	130	8	0	5
 6	Solution - 200	30	130	8	0	5
 7	Solution - 200	30	130	8	0	5

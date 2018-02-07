@@ -1,6 +1,6 @@
-0	Solution - 221	34	147	8	0	5
-1	Solution - 193	31	130	8	0	4
-2	Solution - 193	31	130	8	0	4
+0	Solution - 159	29	126	1	0	4
+1	Solution - 159	29	126	1	0	4
+2	Solution - 159	29	126	1	0	4
 3	Solution - 159	29	126	1	0	4
 4	Solution - 159	29	126	1	0	4
 5	Solution - 159	29	126	1	0	4

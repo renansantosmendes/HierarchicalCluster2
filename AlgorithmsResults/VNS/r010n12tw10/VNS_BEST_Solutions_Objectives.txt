@@ -1,0 +1,9 @@
+Solution - 165	32	133	0	0	4
+Solution - 173	34	139	0	0	4
+Solution - 168	31	137	0	0	4
+Solution - 165	32	133	0	0	4
+Solution - 173	33	140	0	1	4
+Solution - 168	31	137	0	0	4
+Solution - 168	31	137	0	0	4
+Solution - 173	33	140	0	1	4
+Solution - 168	31	137	0	0	4

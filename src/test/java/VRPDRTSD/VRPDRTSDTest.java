@@ -113,7 +113,7 @@ public class VRPDRTSDTest {
 
         //System.out.println("before");
         //System.out.println(route);
-        Collections.swap(idSequence, 3, 4);
+//        Collections.swap(idSequence, 3, 4);
         route.clearIntegerRepresentation();
         route.setIntegerRouteRepresetation(idSequence);
 

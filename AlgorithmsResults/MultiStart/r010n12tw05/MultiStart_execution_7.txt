@@ -3,9 +3,9 @@
 2	Solution - 245	36	154	11	0	5
 3	Solution - 245	36	154	11	0	5
 4	Solution - 245	36	154	11	0	5
-5	Solution - 245	36	154	11	0	5
-6	Solution - 245	36	154	11	0	5
-7	Solution - 245	36	154	11	0	5
+5	Solution - 200	38	157	1	0	5
+6	Solution - 200	38	157	1	0	5
+7	Solution - 200	38	157	1	0	5
 8	Solution - 200	38	157	1	0	5
 9	Solution - 200	38	157	1	0	5
 10	Solution - 200	38	157	1	0	5

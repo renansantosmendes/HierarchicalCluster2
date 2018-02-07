@@ -12,8 +12,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, FileNotFoundException, BiffException {
         String path = "/home/rmendes/VRPDRT/";
-        new ScriptGenerator("SimulatedAnnealing","3d","small");
-        new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData(path);
+        new ScriptGenerator("VNS","1d","medium");
+        new ExperimentalDesign().runVnsExperimentWithExcelData(path);
         
         
 //        int requestsNumber = 5;

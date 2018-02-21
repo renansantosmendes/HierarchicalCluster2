@@ -3,7 +3,6 @@ package VRPDRTSD;
 import InstanceReader.*;
 import java.io.*;
 import jxl.read.biff.BiffException;
-
 /**
  *
  * @author renansantos
@@ -12,11 +11,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException, FileNotFoundException, BiffException {
         String path = "/home/rmendes/VRPDRT/";
-        new ScriptGenerator("VNS","1d","medium");
+        new ScriptGenerator("VNS", "1d", "medium");
         new ExperimentalDesign().runVnsExperimentWithExcelData(path);
-        
-        
-//        int requestsNumber = 5;
+
+//        int requestsNumber = 3;
 //        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 //
 //        Instance instance = new Instance();
@@ -28,12 +26,15 @@ public class Main {
 //                .setVehicleCapacity(4);
 //
 //        VRPDRTSD problem = new VRPDRTSD(instance, path);
-//        problem.vns();
-////        problem.getSolution().getStaticMapForEveryRoute(problem.getData().getNodes(), 
-////                problem.getData().getAdjacenciesInstanceName(), 
-////                problem.getData().getNodesInstanceName());
-//        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), 
+//        problem.buildGreedySolution();
+//        problem.getSolution().printAllInformations();
+//        problem.multiStart();
+//        problem.getSolution().getStaticMapForEveryRoute(problem.getData().getNodes(), 
 //                problem.getData().getAdjacenciesInstanceName(), 
+//                problem.getData().getNodesInstanceName());
+        
+//        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(),
+//                problem.getData().getAdjacenciesInstanceName(),
 //                problem.getData().getNodesInstanceName());
     }
 }

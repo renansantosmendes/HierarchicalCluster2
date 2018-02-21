@@ -128,7 +128,7 @@ public class Node implements Cloneable {
             color = "red";
             //label = "O";
         } else {
-            color = "blue";
+            color = "red";
             //label = "S";
         }
         return "&markers=color:" + color + "|label:" + label + "|" + this.longitude + "," + this.latitude;

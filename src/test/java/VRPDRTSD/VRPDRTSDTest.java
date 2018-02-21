@@ -231,8 +231,8 @@ public class VRPDRTSDTest {
 
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
 //        problem.buildRandomSolution();
-        problem.buildSelfishSolution();
-        problem.getSolution().printAllInformations();
+        //problem.buildSelfishSolution();
+        //problem.getSolution().printAllInformations();
         //problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(), adjacenciesData, nodesData);
 
     }

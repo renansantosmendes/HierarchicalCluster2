@@ -458,10 +458,17 @@ public class VRPDRTSD implements Metaheuristic {
         finalizeSolution();
     }
 
-    public void buildSelfishSolution() {
-        VRPDRTSD problem = new VRPDRTSD(instanceName, nodesInstanceName, adjacenciesInstanceName, numberOfVehicles, 1);
-        problem.buildGreedySolution();
-        this.solution = problem.getSolution();
+    public void buildSelfishSolution() throws BiffException, IOException {
+        if (this.excelDataFilesPath != null) {
+            instance.setVehicleCapacity(1);
+            VRPDRTSD problem = new VRPDRTSD(instance, excelDataFilesPath);
+            problem.buildGreedySolution();
+            this.solution = problem.getSolution();
+        } else {
+            VRPDRTSD problem = new VRPDRTSD(instanceName, nodesInstanceName, adjacenciesInstanceName, numberOfVehicles, 1);
+            problem.buildGreedySolution();
+            this.solution = problem.getSolution();
+        }
     }
 
     public void initializeRandomCandidatesSet() {
@@ -937,7 +944,7 @@ public class VRPDRTSD implements Metaheuristic {
             long evaluationFunctionBeforeMovement = bestSolution.getEvaluationFunction();
             List<Integer> firstRouteIdSequence = new ArrayList<>();
             firstRouteIdSequence.addAll(returnUsedIds(solution, i));
-            System.out.println(solution.getRoute(i).getIntegerSequenceOfAttendedRequests());
+            //System.out.println(solution.getRoute(i).getIntegerSequenceOfAttendedRequests());
             for (int j = 0; j < solution.getNumberOfRoutes(); j++) {
                 if (i != j) {
 
@@ -974,7 +981,7 @@ public class VRPDRTSD implements Metaheuristic {
 
                                     if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
                                         bestSolution.setSolution(solution);
-                                    }
+                                    }//pensar em desfazer o movimento nessa parte do código
 
 //                                    System.out.println(solution.getEvaluationFunction());
                                     actualizeSolution(solution, i, firstRouteOriginal);
@@ -987,7 +994,7 @@ public class VRPDRTSD implements Metaheuristic {
                 }
             }
         }
-
+        //insert a method to remove empty routes
         if (bestSolution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
             return bestSolution;
         } else {
@@ -1414,6 +1421,7 @@ public class VRPDRTSD implements Metaheuristic {
                 initialSolution.setSolution(solution);
                 currentIndex = 0;
                 currentNeighborhood = neighborhoods.get(0);
+                break;
             } else {
                 currentNeighborhood = currentNeighborhood + 2;
             }
@@ -1422,6 +1430,29 @@ public class VRPDRTSD implements Metaheuristic {
         solution.setSolution(initialSolution);
     }
 
+    public Solution vndForLocalSearchInVnsFirstImprovement(Integer excludedNeighborhood) {
+        Solution initialSolution = new Solution(this.getSolution());
+        int numberOfNeighborhoods = 8;
+        List<Integer> neighborhoods = generateNeighborhoodListWithout(numberOfNeighborhoods, localSearchType, excludedNeighborhood);
+        int currentIndex = 0;
+        int currentNeighborhood = neighborhoods.get(currentIndex);
+        int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
+        while (currentNeighborhood <= lastNeighborhood) {
+            localSearch(currentNeighborhood);
+            if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
+                initialSolution.setSolution(solution);
+                return initialSolution;
+                //currentIndex = 0;
+                //currentNeighborhood = neighborhoods.get(0);
+            } else {
+                currentNeighborhood = currentNeighborhood + 2;
+            }
+        }
+
+        solution.setSolution(initialSolution);
+        return solution;
+    }
+    
     private void printAlgorithmInformations(Solution solution, int currentNeighborhood) {
         System.out.println("Objective Function = " + solution.getEvaluationFunction() + "\t Neighborhood = " + currentNeighborhood);
     }
@@ -1476,12 +1507,12 @@ public class VRPDRTSD implements Metaheuristic {
                 perturbation(2, 2);
                 vndForLocalSearchInVNS(excludedNeighborhood);
                 //VND();
-                System.out.println(solution);
+                //System.out.println(solution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
                     currentNeighborhood = 1;
                 } else {
-                    currentNeighborhood++;
+                    currentNeighborhood = currentNeighborhood + 2;
                 }
             }
             currentIteration++;
@@ -1515,8 +1546,8 @@ public class VRPDRTSD implements Metaheuristic {
 
                 while (currentNeighborhood <= lastNeighborhood) {
                     perturbation(2, 2);
+                    //solution.setSolution(vndForLocalSearchInVnsFirstImprovement(excludedNeighborhood));
                     vndForLocalSearchInVNS(excludedNeighborhood);
-
                     if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                         bestSolution.setSolution(solution);
                         currentNeighborhood = 1;

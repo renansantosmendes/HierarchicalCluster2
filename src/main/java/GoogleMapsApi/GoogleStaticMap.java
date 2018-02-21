@@ -299,7 +299,7 @@ public class GoogleStaticMap {
         this.city = "Belo+Horizonte";
         this.state = "Minas+Gerais";
         this.country = "Brasil";
-        this.zoom = 15;
+        this.zoom = 16;
         this.scale = 2;
     }
 

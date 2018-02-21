@@ -20,7 +20,7 @@ public class DataOutput {
     private String path;
     private String fileName;
     private PrintStream streamForTxt;
-    private PrintStream streamForSolutions;
+    private PrintStream streamForSolutions; 
     private PrintStream streamForBestSolutions;
     private PrintStream streamForBestSolutionsObjectiveFunctions;
     private PrintStream streamForConvergence;

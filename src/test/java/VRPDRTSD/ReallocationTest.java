@@ -14,11 +14,10 @@ import org.junit.Test;
  *
  * @author renansantos
  */
-public class InstanceExampleTest {
-
-    @Test
+public class ReallocationTest {
+     @Test
     public void instanceExample() throws IOException, BiffException {
-        int requestsNumber = 50;
+        int requestsNumber = 10;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
@@ -29,21 +28,12 @@ public class InstanceExampleTest {
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
 
-//        new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData(path);
-//        new ExperimentalDesign().runMultiStartExperimentWithExcelData(path);
-        //new ExperimentalDesign().runVnsExperimentWithExcelData(path);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         
-////        //problem.getData().getRequests().forEach(r -> System.out.println(r.getId() + "\t" + r.getDeliveryTimeWindowLowerInMinutes()));
         problem.buildGreedySolution();
-        //System.out.println("first solution");
-        //System.out.println(problem.getSolution());
-//        problem.vns();
-//        //problem.multiStart();
-        //problem.localSearch(1);
         problem.getSolution().printAllInformations();
-////        problem.getSolution().getRoutes().forEach(r -> System.out.println(r.getSequenceOfAttendedRequests()));
-        //problem.getSolution().getRoutes().forEach(System.out::println);
+        problem.localSearch(13);
+        problem.getSolution().printAllInformations();
     }
 }

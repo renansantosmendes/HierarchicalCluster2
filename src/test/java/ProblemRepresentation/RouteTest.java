@@ -180,13 +180,23 @@ public class RouteTest {
         int vehicleCapacity = 11;
         VRPDRTSD problem = new VRPDRTSD(instanceName, nodesData, adjacenciesData, numberOfVehicles, vehicleCapacity);
         problem.buildGreedySolution();
-        problem.getSolution().printAllInformations();
-        System.out.println(problem.getSolution());
-        problem.localSearch(8);
-        System.out.println(problem.getSolution());
-        problem.localSearch(2);
-        System.out.println(problem.getSolution());
-        problem.getSolution().printAllInformations();
-        //problem.localSearch(2);
+        
+        Route route = new Route((Route) problem.getSolution().getRoute(0).clone());
+        System.out.println(route.getIntegerSequenceOfAttendedRequests());
+        
+        List<Integer> sequence = new ArrayList<>();
+        sequence.add(0);
+        sequence.add(1);
+        sequence.add(1);
+        sequence.add(2);
+        sequence.add(2);
+        sequence.add(0);
+        
+        route.rebuild(sequence, problem.getData());
+        System.out.println(route);
+        System.out.println(route.getIntegerSequenceOfAttendedRequests());
+        System.out.println(route.getIntegerRouteRepresetation());
+        System.out.println(route.getNodesVisitationInIntegerRepresentation());
+        
     }
 }

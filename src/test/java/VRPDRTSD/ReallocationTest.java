@@ -17,7 +17,7 @@ import org.junit.Test;
 public class ReallocationTest {
      @Test
     public void instanceExample() throws IOException, BiffException {
-        int requestsNumber = 10;
+        int requestsNumber = 50;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();

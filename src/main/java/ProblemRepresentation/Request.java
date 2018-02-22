@@ -111,9 +111,6 @@ public class Request implements Cloneable {
             int hour = deliveryTime / 60;
             int minute = deliveryTime % 60;
 
-            if (hour > 23) {
-                int k = 0;
-            }
             this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
             this.anticipation = Duration.between(this.deliveryTime, this.deliveryTimeWindowLower);
             this.delay = Duration.between(this.deliveryTime, this.deliveryTimeWindowUpper);
@@ -218,6 +215,10 @@ public class Request implements Cloneable {
 
     public LocalDateTime getDeliveryTime() {
         return deliveryTime;
+    }
+    
+    public Integer getPickUpTimeInMinutes() {
+        return pickUpTime.getHour() * 60 + pickUpTime.getMinute();
     }
 
     public Integer getDeliveryTimeInMinutes() {

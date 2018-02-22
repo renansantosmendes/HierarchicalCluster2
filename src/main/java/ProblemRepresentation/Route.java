@@ -399,6 +399,10 @@ public class Route implements Cloneable {
         }
 
         for (Request request : this.sequenceOfAttendedRequests) {
+            if(request.getId() == 21){
+                int b = 0;
+            }
+            request.setPickUpTime(request.getPickUpTimeInMinutes() + timeInterval);
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() + timeInterval);
         }
 
@@ -408,7 +412,7 @@ public class Route implements Cloneable {
             }
         }
 
-        setPickupAndDeliveryTimeForEachAttendedRequest(data);
+        //setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);
     }
 

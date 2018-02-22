@@ -34,6 +34,7 @@ public class Solution implements Cloneable {
         this.totalTimeWindowAnticipation = solution.getTotalTimeWindowAnticipation();
         this.totalTimeWindowDelay = solution.getTotalTimeWindowDelay();
         this.evaluationFunction = solution.getEvaluationFunction();
+        this.numberOfVehicles = solution.getNumberOfVehicles();
         this.routes.clear();
         this.routes.addAll(solution.getRoutes());
         this.nonAttendedRequests = solution.getNonAttendedRequests();
@@ -157,7 +158,7 @@ public class Solution implements Cloneable {
         
         List<Route> test = new ArrayList<>();
         for(Route route: routes){
-            if(route.getEvaluationFunction()!= 0){
+            if(route.getIntegerRouteRepresetation().size() != 0){
                 test.add(route);
             }
         }
@@ -234,7 +235,7 @@ public class Solution implements Cloneable {
     @Override
     public String toString() {
         return "Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t"
-                + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t" + this.routes.size();
+                + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t" + this.numberOfVehicles;
     }
 
     public Object clone() {

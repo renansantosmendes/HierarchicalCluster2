@@ -35,7 +35,7 @@ public class ReallocationTest {
         //problem.vnd();
         //problem.buildGreedySolution();
         //problem.getSolution().printAllInformations();
-        problem.localSearch(13);
+        problem.localSearch(9);
         //problem.localSearch(6);
         problem.getSolution().printAllInformations();
     }

@@ -41,7 +41,7 @@ public class VRPDRTSD implements Metaheuristic {
     private List<Request> feasibleRequests = new ArrayList<>();
     private Request candidate;
     private Route currentRoute;
-    private int localSearchType = 1;
+    private int localSearchType = 2;
     private String excelDataFilesPath;
     private Instance instance;
 
@@ -527,7 +527,7 @@ public class VRPDRTSD implements Metaheuristic {
                 this.solution = addRouteBestImprovement();
                 break;
             case 13:
-                this.solution = reallocationTest();
+                this.solution = requestReallocationBestImprovement();
                 break;
         }
         this.solution.buildIntegerRepresentation();
@@ -556,11 +556,8 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     private void actualizeSolution(Solution solution, int i, Route route) {
-        //solution.setRoute(i, route);
         solution.getRoute(i).setRoute(route);
-        //solution.getRoute(i).rebuild(route.getIntegerSequenceOfAttendedRequests(), data);
         solution.calculateEvaluationFunction();
-//        solution.getRoutes().forEach(r -> r.rebuild(r.getIntegerSequenceOfAttendedRequests(), this.data));
     }
 
     private Solution swapIntraBestImprovement() {
@@ -832,61 +829,6 @@ public class VRPDRTSD implements Metaheuristic {
         newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
     }
 
-    private Solution requestReallocationBestImprovement() {
-        Solution solution = new Solution(this.solution);
-
-        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
-            Route firstRoute = new Route(solution.getRoute(i));
-            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
-
-            List<Integer> firstRouteIdSequence = new ArrayList<>();
-            firstRouteIdSequence.addAll(returnUsedIds(solution, i));
-
-            for (int j = 0; j < solution.getRoutes().size(); j++) {
-                if (i != j) {
-                    Route secondRoute = new Route(solution.getRoute(j));
-                    if (firstRouteIdSequence.size() != 0) {
-                        for (int k = 0; k < firstRouteIdSequence.size(); k++) {
-                            int requestId = firstRouteIdSequence.get(k);
-                            //firstRoute.removeReallocatedRequest(requestId, data);
-                            List<Integer> idSequenceToInsertRequest = new ArrayList<>();
-                            idSequenceToInsertRequest.addAll(secondRoute.getIntegerSequenceOfAttendedRequests());
-
-                            for (int l = 1; l < idSequenceToInsertRequest.size(); l++) {
-                                for (int m = l + 1; m < idSequenceToInsertRequest.size() + 1; m++) {
-                                    List<Integer> newIdSequence = new ArrayList<>();
-
-                                    insertIdInNewSequence(newIdSequence, idSequenceToInsertRequest, l, requestId, m);
-
-                                    secondRoute.clear();
-                                    secondRoute.rebuild(newIdSequence, data);
-
-                                    actualizeSolution(solution, j, secondRoute);
-
-                                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
-
-                                    if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
-                                        secondRoute.removeReallocatedRequest(requestId, data);
-                                        actualizeSolution(solution, j, secondRoute);
-                                    } else if (firstRouteIdSequence.size() > 0) {
-                                        firstRouteIdSequence.remove(k);
-                                        k = 0;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
-            return solution;
-        } else {
-            return this.solution;
-        }
-    }
-
     private Solution addRouteFirstImprovement() {
         Solution solution = new Solution((Solution) this.solution.clone());
         for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
@@ -936,7 +878,7 @@ public class VRPDRTSD implements Metaheuristic {
         return this.solution;
     }
 
-    private Solution reallocationTest() {
+    private Solution requestReallocationBestImprovement() {
         Solution solution = new Solution(this.solution);
         Solution bestSolution = new Solution(solution);
         for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
@@ -955,7 +897,11 @@ public class VRPDRTSD implements Metaheuristic {
                             Route secondRoute = new Route((Route) secondRouteOriginal.clone());
 
                             int requestId = firstRouteIdSequence.get(k);
-
+                            
+                            if(requestId == 6){
+                                int a = 0;
+                            }
+                            
                             Route firstRoute = new Route(firstRouteOriginal);
                             firstRoute.removeRequest(requestId, data);
 
@@ -964,15 +910,12 @@ public class VRPDRTSD implements Metaheuristic {
 
                             for (int l = 1; l < idSequenceToInsertRequest.size(); l++) {
                                 for (int m = l + 1; m < idSequenceToInsertRequest.size() + 1; m++) {
-                                    //secondRouteOriginal = new Route((Route) solution.getRoute(j).clone());
                                     List<Integer> newIdSequence = new ArrayList<>();
 
                                     insertIdInNewSequence(newIdSequence, idSequenceToInsertRequest, l, requestId, m);
                                     //secondRoute.clear();
                                     secondRoute.rebuild(newIdSequence, data);
 
-//                                    System.out.println(firstRoute.getIntegerSequenceOfAttendedRequests());
-                                    //System.out.println(secondRoute.getIntegerSequenceOfAttendedRequests());
                                     actualizeSolution(solution, i, firstRoute);
                                     actualizeSolution(solution, j, secondRoute);
 
@@ -980,12 +923,8 @@ public class VRPDRTSD implements Metaheuristic {
 
                                     long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
 
-//                                    if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
                                     if (evaluationFunctionAfterMovement < bestSolution.getEvaluationFunction()) {
                                         bestSolution.setSolution((Solution) solution.clone());
-                                        //bestSolution.printIntegerRepresentationOfRoutes();
-                                        //System.out.println("entrou");
-                                        //bestSolution.printAllInformations();
                                     }
                                     actualizeSolution(solution, i, firstRouteOriginal);
                                     actualizeSolution(solution, j, secondRoute);
@@ -1391,7 +1330,7 @@ public class VRPDRTSD implements Metaheuristic {
     public void vnd() {
         //buildGreedySolution();
         Solution initialSolution = new Solution(this.getSolution());
-        int numberOfNeighborhoods = 8;
+        int numberOfNeighborhoods = 10;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType);
         int currentIndex = 0;
         int currentNeighborhood = neighborhoods.get(currentIndex);

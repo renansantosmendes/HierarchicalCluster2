@@ -17,7 +17,7 @@ import org.junit.Test;
 public class ReallocationTest {
      @Test
     public void instanceExample() throws IOException, BiffException {
-        int requestsNumber = 50;
+        int requestsNumber = 10;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
@@ -30,10 +30,13 @@ public class ReallocationTest {
 
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
-        
         problem.buildGreedySolution();
-        problem.getSolution().printAllInformations();
+        //problem.getSolution().printAllInformations();
+        //problem.vnd();
+        //problem.buildGreedySolution();
+        //problem.getSolution().printAllInformations();
         problem.localSearch(13);
+        //problem.localSearch(6);
         problem.getSolution().printAllInformations();
     }
 }

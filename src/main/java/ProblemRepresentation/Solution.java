@@ -16,6 +16,7 @@ public class Solution implements Cloneable {
     private long totalTimeWindowAnticipation;
     private long totalTimeWindowDelay;
     private long evaluationFunction;
+    private long numberOfVehicles;
     private List<Route> routes;
     private Set<Request> nonAttendedRequests;
     private List<Integer> integerRepresentation = new ArrayList<>();
@@ -84,10 +85,14 @@ public class Solution implements Cloneable {
         return this.evaluationFunction;
     }
 
+    public long getNumberOfVehicles() {
+        return numberOfVehicles;
+    }
+
     public void setRoute(int position, Route route) {
         routes.get(position).setRoute(route);
     }
-    
+
     public void setSolution(Solution solution) {
         initializeAttributesWithEmptyLists();
         clearAttributeValues();
@@ -96,6 +101,7 @@ public class Solution implements Cloneable {
         this.totalTimeWindowAnticipation = solution.getTotalTimeWindowAnticipation();
         this.totalTimeWindowDelay = solution.getTotalTimeWindowDelay();
         this.evaluationFunction = solution.getEvaluationFunction();
+        this.numberOfVehicles = solution.getNumberOfVehicles();
         this.routes.clear();
         this.routes.addAll(solution.getRoutes());
         this.nonAttendedRequests = solution.getNonAttendedRequests();
@@ -118,18 +124,18 @@ public class Solution implements Cloneable {
         clearAttributeValues();
         sumAttibutesForEveryRoute();
         buildIntegerRepresentation();
-        
+
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay
-                    + this.totalTimeWindowAnticipation*this.routes.size();
+                    + this.totalTimeWindowAnticipation * this.numberOfVehicles;
         } else {
-            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation*this.routes.size();
+            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation * this.numberOfVehicles;
         }
     }
-    
-    public void buildIntegerRepresentation(){
+
+    public void buildIntegerRepresentation() {
         this.integerRepresentation.clear();
-        for(Route route: this.routes){
+        for (Route route : this.routes) {
             this.integerRepresentation.addAll(route.getIntegerRouteRepresetation());
         }
     }
@@ -140,6 +146,7 @@ public class Solution implements Cloneable {
         this.totalTimeWindowAnticipation = 0;
         this.totalTimeWindowDelay = 0;
         this.evaluationFunction = 0;
+        this.numberOfVehicles = 0;
     }
 
     private void sumAttibutesForEveryRoute() {
@@ -147,6 +154,14 @@ public class Solution implements Cloneable {
         this.totalTravelTime = this.routes.stream().mapToLong(Route::getRouteTravelTime).sum();
         this.totalTimeWindowAnticipation = this.routes.stream().mapToLong(Route::getTotalTimeWindowAnticipation).sum();
         this.totalTimeWindowDelay = this.routes.stream().mapToLong(Route::getTotalTimeWindowDelay).sum();
+        
+        List<Route> test = new ArrayList<>();
+        for(Route route: routes){
+            if(route.getEvaluationFunction()!= 0){
+                test.add(route);
+            }
+        }
+        this.numberOfVehicles = test.size();
     }
 
     public Set<List<Integer>> getRoutesForMap() {
@@ -164,8 +179,8 @@ public class Solution implements Cloneable {
         }
         return routes;
     }
-    
-    public int getNumberOfRoutes(){
+
+    public int getNumberOfRoutes() {
         return this.routes.size();
     }
 

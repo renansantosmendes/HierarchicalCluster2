@@ -128,9 +128,9 @@ public class Solution implements Cloneable {
 
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay
-                    + this.totalTimeWindowAnticipation * this.numberOfVehicles;
+                    + this.totalTimeWindowAnticipation * this.numberOfVehicles ;//+ 50* this.numberOfVehicles
         } else {
-            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation * this.numberOfVehicles;
+            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation * this.numberOfVehicles ;//+ 50* this.numberOfVehicles
         }
     }
 

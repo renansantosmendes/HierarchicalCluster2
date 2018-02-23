@@ -6,6 +6,7 @@
 package VRPDRTSD;
 
 import InstanceReader.Instance;
+import ProblemRepresentation.Route;
 import java.io.IOException;
 import jxl.read.biff.BiffException;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import org.junit.Test;
 public class ReallocationTest {
      @Test
     public void instanceExample() throws IOException, BiffException {
-        int requestsNumber = 50;
+        int requestsNumber = 10;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
@@ -31,12 +32,10 @@ public class ReallocationTest {
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         problem.buildGreedySolution();
-        problem.getSolution().printAllInformations();
+        problem.printSolutionInformations();
         //problem.vnd();
-        //problem.buildGreedySolution();
-        //problem.getSolution().printAllInformations();
-        problem.localSearch(10);
-        problem.localSearch(6);
-        problem.getSolution().printAllInformations();
+        problem.localSearch(13);
+//        problem.localSearch(6);
+        problem.printSolutionInformations();
     }
 }

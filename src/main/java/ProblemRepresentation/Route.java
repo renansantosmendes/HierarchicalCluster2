@@ -878,7 +878,8 @@ public class Route implements Cloneable {
     public String toString() {
         return "Route - Evaluation Function = " + this.evaluationFunction + " - Total Distance = " + this.totalDistanceTraveled + " km - Travel Time = " + this.routeTravelTime
                 + " min - Total of Anticipation  = " + this.totalTimeWindowAnticipation + " min"
-                + " - Total of Delay  = " + this.totalTimeWindowDelay + " min\t" + this.integerRouteRepresetation;
+                + " - Total of Delay  = " + this.totalTimeWindowDelay + " min\t" + this.integerRouteRepresetation
+                + "Violate some constraint = " + this.violatedSomeConstraint;
     }
 
     public Object clone() {

@@ -37,5 +37,6 @@ public class ReallocationTest {
         problem.localSearch(13);
 //        problem.localSearch(6);
         problem.printSolutionInformations();
+        problem.getSolution().getRoutes().forEach(System.out::println);
     }
 }

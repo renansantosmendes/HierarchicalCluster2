@@ -239,9 +239,9 @@ public class Route implements Cloneable {
         this.totalTimeWindowAnticipation = 0;
         this.totalTimeWindowDelay = 0;
         this.evaluationFunction = 0;
-        this.notServedRequests = null;
-        this.nodesSequence = null;
-        this.sequenceOfAttendedRequests = null;
+        this.notServedRequests = new HashSet();
+        this.nodesSequence = new ArrayList();
+        this.sequenceOfAttendedRequests = new ArrayList();
         //this.integerRouteRepresetation = null;
     }
 
@@ -868,6 +868,10 @@ public class Route implements Cloneable {
             this.rebuild(integerRouteRepresetation, data);
         }
 
+    }
+    
+    public boolean isEmpty(){
+        return this.evaluationFunction == 0;
     }
 
     @Override

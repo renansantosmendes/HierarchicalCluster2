@@ -231,6 +231,15 @@ public class Solution implements Cloneable {
         System.out.println(this.integerRepresentation.stream().filter(u -> u.intValue() >= 0)
                 .collect(Collectors.toCollection(ArrayList::new)));
     }
+    
+    public void removeEmptyRoutes(){
+        List<Route> newRoutes = this.routes.stream()
+                .filter(r -> r.isEmpty() != true)
+                .collect(Collectors.toCollection(ArrayList::new));
+     
+        this.routes.clear();
+        this.routes = newRoutes;
+    }
 
     @Override
     public String toString() {

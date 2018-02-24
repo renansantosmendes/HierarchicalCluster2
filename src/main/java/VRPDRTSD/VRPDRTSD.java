@@ -1002,7 +1002,7 @@ public class VRPDRTSD implements Metaheuristic {
 
                                         insertIdInNewSequence(newIdSequence, idSequenceToInsertRequest, l, requestId, m);
                                         secondRoute.rebuild(newIdSequence, data);
-
+                                                
                                         actualizeSolution(solution, i, firstRoute);
                                         actualizeSolution(solution, j, secondRoute);
                                         secondRoute.setRoute((Route) secondRouteOriginal.clone());
@@ -1011,7 +1011,7 @@ public class VRPDRTSD implements Metaheuristic {
 
                                         if (evaluationFunctionAfterMovement < bestSolution.getEvaluationFunction()) {
                                             bestSolution.setSolution((Solution) solution.clone());
-                                            System.out.println("changed = " + requestId);
+//                                            System.out.println("changed request = " + requestId);
                                         }
                                         actualizeSolution(solution, i, firstRouteOriginal);
                                         actualizeSolution(solution, j, secondRoute);
@@ -1025,12 +1025,15 @@ public class VRPDRTSD implements Metaheuristic {
             }
 
             if (bestSolution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
+                bestSolution.calculateEvaluationFunction();
+                bestSolution.removeEmptyRoutes();
+                System.out.println(bestSolution);
                 this.solution = (Solution) bestSolution.clone();
             } else {
                 canContinue = false;
             }
         }
-        return new Solution();
+        return (Solution) this.solution.clone();
     }
 
     @Override

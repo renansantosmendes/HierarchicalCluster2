@@ -23,8 +23,8 @@ public class Route implements Cloneable {
     private boolean violatedSomeConstraint = false;
 
     public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
-            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, List<Request> sequenceOfServedRequests,
-            List<Integer> integerRouteRepresetation) {
+            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, 
+            List<Request> sequenceOfServedRequests, List<Integer> integerRouteRepresetation, boolean violatedSomeConstraint) {
         this.totalDistanceTraveled = totalRouteDistance;
         this.routeTravelTime = routeTravelTime;
         this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
@@ -34,6 +34,7 @@ public class Route implements Cloneable {
         this.nodesSequence = nodesSequence;
         this.sequenceOfAttendedRequests = sequenceOfServedRequests;
         this.integerRouteRepresetation = integerRouteRepresetation;
+        this.violatedSomeConstraint = violatedSomeConstraint;
     }
 
     public Route() {
@@ -789,6 +790,7 @@ public class Route implements Cloneable {
     public void capacityAnalysis(ProblemData data) {
         List<Integer> idSequence = getOnlyIdSequence();
         List<Integer> vehicleOccupation = new ArrayList<>();
+        this.violatedSomeConstraint = false;
         int busySeats = 0;
         vehicleOccupation.add(busySeats);
         for (int i = 0; i < idSequence.size(); i++) {
@@ -874,6 +876,10 @@ public class Route implements Cloneable {
         return this.evaluationFunction == 0;
     }
 
+    public boolean isPenalized(){
+        return this.violatedSomeConstraint == true;
+    }
+    
     @Override
     public String toString() {
         return "Route - Evaluation Function = " + this.evaluationFunction + " - Total Distance = " + this.totalDistanceTraveled + " km - Travel Time = " + this.routeTravelTime
@@ -894,6 +900,7 @@ public class Route implements Cloneable {
         }
 
         return new Route(totalDistanceTraveled, routeTravelTime, totalTimeWindowAnticipation, totalTimeWindowDelay,
-                evaluationFunction, notServedRequests, nodesSequenceClone, sequenceOfAttendedRequestsClone, integerRouteRepresetation);
+                evaluationFunction, notServedRequests, nodesSequenceClone, sequenceOfAttendedRequestsClone,
+                integerRouteRepresetation, violatedSomeConstraint);
     }
 }

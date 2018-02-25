@@ -121,17 +121,38 @@ public class Solution implements Cloneable {
         this.routes.add(route);
     }
 
-    public void calculateEvaluationFunction() {
+    public void calculateEvaluationFunction(ProblemData data) {
         clearAttributeValues();
         sumAttibutesForEveryRoute();
         buildIntegerRepresentation();
+        analyseCapacityConstraint(data);
+        evaluateSolution();
+        penalizeSolution();
+    }
 
+    private void evaluateSolution() {
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay
                     + this.totalTimeWindowAnticipation * this.numberOfVehicles ;//+ 50* this.numberOfVehicles
         } else {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation * this.numberOfVehicles ;//+ 50* this.numberOfVehicles
         }
+    }
+
+    private void penalizeSolution() {
+        if(hasRouteWithViolatedConstraint()){
+            this.evaluationFunction = this.totalDistanceTraveled * this.totalTravelTime * this.totalTravelTime;
+        }
+    }
+
+    private void analyseCapacityConstraint(ProblemData data) {
+        for(Route route: routes){
+            route.capacityAnalysis(data);
+        }
+    }
+
+    private boolean hasRouteWithViolatedConstraint() {
+        return routes.stream().filter(Route::isPenalized).collect(Collectors.toCollection(ArrayList::new)).size() > 0;
     }
 
     public void buildIntegerRepresentation() {

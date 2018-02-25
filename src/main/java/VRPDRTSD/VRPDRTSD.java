@@ -436,7 +436,7 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     private void finalizeSolution() {
-        solution.calculateEvaluationFunction();
+        solution.calculateEvaluationFunction(data);
         solution.buildIntegerRepresentation();
     }
 
@@ -561,7 +561,7 @@ public class VRPDRTSD implements Metaheuristic {
 
     private void actualizeSolution(Solution solution, int i, Route route) {
         solution.getRoute(i).setRoute(route);
-        solution.calculateEvaluationFunction();
+        solution.calculateEvaluationFunction(data);
     }
 
     private Solution swapIntraBestImprovement() {
@@ -700,14 +700,14 @@ public class VRPDRTSD implements Metaheuristic {
                     for (int secondId : secondRoute) {
                         solution.getRoute(i).replaceRequest(firstId, secondId, data);
                         solution.getRoute(j).replaceRequest(secondId, firstId, data);
-                        solution.calculateEvaluationFunction();
+                        solution.calculateEvaluationFunction(data);
                         long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
                         if (evaluationFunctionAfterMovement < evaluationFunctionBeforeMovement) {
                             return solution;
                         } else {
                             solution.getRoute(i).replaceRequest(secondId, firstId, data);
                             solution.getRoute(j).replaceRequest(firstId, secondId, data);
-                            solution.calculateEvaluationFunction();
+                            evaluateSolution(solution);
                         }
                     }
                 }
@@ -715,6 +715,10 @@ public class VRPDRTSD implements Metaheuristic {
         }
 
         return this.solution;
+    }
+
+    private void evaluateSolution(Solution solution) {
+        solution.calculateEvaluationFunction(data);
     }
 
     private static List<Integer> returnUsedIds(Solution solution, int routePosition) {
@@ -774,7 +778,7 @@ public class VRPDRTSD implements Metaheuristic {
     private void swapRequestsInDifferentRoutes(Solution solution1, int i, List<Integer> firstRoute, int k, List<Integer> secondRoute, int l, int j) {
         solution1.getRoute(i).replaceRequest(firstRoute.get(k), secondRoute.get(l), data);
         solution1.getRoute(j).replaceRequest(secondRoute.get(l), firstRoute.get(k), data);
-        solution1.calculateEvaluationFunction();
+        evaluateSolution(solution1);
     }
 
     private Solution requestReallocationFirstImprovement() {
@@ -1025,7 +1029,7 @@ public class VRPDRTSD implements Metaheuristic {
             }
 
             if (bestSolution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
-                bestSolution.calculateEvaluationFunction();
+                evaluateSolution(bestSolution);
                 bestSolution.removeEmptyRoutes();
                 System.out.println(bestSolution);
                 this.solution = (Solution) bestSolution.clone();
@@ -1124,7 +1128,7 @@ public class VRPDRTSD implements Metaheuristic {
 
         solution.getRoute(firstRoute).replaceRequest(firstRequestId, secondRequestId, data);
         solution.getRoute(secondRoute).replaceRequest(secondRequestId, firstRequestId, data);
-        solution.calculateEvaluationFunction();
+        evaluateSolution(solution);
 
         return solution;
     }

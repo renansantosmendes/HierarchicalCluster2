@@ -1059,7 +1059,6 @@ public class VRPDRTSD implements Metaheuristic {
             case 5:
                 this.solution = reallocateRequestPerturbation(intensity);
                 break;
-
         }
     }
 
@@ -1155,31 +1154,49 @@ public class VRPDRTSD implements Metaheuristic {
 
     private Solution reallocateRequestPerturbation(int intensity) {
         Solution solution = new Solution(this.solution);
-        List<Integer> routeIndexes = generateTwoDiffentRouteIndexes(solution);
-        int firstRoute = routeIndexes.get(0);
-        int secondRoute = routeIndexes.get(1);
+        for (int i = 0; i < intensity; i++) {
 
-        List<Integer> idSequenceToRemoveRequest = new ArrayList<>();
-        List<Integer> idSequenceToInsertRequest = new ArrayList<>();
-        idSequenceToRemoveRequest.addAll(returnUsedIds(solution, firstRoute));
-        idSequenceToInsertRequest.addAll(solution.getRoute(secondRoute).getIntegerSequenceOfAttendedRequests());
+            List<Integer> routeIndexes = generateTwoDiffentRouteIndexes(solution);
+            int firstRouteIndex = routeIndexes.get(0);
+            int secondRouteIndex = routeIndexes.get(1);
 
-        List<Integer> newIdSequence = new ArrayList<>();
-        List<Integer> indexesToRemove = generateTwoDiffentRequestsToOneRoute(idSequenceToRemoveRequest);
-        List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(idSequenceToInsertRequest);
-        int firstIndex = indexesToInsert.get(0);
-        int secondIndex = indexesToInsert.get(1);
-        newIdSequence.addAll(idSequenceToInsertRequest.subList(0, firstIndex));
-        newIdSequence.add(idSequenceToRemoveRequest.get(indexesToRemove.get(0)));
-        newIdSequence.addAll(idSequenceToInsertRequest.subList(firstIndex, secondIndex - 1));
-        newIdSequence.add(idSequenceToRemoveRequest.get(indexesToRemove.get(0)));
-        newIdSequence.addAll(idSequenceToInsertRequest.subList(secondIndex - 1, idSequenceToInsertRequest.size()));
-        System.out.println(newIdSequence);
-//        secondRoute.clear();
-//        secondRoute.rebuild(newIdSequence, data);
-//
-//        solution.setRoute(j, secondRoute);
-//        solution.calculateEvaluationFunction();
+            List<Integer> idSequenceToRemoveRequest = new ArrayList<>();
+            List<Integer> idSequenceToInsertRequest = new ArrayList<>();
+//        idSequenceToRemoveRequest.addAll(returnUsedIds(solution, firstRouteIndex));
+            idSequenceToRemoveRequest.addAll(solution.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
+            idSequenceToInsertRequest.addAll(solution.getRoute(secondRouteIndex).getIntegerSequenceOfAttendedRequests());
+
+            List<Integer> newIdSequence = new ArrayList<>();
+            List<Integer> indexesToRemove = generateTwoDiffentRequestsToOneRoute(idSequenceToRemoveRequest);
+            List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(idSequenceToInsertRequest);
+            int firstIndex = indexesToInsert.get(0);
+            int secondIndex = indexesToInsert.get(1);
+            int requestId = idSequenceToRemoveRequest.get(indexesToRemove.get(0));
+            try {
+                newIdSequence.addAll(idSequenceToInsertRequest.subList(0, firstIndex));
+                newIdSequence.add(requestId);
+                newIdSequence.addAll(idSequenceToInsertRequest.subList(firstIndex, secondIndex - 1));
+                newIdSequence.add(requestId);
+                newIdSequence.addAll(idSequenceToInsertRequest.subList(secondIndex - 1, idSequenceToInsertRequest.size()));
+            } catch (IllegalArgumentException e) {
+                System.out.println(firstIndex + "\t" + secondIndex);
+                System.out.println(newIdSequence);
+                e.printStackTrace();
+            }
+//        System.out.println(newIdSequence);
+
+            Route firstRoute = solution.getRoute(firstRouteIndex);
+            Route secondRoute = solution.getRoute(secondRouteIndex);
+
+            firstRoute.removeRequest(requestId, data);
+            secondRoute.rebuild(newIdSequence, data);
+
+            actualizeSolution(solution, firstRouteIndex, firstRoute);
+            actualizeSolution(solution, secondRouteIndex, secondRoute);
+
+            evaluateSolution(solution);
+            solution.removeEmptyRoutes();
+        }
         return solution;
     }
 
@@ -1188,13 +1205,15 @@ public class VRPDRTSD implements Metaheuristic {
         List<Integer> indexes = new ArrayList<>();
         int routeSize = idSequence.size();
         int firstRequest, secondRequest;
-        if (idSequence.get(0) == 0 && idSequence.get(routeSize - 1) == 0) {
-            firstRequest = rnd.nextInt(routeSize - 1) + 1;
-            secondRequest = rnd.nextInt(routeSize - 1) + 1;
-        } else {
-            firstRequest = rnd.nextInt(routeSize);
-            secondRequest = rnd.nextInt(routeSize);
-        }
+        do {
+            if (idSequence.get(0) == 0 && idSequence.get(routeSize - 1) == 0) {
+                firstRequest = rnd.nextInt(routeSize - 1) + 1;
+                secondRequest = rnd.nextInt(routeSize - 1) + 1;
+            } else {
+                firstRequest = rnd.nextInt(routeSize);
+                secondRequest = rnd.nextInt(routeSize);
+            }
+        } while (firstRequest == secondRequest);
         indexes.add(firstRequest);
         indexes.add(secondRequest);
         Collections.sort(indexes);
@@ -1433,7 +1452,6 @@ public class VRPDRTSD implements Metaheuristic {
         int currentNeighborhood = neighborhoods.get(currentIndex);
         int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
         while (currentNeighborhood <= lastNeighborhood) {
-            //printAlgorithmInformations(initialSolution, currentNeighborhood);
             localSearch(currentNeighborhood);
             if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
@@ -1445,7 +1463,6 @@ public class VRPDRTSD implements Metaheuristic {
             }
         }
         solution.setSolution(initialSolution);
-        //initialSolution.printAllInformations();
     }
 
     public void vndForLocalSearchInVNS(Integer excludedNeighborhood) {

@@ -14,7 +14,7 @@ public class Main {
 //        new ScriptGenerator("VNS", "1d", "medium");
 //        new ExperimentalDesign().runVnsExperimentWithExcelData(path);
 
-        int requestsNumber = 50;
+        int requestsNumber = 10;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
@@ -27,9 +27,9 @@ public class Main {
 //
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         problem.buildGreedySolution();
-//        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(),
-//                problem.getData().getAdjacenciesInstanceName(),
-//                problem.getData().getNodesInstanceName());
+        problem.getSolution().getStaticMapWithAllRoutes(problem.getData().getNodes(),
+                problem.getData().getAdjacenciesInstanceName(),
+                problem.getData().getNodesInstanceName());
         problem.vnd();
 //        problem.getSolution().printAllInformations();
 //        problem.multiStart();

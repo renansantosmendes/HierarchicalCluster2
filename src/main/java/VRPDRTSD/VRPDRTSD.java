@@ -41,7 +41,7 @@ public class VRPDRTSD implements Metaheuristic {
     private List<Request> feasibleRequests = new ArrayList<>();
     private Request candidate;
     private Route currentRoute;
-    private int localSearchType = 1;
+    private int localSearchType = 2;
     private String excelDataFilesPath;
     private Instance instance;
 
@@ -340,6 +340,11 @@ public class VRPDRTSD implements Metaheuristic {
         scheduleRoute();
         buildNodesSequence();
         evaluateRoute();
+        improveSchedule();
+    }
+    
+    private void improveSchedule(){
+        currentRoute.improveSchedule(data);
     }
 
     private void addPickupSequence() {
@@ -1450,7 +1455,7 @@ public class VRPDRTSD implements Metaheuristic {
     public void vnd() {
         //buildGreedySolution();
         Solution initialSolution = new Solution(this.getSolution());
-        int numberOfNeighborhoods = 10;
+        int numberOfNeighborhoods = 6;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType);
         int currentIndex = 0;
         int currentNeighborhood = neighborhoods.get(currentIndex);

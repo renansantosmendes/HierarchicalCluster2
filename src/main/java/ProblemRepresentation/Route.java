@@ -23,7 +23,7 @@ public class Route implements Cloneable {
     private boolean violatedSomeConstraint = false;
 
     public Route(long totalRouteDistance, long routeTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
-            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence, 
+            long evaluationFunction, Set<Request> notServedRequests, List<Node> nodesSequence,
             List<Request> sequenceOfServedRequests, List<Integer> integerRouteRepresetation, boolean violatedSomeConstraint) {
         this.totalDistanceTraveled = totalRouteDistance;
         this.routeTravelTime = routeTravelTime;
@@ -400,17 +400,8 @@ public class Route implements Cloneable {
         }
 
         for (Request request : this.sequenceOfAttendedRequests) {
-            if(request.getId() == 21){
-                int b = 0;
-            }
             request.setPickUpTime(request.getPickUpTimeInMinutes() + timeInterval);
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() + timeInterval);
-        }
-
-        for (int value : this.integerRouteRepresetation) {
-            if (value < -1000) {
-                int c = 0;
-            }
         }
 
         //setPickupAndDeliveryTimeForEachAttendedRequest(data);
@@ -508,6 +499,35 @@ public class Route implements Cloneable {
         addDepotInPickupAndDeliverySequences(idSequence, idSequence);
         setIntegerRepresentation(idSequence, times, data);
         capacityAnalysis(data);
+        //improveSchedule(data);
+    }
+
+    public void improveSchedule(ProblemData data) {
+        Set<Integer> times = new HashSet<>();
+
+        for (Request request : sequenceOfAttendedRequests) {
+            if (!request.getAnticipation().isNegative() && !request.getAnticipation().isZero()) {
+                times.add((int) request.getAnticipation().getSeconds() / 60);
+            }
+
+            if (request.getDelay().isNegative()) {
+                times.add((int)-request.getDelay().getSeconds() / 60);
+            }
+        }
+
+        tryToInsertTimesInRoute(times, data);
+    }
+    
+    private void tryToInsertTimesInRoute(Set<Integer> times, ProblemData data){
+        Route route = new Route((Route) this.clone());
+        long evaluationBefore = route.getEvaluationFunction();
+        for(Integer time: times){
+            route.addMinutesInRoute(time, data);
+            if(evaluationBefore < route.getEvaluationFunction()){
+                route.removeMinutesInRoute(time, data);
+            }
+        }
+        this.setRoute(route);
     }
 
     private List<Integer> getOnlyIdSequence() {
@@ -871,15 +891,15 @@ public class Route implements Cloneable {
         }
 
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return this.evaluationFunction == 0;
     }
 
-    public boolean isPenalized(){
+    public boolean isPenalized() {
         return this.violatedSomeConstraint == true;
     }
-    
+
     @Override
     public String toString() {
         return "Route - Evaluation Function = " + this.evaluationFunction + " - Total Distance = " + this.totalDistanceTraveled + " km - Travel Time = " + this.routeTravelTime

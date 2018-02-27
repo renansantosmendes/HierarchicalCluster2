@@ -344,6 +344,7 @@ public class Request implements Cloneable {
                 + "\nRRF = " + this.requestRankingFunction
                 + "\nIs Feasible = " + this.feasible
                 + "\nAnticipation = " + this.anticipation
+                + "\nDelay = " + this.delay
                 + "\n";
     }
 

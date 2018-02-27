@@ -27,7 +27,7 @@ public class ReallocationTest {
                 .setRequestTimeWindows(10)
                 .setInstanceSize("s")
                 .setNumberOfNodes(12)
-                .setNumberOfVehicles(250)
+                .setNumberOfVehicles(250)  
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);

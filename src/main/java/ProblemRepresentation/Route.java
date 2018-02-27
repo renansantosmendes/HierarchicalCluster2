@@ -266,32 +266,33 @@ public class Route implements Cloneable {
 
     public void calculateTotalDeliveryAnticipation() {
         Duration violations = Duration.ofMinutes(0);
-        long test = 0;
+        long totalSumTime = 0;
         Set<Request> attendedRequests = new HashSet<>();
-        for (Request request : this.sequenceOfAttendedRequests) {
+        for (Request request : this.sequenceOfAttendedRequests) {//treta aqui
             attendedRequests.add(request);
         }
 
         for (Request request : attendedRequests) {
             if (request.getAnticipation().getSeconds() > 0) {
-                test += request.getAnticipation().getSeconds() / 60;
+                totalSumTime += request.getAnticipation().getSeconds() / 60;
             }
         }
-        //System.out.println(test);
-        this.totalTimeWindowAnticipation = test;
-//        for (Request request : attendedRequests) {
-//            if (request.getDeliveryTimeWindowLower().isAfter(request.getDeliveryTime())) {
-//                Duration time = Duration.between(request.getDeliveryTime(), request.getDeliveryTimeWindowLower());
-//                violations = violations.plus(time);
-//                long diference = Math.abs(request.getDeliveryTime().getHour() * 60 + request.getDeliveryTime().getMinute()
-//                        - request.getDeliveryTimeWindowLower().getHour() * 60 - request.getDeliveryTimeWindowLower().getMinute());
-//                test += diference;
-//            }
-//        }
-
-        //this.totalTimeWindowAnticipation = violations.getSeconds() / 60;
+        this.totalTimeWindowAnticipation = totalSumTime;
     }
 
+    private List<Integer> returnUsedIds() {
+        Set<Integer> setOfIds = this.getIntegerRouteRepresetation()
+                .stream()
+                .filter(u -> u.intValue() > 0)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        List<Integer> idsUsed = new ArrayList<>();
+        for (int id : setOfIds) {
+            idsUsed.add(id);
+        }
+        return idsUsed;
+    }
+    
     public void calculateTotalDeliveryDelay() {
         Duration violations = Duration.ofMinutes(0);
         Set<Request> attendedRequests = new HashSet<>();
@@ -402,6 +403,7 @@ public class Route implements Cloneable {
         for (Request request : this.sequenceOfAttendedRequests) {
             request.setPickUpTime(request.getPickUpTimeInMinutes() + timeInterval);
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() + timeInterval);
+            int a = 0;
         }
 
         //setPickupAndDeliveryTimeForEachAttendedRequest(data);
@@ -416,9 +418,11 @@ public class Route implements Cloneable {
         }
 
         for (Request request : this.sequenceOfAttendedRequests) {
+            request.setPickUpTime(request.getPickUpTimeInMinutes() - timeInterval);
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() - timeInterval);
+            int a = 0;
         }
-        setPickupAndDeliveryTimeForEachAttendedRequest(data);
+        //setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);
     }
 
@@ -511,21 +515,23 @@ public class Route implements Cloneable {
             }
 
             if (request.getDelay().isNegative()) {
-                times.add((int)-request.getDelay().getSeconds() / 60);
+                times.add((int) -request.getDelay().getSeconds() / 60);
             }
         }
 
         tryToInsertTimesInRoute(times, data);
     }
-    
-    private void tryToInsertTimesInRoute(Set<Integer> times, ProblemData data){
+
+    private void tryToInsertTimesInRoute(Set<Integer> times, ProblemData data) {
         Route route = new Route((Route) this.clone());
+        Route bestRoute = new Route((Route) this.clone());
         long evaluationBefore = route.getEvaluationFunction();
-        for(Integer time: times){
+        for (Integer time : times) {
             route.addMinutesInRoute(time, data);
-            if(evaluationBefore < route.getEvaluationFunction()){
-                route.removeMinutesInRoute(time, data);
+            if (bestRoute.getEvaluationFunction() > route.getEvaluationFunction()) {
+                bestRoute.setRoute(route);
             }
+            route.removeMinutesInRoute(time, data);
         }
         this.setRoute(route);
     }

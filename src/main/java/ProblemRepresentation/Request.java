@@ -176,21 +176,21 @@ public class Request implements Cloneable {
     public void setOriginNodeRankingFunction(int maxLoadIndex, int minLoadIndex) {
         if (maxLoadIndex != minLoadIndex) {
             this.originNodeRankingFunction
-                = (double) (this.getOrigin().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);
-        }else{
+                    = (double) (this.getOrigin().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);
+        } else {
             this.originNodeRankingFunction = 0;
         }
-        
+
     }
 
     public void setDestinationNodeRankingFunction(int maxLoadIndex, int minLoadIndex) {
         if (maxLoadIndex != minLoadIndex) {
             this.destinationNodeRankingFunction
-                = (double) (this.getDestination().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);
-        }else{
+                    = (double) (this.getDestination().getLoadIndex() - minLoadIndex) / (maxLoadIndex - minLoadIndex);
+        } else {
             this.destinationNodeRankingFunction = 0;
         }
-        
+
     }
 
     public Integer getId() {
@@ -216,7 +216,7 @@ public class Request implements Cloneable {
     public LocalDateTime getDeliveryTime() {
         return deliveryTime;
     }
-    
+
     public Integer getPickUpTimeInMinutes() {
         return pickUpTime.getHour() * 60 + pickUpTime.getMinute();
     }
@@ -348,6 +348,7 @@ public class Request implements Cloneable {
                 + "\n";
     }
 
+    @Override
     public Object clone() {
         return new Request(id, (Node) origin.clone(), (Node) destination.clone(), dayRequestWasMade, pickUpTime, deliveryTime,
                 deliveryTimeWindowLower, deliveryTimeWindowUpper, anticipation, delay, feasible, boarded, requestRankingFunction,
@@ -355,4 +356,10 @@ public class Request implements Cloneable {
                 deliveryTimeWindowUpperRankingFunction, originNodeRankingFunction, destinationNodeRankingFunction);
     }
 
+    @Override
+    public int hashCode() {
+        String string = Integer.toString(this.getId());
+        int hash = string.hashCode();
+        return id;
+    }
 }

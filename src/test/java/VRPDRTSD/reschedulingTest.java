@@ -34,8 +34,8 @@ public class reschedulingTest {
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         problem.buildGreedySolution();
         problem.printSolutionInformations();
-        problem.vnd();
-        problem.printSolutionInformations();
+        //problem.vnd();
+        //problem.printSolutionInformations();
 //        problem.getSolution().getRoutes().forEach(r -> System.out.println(r.getSequenceOfAttendedRequests()));            
     }
 }

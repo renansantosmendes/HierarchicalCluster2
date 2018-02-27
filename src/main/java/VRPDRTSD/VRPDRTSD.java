@@ -1162,7 +1162,7 @@ public class VRPDRTSD implements Metaheuristic {
 
             List<Integer> idSequenceToRemoveRequest = new ArrayList<>();
             List<Integer> idSequenceToInsertRequest = new ArrayList<>();
-//        idSequenceToRemoveRequest.addAll(returnUsedIds(solution, firstRouteIndex));
+
             idSequenceToRemoveRequest.addAll(solution.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
             idSequenceToInsertRequest.addAll(solution.getRoute(secondRouteIndex).getIntegerSequenceOfAttendedRequests());
 
@@ -1172,18 +1172,8 @@ public class VRPDRTSD implements Metaheuristic {
             int firstIndex = indexesToInsert.get(0);
             int secondIndex = indexesToInsert.get(1);
             int requestId = idSequenceToRemoveRequest.get(indexesToRemove.get(0));
-            try {
-                newIdSequence.addAll(idSequenceToInsertRequest.subList(0, firstIndex));
-                newIdSequence.add(requestId);
-                newIdSequence.addAll(idSequenceToInsertRequest.subList(firstIndex, secondIndex - 1));
-                newIdSequence.add(requestId);
-                newIdSequence.addAll(idSequenceToInsertRequest.subList(secondIndex - 1, idSequenceToInsertRequest.size()));
-            } catch (IllegalArgumentException e) {
-                System.out.println(firstIndex + "\t" + secondIndex);
-                System.out.println(newIdSequence);
-                e.printStackTrace();
-            }
-//        System.out.println(newIdSequence);
+
+            insertRequestInRoute(newIdSequence, idSequenceToInsertRequest, firstIndex, requestId, secondIndex);
 
             Route firstRoute = solution.getRoute(firstRouteIndex);
             Route secondRoute = solution.getRoute(secondRouteIndex);
@@ -1198,6 +1188,20 @@ public class VRPDRTSD implements Metaheuristic {
             solution.removeEmptyRoutes();
         }
         return solution;
+    }
+
+    private void insertRequestInRoute(List<Integer> newIdSequence, List<Integer> idSequenceToInsertRequest, int firstIndex, int requestId, int secondIndex) {
+        try {
+            newIdSequence.addAll(idSequenceToInsertRequest.subList(0, firstIndex));
+            newIdSequence.add(requestId);
+            newIdSequence.addAll(idSequenceToInsertRequest.subList(firstIndex, secondIndex - 1));
+            newIdSequence.add(requestId);
+            newIdSequence.addAll(idSequenceToInsertRequest.subList(secondIndex - 1, idSequenceToInsertRequest.size()));
+        } catch (IllegalArgumentException e) {
+            System.out.println(firstIndex + "\t" + secondIndex);
+            System.out.println(newIdSequence);
+            e.printStackTrace();
+        }
     }
 
     private List<Integer> generateTwoDiffentRequestsToOneRoute(List<Integer> idSequence) {

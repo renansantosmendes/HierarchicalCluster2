@@ -48,11 +48,12 @@ public class Solution implements Cloneable {
     }
 
     public Solution(long totalDistance, long totalTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
-            long evaluationFunction, List<Route> routes, Set<Request> nonAttendedRequests) {
+            long numberOfVehicles, long evaluationFunction, List<Route> routes, Set<Request> nonAttendedRequests) {
         this.totalDistanceTraveled = totalDistance;
         this.totalTravelTime = totalTravelTime;
         this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
         this.totalTimeWindowDelay = totalTimeWindowDelay;
+        this.numberOfVehicles = numberOfVehicles;
         this.evaluationFunction = evaluationFunction;
         this.routes = routes;
         this.nonAttendedRequests = nonAttendedRequests;
@@ -133,20 +134,20 @@ public class Solution implements Cloneable {
     private void evaluateSolution() {
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay
-                    + this.totalTimeWindowAnticipation * this.numberOfVehicles ;//+ 50* this.numberOfVehicles
+                    + this.totalTimeWindowAnticipation * this.numberOfVehicles;//+ 50* this.numberOfVehicles
         } else {
-            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation * this.numberOfVehicles ;//+ 50* this.numberOfVehicles
+            this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime + this.totalTimeWindowAnticipation * this.numberOfVehicles;//+ 50* this.numberOfVehicles
         }
     }
 
     private void penalizeSolution() {
-        if(hasRouteWithViolatedConstraint()){
+        if (hasRouteWithViolatedConstraint()) {
             this.evaluationFunction = this.totalDistanceTraveled * this.totalTravelTime * this.totalTravelTime;
         }
     }
 
     private void analyseCapacityConstraint(ProblemData data) {
-        for(Route route: routes){
+        for (Route route : routes) {
             route.capacityAnalysis(data);
         }
     }
@@ -176,10 +177,10 @@ public class Solution implements Cloneable {
         this.totalTravelTime = this.routes.stream().mapToLong(Route::getRouteTravelTime).sum();
         this.totalTimeWindowAnticipation = this.routes.stream().mapToLong(Route::getTotalTimeWindowAnticipation).sum();
         this.totalTimeWindowDelay = this.routes.stream().mapToLong(Route::getTotalTimeWindowDelay).sum();
-        
+
         List<Route> test = new ArrayList<>();
-        for(Route route: routes){
-            if(route.getIntegerRouteRepresetation().size() != 0){
+        for (Route route : routes) {
+            if (route.getIntegerRouteRepresetation().size() != 0) {
                 test.add(route);
             }
         }
@@ -252,12 +253,15 @@ public class Solution implements Cloneable {
         System.out.println(this.integerRepresentation.stream().filter(u -> u.intValue() >= 0)
                 .collect(Collectors.toCollection(ArrayList::new)));
     }
-    
-    public void removeEmptyRoutes(){
+
+    public void removeEmptyRoutes() {
         List<Route> newRoutes = this.routes.stream()
                 .filter(r -> r.isEmpty() != true)
                 .collect(Collectors.toCollection(ArrayList::new));
-     
+
+        if (newRoutes.size() == 0) {
+            System.out.println("has no routes problem!!!");
+        }
         this.routes.clear();
         this.routes = newRoutes;
     }
@@ -274,6 +278,6 @@ public class Solution implements Cloneable {
             routesClone.add((Route) route.clone());
         }
         return new Solution(totalDistanceTraveled, totalTravelTime, totalTimeWindowAnticipation,
-                totalTimeWindowDelay, evaluationFunction, routesClone, nonAttendedRequests);
+                totalTimeWindowDelay, numberOfVehicles, evaluationFunction, routesClone, nonAttendedRequests);
     }
 }

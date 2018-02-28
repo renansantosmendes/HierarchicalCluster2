@@ -360,6 +360,6 @@ public class Request implements Cloneable {
     public int hashCode() {
         String string = Integer.toString(this.getId());
         int hash = string.hashCode();
-        return id;
+        return id.intValue();
     }
 }

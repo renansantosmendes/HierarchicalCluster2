@@ -340,7 +340,7 @@ public class VRPDRTSD implements Metaheuristic {
         scheduleRoute();
         buildNodesSequence();
         evaluateRoute();
-        improveSchedule();
+        //improveSchedule();
     }
     
     private void improveSchedule(){

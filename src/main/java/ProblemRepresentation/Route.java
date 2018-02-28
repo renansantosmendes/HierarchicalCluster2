@@ -223,7 +223,7 @@ public class Route implements Cloneable {
         if (this.integerRouteRepresetation.size() > 2) {
             calculateTravelTime(data);
             calculateDistanceTraveled(data);
-            calculateTotalDeliveryAnticipation();
+            calculateTotalDeliveryAnticipation(data);
             calculateTotalDeliveryDelay();
             calculateEvaluationFunction();
             if (this.violatedSomeConstraint) {
@@ -264,13 +264,17 @@ public class Route implements Cloneable {
         this.totalDistanceTraveled = totalDistance / 1000;
     }
 
-    public void calculateTotalDeliveryAnticipation() {
+    public void calculateTotalDeliveryAnticipation(ProblemData data) {
         Duration violations = Duration.ofMinutes(0);
         long totalSumTime = 0;
         Set<Request> attendedRequests = new HashSet<>();
-        for (Request request : this.sequenceOfAttendedRequests) {//treta aqui
-            attendedRequests.add(request);
+        List<Integer> ids = returnUsedIds();
+        for (Integer id : ids) {
+            attendedRequests.add(getRequestUsingId(id, data));
         }
+//        for (Request request : this.sequenceOfAttendedRequests) {//treta aqui
+//            attendedRequests.add(request);
+//        }
 
         for (Request request : attendedRequests) {
             if (request.getAnticipation().getSeconds() > 0) {
@@ -292,7 +296,7 @@ public class Route implements Cloneable {
         }
         return idsUsed;
     }
-    
+
     public void calculateTotalDeliveryDelay() {
         Duration violations = Duration.ofMinutes(0);
         Set<Request> attendedRequests = new HashSet<>();
@@ -399,8 +403,13 @@ public class Route implements Cloneable {
                 this.integerRouteRepresetation.set(i, this.integerRouteRepresetation.get(i) - timeInterval);
             }
         }
+        List<Request> attendedRequests = new ArrayList<>();
+        List<Integer> ids = returnUsedIds();
+        for (Integer id : ids) {
+            attendedRequests.add(getRequestUsingId(id, data));
+        }
 
-        for (Request request : this.sequenceOfAttendedRequests) {
+        for (Request request : attendedRequests) {
             request.setPickUpTime(request.getPickUpTimeInMinutes() + timeInterval);
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() + timeInterval);
             int a = 0;
@@ -417,7 +426,13 @@ public class Route implements Cloneable {
             }
         }
 
-        for (Request request : this.sequenceOfAttendedRequests) {
+        List<Request> attendedRequests = new ArrayList<>();
+        List<Integer> ids = returnUsedIds();
+        for (Integer id : ids) {
+            attendedRequests.add(getRequestUsingId(id, data));
+        }
+
+        for (Request request : attendedRequests) {
             request.setPickUpTime(request.getPickUpTimeInMinutes() - timeInterval);
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() - timeInterval);
             int a = 0;
@@ -463,6 +478,7 @@ public class Route implements Cloneable {
         addDepotInPickupAndDeliverySequences(idSequence, idSequence);
         setIntegerRepresentation(idSequence, times, data);
         capacityAnalysis(data);
+        improveSchedule(data);
     }
 
     public void scheduleRouteUsingBestScheduling(ProblemData data) {
@@ -503,7 +519,7 @@ public class Route implements Cloneable {
         addDepotInPickupAndDeliverySequences(idSequence, idSequence);
         setIntegerRepresentation(idSequence, times, data);
         capacityAnalysis(data);
-        //improveSchedule(data);
+        improveSchedule(data);
     }
 
     public void improveSchedule(ProblemData data) {
@@ -529,11 +545,11 @@ public class Route implements Cloneable {
         for (Integer time : times) {
             route.addMinutesInRoute(time, data);
             if (bestRoute.getEvaluationFunction() > route.getEvaluationFunction()) {
-                bestRoute.setRoute(route);
+                bestRoute.setRoute((Route) route.clone());
             }
             route.removeMinutesInRoute(time, data);
         }
-        this.setRoute(route);
+        this.setRoute((Route) bestRoute.clone());
     }
 
     private List<Integer> getOnlyIdSequence() {
@@ -927,6 +943,6 @@ public class Route implements Cloneable {
 
         return new Route(totalDistanceTraveled, routeTravelTime, totalTimeWindowAnticipation, totalTimeWindowDelay,
                 evaluationFunction, notServedRequests, nodesSequenceClone, sequenceOfAttendedRequestsClone,
-                integerRouteRepresetation, violatedSomeConstraint);
+                new ArrayList(integerRouteRepresetation), violatedSomeConstraint);
     }
 }

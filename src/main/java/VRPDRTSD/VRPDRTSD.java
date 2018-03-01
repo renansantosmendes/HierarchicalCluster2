@@ -41,7 +41,7 @@ public class VRPDRTSD implements Metaheuristic {
     private List<Request> feasibleRequests = new ArrayList<>();
     private Request candidate;
     private Route currentRoute;
-    private int localSearchType = 2;
+    private int localSearchType = 1;
     private String excelDataFilesPath;
     private Instance instance;
 
@@ -1275,14 +1275,13 @@ public class VRPDRTSD implements Metaheuristic {
 
     @Override
     public void multiStart() {
-        int numberOfIterations = 10;
+        int numberOfIterations = 100;
         int currentIteration = 0;
         Solution initialSolution = new Solution();
         while (currentIteration < numberOfIterations) {
             buildRandomSolution();
             initialSolution.setSolution(this.getSolution());
             vnd();
-
             keepBestSolutionFound(initialSolution);
             currentIteration++;
         }

@@ -20,7 +20,7 @@ import org.junit.Test;
 public class reschedulingTest {
     @Test
     public void routeReschedulingTest() throws IOException, BiffException{
-         int requestsNumber = 50;
+         int requestsNumber = 10;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
@@ -34,7 +34,8 @@ public class reschedulingTest {
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         problem.buildGreedySolution();
         problem.printSolutionInformations();
-        problem.vnd();
+        //problem.vnd();
+        problem.multiStart();
         problem.printSolutionInformations();
         problem.getSolution().getRoutes().forEach(System.out::println);
         //problem.getSolution().getRoutes().forEach(r -> System.out.println(r.getSequenceOfAttendedRequests()));            

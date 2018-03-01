@@ -55,7 +55,7 @@ public class VRPDRTSD implements Metaheuristic {
         this.readInstance();
     }
 
-    public VRPDRTSD(Instance instance, String excelDataFilesPath) throws IOException, BiffException {
+    public VRPDRTSD(Instance instance, String excelDataFilesPath) {
         this.instance = instance;
         this.instanceName = instance.getInstanceName();
         this.nodesInstanceName = instance.getNodesData();
@@ -178,8 +178,14 @@ public class VRPDRTSD implements Metaheuristic {
         data = new ProblemData(instanceName, nodesInstanceName, adjacenciesInstanceName, numberOfVehicles, vehicleCapacity);
     }
 
-    public void readExcelInstance() throws IOException, BiffException {
-        data = new ProblemData(instance, this.excelDataFilesPath);
+    public void readExcelInstance() {
+        try {
+            data = new ProblemData(instance, this.excelDataFilesPath);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (BiffException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -342,8 +348,8 @@ public class VRPDRTSD implements Metaheuristic {
         evaluateRoute();
         //improveSchedule();
     }
-    
-    private void improveSchedule(){
+
+    private void improveSchedule() {
         currentRoute.improveSchedule(data);
     }
 
@@ -1290,8 +1296,8 @@ public class VRPDRTSD implements Metaheuristic {
         initialSolution.printAllInformations();
     }
 
-    public void multiStartForExperiment() throws FileNotFoundException {
-        int numberOfExecutions = 30;
+    public void multiStartForExperiment() {
+        int numberOfExecutions = 1;
         int numberOfIterations = 100;
         String algorithmName = "MultiStart";
         Solution bestSolutionFound = new Solution();
@@ -1321,8 +1327,9 @@ public class VRPDRTSD implements Metaheuristic {
             }
             outputForBestSolutions.saveBestSolutionFoundInTxtFile(initialSolution);
             System.out.println("final solution");
-            System.out.println(initialSolution);
-//            System.out.println(bestSolutionFound);
+//            System.out.println(initialSolution);
+            System.out.println(bestSolutionFound);
+            bestSolutionFound.printAllInformations();
         }
 
     }
@@ -1371,7 +1378,7 @@ public class VRPDRTSD implements Metaheuristic {
         bestSolutionFound.printAllInformations();
     }
 
-    public void simulatedAnnealingForExperiment() throws FileNotFoundException {
+    public void simulatedAnnealingForExperiment() {
         int numberOfExecutions = 30;
         int numberOfIterations = 100;
         int numberOfMovements = 4;
@@ -1426,13 +1433,7 @@ public class VRPDRTSD implements Metaheuristic {
 
     private void refreshInstanceData() {
         if (this.excelDataFilesPath != null) {
-            try {
-                this.readExcelInstance();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (BiffException ex) {
-                ex.printStackTrace();
-            }
+            this.readExcelInstance();
         } else {
             this.readInstance();
         }
@@ -1507,8 +1508,6 @@ public class VRPDRTSD implements Metaheuristic {
             if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
                 return initialSolution;
-                //currentIndex = 0;
-                //currentNeighborhood = neighborhoods.get(0);
             } else {
                 currentNeighborhood = currentNeighborhood + 2;
             }
@@ -1588,7 +1587,7 @@ public class VRPDRTSD implements Metaheuristic {
         bestSolution.printAllInformations();
     }
 
-    public void vnsForExperiment() throws FileNotFoundException {
+    public void vnsForExperiment() {
         int numberOfExecutions = 30;
         int numberOfIterations = 100;
         String algorithmName = "VNS";

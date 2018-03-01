@@ -95,7 +95,8 @@ public class Solution implements Cloneable {
         routes.get(position).setRoute(route);
     }
 
-    public void setSolution(Solution solution) {
+    public void setSolution(Solution solution1) {
+        Solution solution = new Solution((Solution) solution1.clone());
         initializeAttributesWithEmptyLists();
         clearAttributeValues();
         this.totalDistanceTraveled = solution.getTotalDistanceTraveled();

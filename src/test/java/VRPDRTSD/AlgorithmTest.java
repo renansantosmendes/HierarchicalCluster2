@@ -6,21 +6,15 @@
 package VRPDRTSD;
 
 import InstanceReader.Instance;
-import ProblemRepresentation.Request;
-import ProblemRepresentation.Route;
-import java.io.IOException;
-import java.util.List;
-import jxl.read.biff.BiffException;
 import org.junit.Test;
 
 /**
  *
  * @author renansantos
  */
-public class reschedulingTest {
-
+public class AlgorithmTest {
     @Test
-    public void routeReschedulingTest() {
+    public void algorithmTests() {
         int requestsNumber = 10;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
@@ -33,12 +27,8 @@ public class reschedulingTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
-        problem.buildGreedySolution();
-        problem.printSolutionInformations();
-        //problem.vnd();
-        //problem.multiStart();
-        //problem.printSolutionInformations();
-        //problem.getSolution().getRoutes().forEach(System.out::println);
-        //problem.getSolution().getRoutes().forEach(r -> System.out.println(r.getSequenceOfAttendedRequests()));            
+        problem.multiStartForExperiment();
+        
+        //zproblem.printSolutionInformations();
     }
 }

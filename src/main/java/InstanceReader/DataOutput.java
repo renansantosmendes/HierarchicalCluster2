@@ -9,6 +9,8 @@ import ProblemRepresentation.Solution;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,13 +22,13 @@ public class DataOutput {
     private String path;
     private String fileName;
     private PrintStream streamForTxt;
-    private PrintStream streamForSolutions; 
+    private PrintStream streamForSolutions;
     private PrintStream streamForBestSolutions;
     private PrintStream streamForBestSolutionsObjectiveFunctions;
     private PrintStream streamForConvergence;
     private PrintStream streamForCsv;
 
-    public DataOutput(String algorithmName, String instanceName, int execution) throws FileNotFoundException {
+    public DataOutput(String algorithmName, String instanceName, int execution) {
         this.algorithmName = algorithmName;
         this.path = "AlgorithmsResults//" + algorithmName + "//" + instanceName + "//";
         this.fileName = this.algorithmName + "_execution_" + execution;
@@ -34,7 +36,7 @@ public class DataOutput {
         initalizeStreams();
     }
 
-    public DataOutput(String algorithmName, String instanceName) throws FileNotFoundException {
+    public DataOutput(String algorithmName, String instanceName) {
         this.algorithmName = algorithmName;
         this.path = "AlgorithmsResults//" + algorithmName + "//" + instanceName + "//";
         this.fileName = this.algorithmName;
@@ -49,13 +51,18 @@ public class DataOutput {
         }
     }
 
-    private void initalizeStreams() throws FileNotFoundException {
-        streamForTxt = new PrintStream(path + "/" + fileName + ".txt");
-        streamForSolutions = new PrintStream(path + "/" + fileName + "_Solutions.txt");
-        streamForBestSolutions = new PrintStream(path + "/" + fileName + "_BEST_Solutions.txt");
-        streamForBestSolutionsObjectiveFunctions = new PrintStream(path + "/" + fileName + "_BEST_Solutions_Objectives.txt");
-        streamForConvergence = new PrintStream(path + "/" + fileName + "_Convergence.txt");
-        //streamForCsv  = new PrintStream(path + "/" + fileName + ".csv");
+    private void initalizeStreams() {
+        try {
+            streamForTxt = new PrintStream(path + "/" + fileName + ".txt");
+            streamForSolutions = new PrintStream(path + "/" + fileName + "_Solutions.txt");
+            streamForBestSolutions = new PrintStream(path + "/" + fileName + "_BEST_Solutions.txt");
+            streamForBestSolutionsObjectiveFunctions = new PrintStream(path + "/" + fileName + "_BEST_Solutions_Objectives.txt");
+            streamForConvergence = new PrintStream(path + "/" + fileName + "_Convergence.txt");
+            //streamForCsv  = new PrintStream(path + "/" + fileName + ".csv");
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     public void saveBestSolutionInTxtFile(Solution solution, int currentIteration) {

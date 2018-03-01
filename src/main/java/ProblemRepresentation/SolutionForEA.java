@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ProblemRepresentation;
 
 import java.util.List;
@@ -12,12 +7,13 @@ import java.util.Set;
  *
  * @author renansantos
  */
-public class SolutionForEA extends Solution{
-    private double fitness;
-    private int numberOfDominatedSolutions;
-    private int numberOfSolutionsThatDominate;
-    private List<SolutionForEA> dominatedSolutions;
-    private List<SolutionForEA> solutionsThatDominate;
+public class SolutionForEA extends Solution {
+
+    private double fitness = 0;
+    private int numberOfDominatedSolutions = 0;
+    private int numberOfSolutionsThatDominate = 0;
+    private List<SolutionForEA> dominatedSolutions = null;
+    private List<SolutionForEA> solutionsThatDominate = null;
 
     public SolutionForEA() {
     }
@@ -26,10 +22,10 @@ public class SolutionForEA extends Solution{
         super(solution);
     }
 
-    public SolutionForEA(long totalDistance, long totalTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay, 
+    public SolutionForEA(long totalDistance, long totalTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
             long numberOfVehicles, long evaluationFunction, List<Route> routes, Set<Request> nonAttendedRequests) {
-        
-        super(totalDistance, totalTravelTime, totalTimeWindowAnticipation, totalTimeWindowDelay, numberOfVehicles, 
+
+        super(totalDistance, totalTravelTime, totalTimeWindowAnticipation, totalTimeWindowDelay, numberOfVehicles,
                 evaluationFunction, routes, nonAttendedRequests);
     }
 
@@ -73,7 +69,4 @@ public class SolutionForEA extends Solution{
         this.solutionsThatDominate = solutionsThatDominate;
     }
 
-    
-    
-    
 }

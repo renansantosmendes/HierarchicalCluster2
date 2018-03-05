@@ -72,6 +72,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         return parents;
     }
 
+    public VRPDRTSD getProblem() {
+        return problem;
+    }
+
     public GeneticAlgorithm setMutationProbabilty(double mutationProbabilty) {
         this.mutationProbabilty = mutationProbabilty;
         return this;
@@ -138,13 +142,19 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     public void crossOver() {
         SolutionForEA dad = new SolutionForEA();
         SolutionForEA mom = new SolutionForEA();
+        SolutionForEA firstChild = new SolutionForEA();
+        SolutionForEA secondChild = new SolutionForEA();
 
         for (int i = 0; i < this.populationSize; i = i + 2) {
             dad.setSolution(this.population.get(parents.get(i)));
             mom.setSolution(this.population.get(parents.get(i + 1)));
+            firstChild.setSolution(dad);
+            secondChild.setSolution(mom);
+            System.out.println("dad = " + dad.getRandomRoute().getUsedIds());
+            System.out.println("mom = " + mom.getRandomRoute().getUsedIds());
+//            System.out.println("first child = " + firstChild);
+//            System.out.println("second child = " + secondChild);
             
-            System.out.println("dad = " + dad);
-            System.out.println("mom = " + mom);
         }
     }
 

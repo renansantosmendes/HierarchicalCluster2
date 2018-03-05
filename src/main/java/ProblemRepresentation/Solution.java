@@ -84,7 +84,19 @@ public class Solution implements Cloneable {
     public Route getRoute(int position) {
         return routes.get(position);
     }
+    
+    public Route getRandomRoute() {
+        int position = new Random().nextInt(this.routes.size());
+        return routes.get(position);
+    }
 
+    public void removeSequenceFromAllSolution(List<Integer> idSequence, ProblemData data){
+        for(Integer id: idSequence){
+            for(Route route:routes){
+                route.removeRequest(id, data);
+            }
+        }
+    }
     public long getEvaluationFunction() {
         return this.evaluationFunction;
     }

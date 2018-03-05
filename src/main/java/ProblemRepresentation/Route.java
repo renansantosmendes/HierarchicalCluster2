@@ -594,15 +594,6 @@ public class Route implements Cloneable {
         Request lastRequest = getRequestUsingId(idSequence.get(idSequence.size() - 1), data);
         saveAnticipations(lastRequest, anticipations);
 
-//        if (isNotARouteForOnePassenger(idSequence)) {
-//            currentTimeForDelivery = rescheduleDeliveriesAfterConstruction(anticipations, positionInSequenceOfFirstDelivery, idSequence,
-//                    visitedIds, deliveryTimes, currentTimeForDelivery, data);
-//        } else {
-//            Request request = getRequestUsingId(idSequence.get(0), data);
-//            deliveryTimes.add(-request.getDeliveryTimeWindowLowerInMinutes());
-//            int time = (int) -data.getDuration()[request.getDestination().getId()][0].getSeconds() / 60;
-//            deliveryTimes.add(-currentTimeForDelivery - time);
-//        }
         return currentTimeForDelivery;
     }
 
@@ -907,11 +898,9 @@ public class Route implements Cloneable {
     }
 
     public void removeAddedRequests(List<Integer> idSequence, ProblemData data) {
-
         if (integerRouteRepresetation.removeAll(idSequence)) {
             this.rebuild(integerRouteRepresetation, data);
         }
-
     }
 
     public boolean isEmpty() {
@@ -920,6 +909,23 @@ public class Route implements Cloneable {
 
     public boolean isPenalized() {
         return this.violatedSomeConstraint == true;
+    }
+    
+    public List<Integer> getUsedIds(){
+        Set<Integer> setOfIds = this.getIntegerRouteRepresetation()
+                .stream()
+                .filter(u -> u.intValue() > 0)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        List<Integer> usedIds = new ArrayList<>();
+        for (int id : setOfIds) {
+            usedIds.add(id);
+        }
+        return usedIds;
+    }
+    
+    public void addOtherRouteInRandomPosition(List<Integer> idSequence){
+        
     }
 
     @Override

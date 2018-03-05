@@ -161,23 +161,33 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
             for (Integer id : secondIdSequence) {
                 List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(firstIdSequence);
-                insertIdInNewSequence(firstIdSequence,indexesToInsert.get(0), id, indexesToInsert.get(1));
+                insertIdInNewSequence(firstIdSequence, indexesToInsert.get(0), id, indexesToInsert.get(1));
             }
+            
             firstChild.getRoute(firstRouteIndex).rebuild(firstIdSequence, problem.getData());
-            firstChild.removeSequenceFromAllSolution(firstIdSequence, firstRouteIndex, problem.getData());
+            firstChild.removeSequenceFromAllSolution(firstChild.getRoute(firstRouteIndex).getUsedIds(), 
+                    firstRouteIndex, problem.getData());
 
             firstIdSequence.clear();
+            secondIdSequence.clear();
             firstChild.printAllInformations();
         }
     }
 
     private void insertIdInNewSequence(List<Integer> idSequenceToInsertRequest, int l, int requestId, int m) {
         List<Integer> newIdSequence = new ArrayList<>();
-        newIdSequence.addAll(idSequenceToInsertRequest.subList(0, l));
-        newIdSequence.add(requestId);
-        newIdSequence.addAll(idSequenceToInsertRequest.subList(l, m - 1));
-        newIdSequence.add(requestId);
-        newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
+        try {
+            newIdSequence.addAll(idSequenceToInsertRequest.subList(0, l));
+            newIdSequence.add(requestId);
+            newIdSequence.addAll(idSequenceToInsertRequest.subList(l, m - 1));
+            newIdSequence.add(requestId);
+            newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Sequence = " + idSequenceToInsertRequest);
+            System.out.println("first position "  + l);
+            System.out.println("second position " + m);
+            System.out.println();
+        }
         idSequenceToInsertRequest.clear();
         idSequenceToInsertRequest.addAll(newIdSequence);
     }
@@ -200,6 +210,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
         return indexes;
     }
+
     @Override
     public void mutation() {
         Random rnd = new Random();

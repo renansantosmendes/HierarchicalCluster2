@@ -23,7 +23,8 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     private long numberOfIterations;
     private Instance instance;
     private VRPDRTSD problem;
-    private long currentIteration;
+    private long currentIteration = 0;
+    private SolutionForEA bestIndividual;
 
     public GeneticAlgorithm(Instance instance) {
         this.population = new ArrayList<>();
@@ -97,11 +98,13 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     public void run() {
         initializePopulation();
-        long currentIteration = 0;
         while (stopCriterionIsNotSatisfied()) {
+            storeBestIndividual();
             selection();
             crossOver();
             mutation();
+            insertBestIndividual();
+            currentIteration++;
         }
     }
 
@@ -144,6 +147,16 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 //System.out.println(problem.getSolution());
             }
         }
+    }
+    
+    @Override
+    public void storeBestIndividual(){
+        
+    }
+    
+    @Override
+    public void insertBestIndividual(){
+        
     }
 
 }

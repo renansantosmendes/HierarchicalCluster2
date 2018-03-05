@@ -11,11 +11,15 @@ package Algorithms;
  */
 public interface EvolutionaryAlgorithms {
 
+    public void storeBestIndividual();
+
     public void initializePopulation();
-    
+
     public void selection();
 
     public void crossOver();
 
     public void mutation();
+
+    public void insertBestIndividual();
 }

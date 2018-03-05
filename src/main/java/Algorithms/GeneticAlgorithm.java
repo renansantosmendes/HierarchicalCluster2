@@ -92,7 +92,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         return this;
     }
 
-    @Override    
+    @Override
     public void run() {
         initializePopulation();
         while (stopCriterionIsNotSatisfied()) {
@@ -101,8 +101,12 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             crossOver();
             mutation();
             insertBestIndividual();
-            currentIteration++;
+            incrementsCurrentIteration();
         }
+    }
+
+    private void incrementsCurrentIteration() {
+        currentIteration++;
     }
 
     private boolean stopCriterionIsNotSatisfied() {
@@ -118,17 +122,30 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     }
 
     @Override
-    public void selection() {
+    public void selection() {//alter this function -> is just for test the algorithm
         Random rnd = new Random();
+        int position;
         for (int i = 0; i < this.populationSize; i++) {
-            this.parents.add(rnd.nextInt((int) this.populationSize));
+            do {
+                position = rnd.nextInt((int) this.populationSize);
+            } while (this.parents.contains(position));
+            this.parents.add(position);
         }
 
     }
 
     @Override
     public void crossOver() {
+        SolutionForEA dad = new SolutionForEA();
+        SolutionForEA mom = new SolutionForEA();
 
+        for (int i = 0; i < this.populationSize; i = i + 2) {
+            dad.setSolution(this.population.get(parents.get(i)));
+            mom.setSolution(this.population.get(parents.get(i + 1)));
+            
+            System.out.println("dad = " + dad);
+            System.out.println("mom = " + mom);
+        }
     }
 
     @Override
@@ -136,24 +153,22 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         Random rnd = new Random();
         for (int i = 0; i < this.populationSize; i++) {
             double probability = rnd.nextDouble();
-            if(probability < this.mutationProbabilty){
+            if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
                 problem.perturbation(2, 1);
-                //problem.localSearch(5);
-                problem.vnd();
-                //System.out.println(problem.getSolution());
+                problem.localSearch(5);
             }
         }
     }
-    
+
     @Override
-    public void storeBestIndividual(){
-        
+    public void storeBestIndividual() {
+
     }
-    
+
     @Override
-    public void insertBestIndividual(){
-        
+    public void insertBestIndividual() {
+
     }
 
 }

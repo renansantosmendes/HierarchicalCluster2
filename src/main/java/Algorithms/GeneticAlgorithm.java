@@ -3,11 +3,7 @@ package Algorithms;
 import InstanceReader.Instance;
 import ProblemRepresentation.*;
 import VRPDRTSD.VRPDRTSD;
-import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import jxl.read.biff.BiffException;
 
 /**
  *
@@ -96,6 +92,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         return this;
     }
 
+    @Override    
     public void run() {
         initializePopulation();
         while (stopCriterionIsNotSatisfied()) {

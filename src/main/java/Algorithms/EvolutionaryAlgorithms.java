@@ -11,6 +11,8 @@ package Algorithms;
  */
 public interface EvolutionaryAlgorithms {
 
+    public void run();
+
     public void storeBestIndividual();
 
     public void initializePopulation();

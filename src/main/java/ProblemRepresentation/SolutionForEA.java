@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
  * @author renansantos
  */
 public class SolutionForEA extends Solution {
-
+    private List<Double> objectiveFunctions = new ArrayList<>();
     private double fitness = 0;
     private int numberOfDominatedSolutions = 0;
     private int numberOfSolutionsThatDominate = 0;
-    private List<SolutionForEA> dominatedSolutions = null;
-    private List<SolutionForEA> solutionsThatDominate = null;
+    private List<SolutionForEA> dominatedSolutions = new ArrayList<>();
+    private List<SolutionForEA> solutionsThatDominate = new ArrayList<>();
 
     public SolutionForEA() {
     }
@@ -68,6 +68,14 @@ public class SolutionForEA extends Solution {
 
     public void setSolutionsThatDominate(List<SolutionForEA> solutionsThatDominate) {
         this.solutionsThatDominate = solutionsThatDominate;
+    }
+
+    public List<Double> getObjectiveFunctions() {
+        return objectiveFunctions;
+    }
+
+    public void setObjectiveFunctions(List<Double> objectiveFunctions) {
+        this.objectiveFunctions = objectiveFunctions;
     }
    
 }

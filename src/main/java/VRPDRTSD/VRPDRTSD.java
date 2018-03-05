@@ -87,7 +87,11 @@ public class VRPDRTSD implements Metaheuristic {
     public Solution getSolution() {
         return solution;
     }
-
+    
+    public void setSolution(Solution solution){
+        this.solution.setSolution(solution);
+    }
+    
     public void printSolutionInformations() {
         this.solution.printAllInformations();
     }
@@ -1297,7 +1301,7 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     public void multiStartForExperiment() {
-        int numberOfExecutions = 1;
+        int numberOfExecutions = 30;
         int numberOfIterations = 100;
         String algorithmName = "MultiStart";
         Solution bestSolutionFound = new Solution();
@@ -1314,14 +1318,13 @@ public class VRPDRTSD implements Metaheuristic {
             while (currentIteration < numberOfIterations) {
                 initialSolution.setSolution(this.getSolution());
                 vnd();
-//                System.out.println(initialSolution);
                 keepBestSolutionFound(initialSolution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
                     bestSolutionFound.setSolution(solution);
                 }
 
-                output.saveBestSolutionInTxtFile(bestSolution, currentIteration);//alterei aqui
+                output.saveBestSolutionInTxtFile(bestSolutionFound, currentIteration);//alterei aqui
                 currentIteration++;
                 buildRandomSolution();
             }
@@ -1464,7 +1467,6 @@ public class VRPDRTSD implements Metaheuristic {
             localSearch(currentNeighborhood);
             if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
-                System.out.println(initialSolution);
                 currentIndex = 0;
                 currentNeighborhood = neighborhoods.get(0);
             } else {

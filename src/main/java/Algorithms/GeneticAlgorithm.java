@@ -16,6 +16,7 @@ import jxl.read.biff.BiffException;
 public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     private List<SolutionForEA> population;
+    private List<Integer> parents;
     private double mutationProbabilty;
     private double crossOverProbability;
     private long populationSize;
@@ -26,12 +27,14 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     public GeneticAlgorithm(Instance instance) {
         this.population = new ArrayList<>();
+        this.parents = new ArrayList<>();
         this.instance = instance;
         tryToInitializeProblem(instance);
     }
 
     public GeneticAlgorithm(Instance instance, String path) {
         this.population = new ArrayList<>();
+        this.parents = new ArrayList<>();
         this.instance = instance;
         tryToInitializeProblem(instance, path);
     }
@@ -41,13 +44,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     }
 
     private void tryToInitializeProblem(Instance instance, String path) {
-        try {
-            this.problem = new VRPDRTSD(instance, path);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (BiffException ex) {
-            ex.printStackTrace();
-        }
+        this.problem = new VRPDRTSD(instance, path);
     }
 
     public List<SolutionForEA> getPopulation() {
@@ -74,6 +71,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         return instance;
     }
 
+    public List<Integer> getParents() {
+        return parents;
+    }
+
     public GeneticAlgorithm setMutationProbabilty(double mutationProbabilty) {
         this.mutationProbabilty = mutationProbabilty;
         return this;
@@ -94,10 +95,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         return this;
     }
 
-    public void run(){
-        populationInitalization();
-        long currentIteration = 0; 
-        while(stopCriterionIsNotSatisfied()){
+    public void run() {
+        initializePopulation();
+        long currentIteration = 0;
+        while (stopCriterionIsNotSatisfied()) {
             selection();
             crossOver();
             mutation();
@@ -107,10 +108,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     private boolean stopCriterionIsNotSatisfied() {
         return currentIteration < numberOfIterations;
     }
-    
+
     @Override
-    public void populationInitalization() {
-        for(int i = 0; i < this.populationSize; i++){
+    public void initializePopulation() {
+        for (int i = 0; i < this.populationSize; i++) {
             this.problem.buildRandomSolution();
             this.population.add(new SolutionForEA(this.problem.getSolution()));
         }
@@ -118,6 +119,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     @Override
     public void selection() {
+        Random rnd = new Random();
+        for (int i = 0; i < this.populationSize; i++) {
+            this.parents.add(rnd.nextInt((int) this.populationSize));
+        }
 
     }
 
@@ -128,7 +133,17 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     @Override
     public void mutation() {
-
+        Random rnd = new Random();
+        for (int i = 0; i < this.populationSize; i++) {
+            double probability = rnd.nextDouble();
+            if(probability < this.mutationProbabilty){
+                problem.setSolution(this.population.get(i));
+                problem.perturbation(2, 1);
+                //problem.localSearch(5);
+                problem.vnd();
+                //System.out.println(problem.getSolution());
+            }
+        }
     }
 
 }

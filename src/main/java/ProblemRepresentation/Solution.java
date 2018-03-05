@@ -48,7 +48,8 @@ public class Solution implements Cloneable {
     }
 
     public Solution(long totalDistance, long totalTravelTime, long totalTimeWindowAnticipation, long totalTimeWindowDelay,
-            long numberOfVehicles, long evaluationFunction, List<Route> routes, Set<Request> nonAttendedRequests) {
+            long numberOfVehicles, long evaluationFunction, List<Route> routes, Set<Request> nonAttendedRequests,
+            List<Integer> integerRepresentation) {
         this.totalDistanceTraveled = totalDistance;
         this.totalTravelTime = totalTravelTime;
         this.totalTimeWindowAnticipation = totalTimeWindowAnticipation;
@@ -57,6 +58,7 @@ public class Solution implements Cloneable {
         this.evaluationFunction = evaluationFunction;
         this.routes = routes;
         this.nonAttendedRequests = nonAttendedRequests;
+        this.integerRepresentation = integerRepresentation;
     }
 
     public long getTotalDistanceTraveled() {
@@ -279,6 +281,7 @@ public class Solution implements Cloneable {
             routesClone.add((Route) route.clone());
         }
         return new Solution(totalDistanceTraveled, totalTravelTime, totalTimeWindowAnticipation,
-                totalTimeWindowDelay, numberOfVehicles, evaluationFunction, routesClone, nonAttendedRequests);
+                totalTimeWindowDelay, numberOfVehicles, evaluationFunction, routesClone,
+                nonAttendedRequests, integerRepresentation);
     }
 }

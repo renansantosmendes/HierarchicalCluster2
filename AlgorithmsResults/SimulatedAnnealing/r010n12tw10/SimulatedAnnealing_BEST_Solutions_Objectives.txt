@@ -1,4 +1,0 @@
-Solution - 181	34	147	0	0	4
-Solution - 213	33	140	10	0	4
-Solution - 191	37	154	0	0	4
-Solution - 204	38	162	1	1	4

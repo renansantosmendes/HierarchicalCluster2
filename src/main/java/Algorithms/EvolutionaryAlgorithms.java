@@ -11,7 +11,7 @@ package Algorithms;
  */
 public interface EvolutionaryAlgorithms {
 
-    public void populationInitalization();
+    public void initializePopulation();
     
     public void selection();
 

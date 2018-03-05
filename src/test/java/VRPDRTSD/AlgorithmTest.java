@@ -27,8 +27,14 @@ public class AlgorithmTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
-        problem.multiStartForExperiment();
-        
-        //zproblem.printSolutionInformations();
+//        problem.simulatedAnnealingForExperiment();
+        problem.buildRandomSolution();
+        problem.printSolutionInformations();
+        for (int i = 0; i < 100; i++) {
+            //problem.perturbation(1, 1);
+            problem.buildRandomSolution();
+            System.out.println(problem.getSolution());
+        }
+
     }
 }

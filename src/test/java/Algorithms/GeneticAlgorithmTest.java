@@ -38,18 +38,55 @@ public class GeneticAlgorithmTest {
                 .setNumberOfIterations(1000)
                 .setPopulationSize(20);
         
-        algorithm.populationInitalization();
-        algorithm.getPopulation().forEach(System.out::println);
+        algorithm.initializePopulation();
+//        algorithm.getPopulation().forEach(System.out::println);
         
         Assert.assertEquals(algorithm.getPopulationSize(), algorithm.getPopulation().size());
     }
 
     @Test
     public void testSelection() {
+        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
+
+        Instance instance = new Instance();
+        instance.setNumberOfRequests(10)
+                .setRequestTimeWindows(10)
+                .setInstanceSize("s")
+                .setNumberOfNodes(12)
+                .setNumberOfVehicles(250)
+                .setVehicleCapacity(4);
+
+        GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
+        algorithm.setCrossOverProbability(0.7)
+                .setMutationProbabilty(0.02)
+                .setNumberOfIterations(1000)
+                .setPopulationSize(100);
+        
+        algorithm.initializePopulation();
+        algorithm.selection();
+        algorithm.mutation();
+        System.out.println(algorithm.getParents());
+        Assert.assertEquals(algorithm.getParents().size(), algorithm.getPopulationSize());
     }
 
     @Test
     public void testCrossOver() {
+        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
+
+        Instance instance = new Instance();
+        instance.setNumberOfRequests(10)
+                .setRequestTimeWindows(10)
+                .setInstanceSize("s")
+                .setNumberOfNodes(12)
+                .setNumberOfVehicles(250)
+                .setVehicleCapacity(4);
+
+        GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
+        algorithm.setCrossOverProbability(0.7)
+                .setMutationProbabilty(0.02)
+                .setNumberOfIterations(1000)
+                .setPopulationSize(100);
+        
     }
 
     @Test

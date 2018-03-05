@@ -140,24 +140,66 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     @Override
     public void crossOver() {
-        SolutionForEA dad = new SolutionForEA();
-        SolutionForEA mom = new SolutionForEA();
+        SolutionForEA firstParent = new SolutionForEA();
+        SolutionForEA secondParent = new SolutionForEA();
         SolutionForEA firstChild = new SolutionForEA();
         SolutionForEA secondChild = new SolutionForEA();
+        List<Integer> firstIdSequence = new ArrayList<>();
+        List<Integer> secondIdSequence = new ArrayList<>();
 
         for (int i = 0; i < this.populationSize; i = i + 2) {
-            dad.setSolution(this.population.get(parents.get(i)));
-            mom.setSolution(this.population.get(parents.get(i + 1)));
-            firstChild.setSolution(dad);
-            secondChild.setSolution(mom);
-            System.out.println("dad = " + dad.getRandomRoute().getUsedIds());
-            System.out.println("mom = " + mom.getRandomRoute().getUsedIds());
-//            System.out.println("first child = " + firstChild);
-//            System.out.println("second child = " + secondChild);
-            
+            firstParent.setSolution(this.population.get(parents.get(i)));
+            secondParent.setSolution(this.population.get(parents.get(i + 1)));
+            firstChild.setSolution(firstParent);
+            secondChild.setSolution(secondParent);
+
+            int firstRouteIndex = firstChild.getRandomRoutePosition();
+            int secondRouteIndex = secondChild.getRandomRoutePosition();
+
+            firstIdSequence.addAll(firstChild.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
+            secondIdSequence.addAll(secondChild.getRoute(secondRouteIndex).getUsedIds());
+
+            for (Integer id : secondIdSequence) {
+                List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(firstIdSequence);
+                insertIdInNewSequence(firstIdSequence,indexesToInsert.get(0), id, indexesToInsert.get(1));
+            }
+            firstChild.getRoute(firstRouteIndex).rebuild(firstIdSequence, problem.getData());
+            firstChild.removeSequenceFromAllSolution(firstIdSequence, firstRouteIndex, problem.getData());
+
+            firstIdSequence.clear();
+            firstChild.printAllInformations();
         }
     }
 
+    private void insertIdInNewSequence(List<Integer> idSequenceToInsertRequest, int l, int requestId, int m) {
+        List<Integer> newIdSequence = new ArrayList<>();
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(0, l));
+        newIdSequence.add(requestId);
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(l, m - 1));
+        newIdSequence.add(requestId);
+        newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
+        idSequenceToInsertRequest.clear();
+        idSequenceToInsertRequest.addAll(newIdSequence);
+    }
+
+    private List<Integer> generateTwoDiffentRequestsToOneRoute(List<Integer> idSequence) {
+        Random rnd = new Random();
+        List<Integer> indexes = new ArrayList<>();
+        int routeSize = idSequence.size();
+        int firstRequest, secondRequest;
+        if (idSequence.get(0) == 0 && idSequence.get(routeSize - 1) == 0) {
+            firstRequest = rnd.nextInt(routeSize - 1) + 1;
+            secondRequest = rnd.nextInt(routeSize - 1) + 1;
+        } else {
+            firstRequest = rnd.nextInt(routeSize);
+            secondRequest = rnd.nextInt(routeSize);
+        }
+        indexes.add(firstRequest);
+        indexes.add(secondRequest);
+        Collections.sort(indexes);
+
+        return indexes;
+    }
     @Override
     public void mutation() {
         Random rnd = new Random();

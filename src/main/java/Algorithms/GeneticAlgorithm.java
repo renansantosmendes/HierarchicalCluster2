@@ -159,15 +159,16 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             firstIdSequence.addAll(firstChild.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
             secondIdSequence.addAll(secondChild.getRoute(secondRouteIndex).getUsedIds());
 
+            firstChild.removeSequenceFromAllSolution(firstChild.getRoute(firstRouteIndex).getUsedIds(), 
+                    firstRouteIndex, problem.getData());
+            
             for (Integer id : secondIdSequence) {
                 List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(firstIdSequence);
                 insertIdInNewSequence(firstIdSequence, indexesToInsert.get(0), id, indexesToInsert.get(1));
             }
             
             firstChild.getRoute(firstRouteIndex).rebuild(firstIdSequence, problem.getData());
-            firstChild.removeSequenceFromAllSolution(firstChild.getRoute(firstRouteIndex).getUsedIds(), 
-                    firstRouteIndex, problem.getData());
-
+            
             firstIdSequence.clear();
             secondIdSequence.clear();
             firstChild.printAllInformations();
@@ -193,17 +194,19 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     }
 
     private List<Integer> generateTwoDiffentRequestsToOneRoute(List<Integer> idSequence) {
-        Random rnd = new Random();
+         Random rnd = new Random();
         List<Integer> indexes = new ArrayList<>();
         int routeSize = idSequence.size();
         int firstRequest, secondRequest;
-        if (idSequence.get(0) == 0 && idSequence.get(routeSize - 1) == 0) {
-            firstRequest = rnd.nextInt(routeSize - 1) + 1;
-            secondRequest = rnd.nextInt(routeSize - 1) + 1;
-        } else {
-            firstRequest = rnd.nextInt(routeSize);
-            secondRequest = rnd.nextInt(routeSize);
-        }
+        do {
+            if (idSequence.get(0) == 0 && idSequence.get(routeSize - 1) == 0) {
+                firstRequest = rnd.nextInt(routeSize - 1) + 1;
+                secondRequest = rnd.nextInt(routeSize - 1) + 1;
+            } else {
+                firstRequest = rnd.nextInt(routeSize);
+                secondRequest = rnd.nextInt(routeSize);
+            }
+        } while (firstRequest == secondRequest);
         indexes.add(firstRequest);
         indexes.add(secondRequest);
         Collections.sort(indexes);

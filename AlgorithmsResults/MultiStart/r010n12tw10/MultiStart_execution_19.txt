@@ -1,6 +1,6 @@
-0	Solution - 175	30	129	4	0	4
-1	Solution - 175	30	129	4	0	4
-2	Solution - 175	30	129	4	0	4
+0	Solution - 298	33	140	25	0	5
+1	Solution - 298	33	140	25	0	5
+2	Solution - 189	27	114	16	0	3
 3	Solution - 175	30	129	4	0	4
 4	Solution - 175	30	129	4	0	4
 5	Solution - 175	30	129	4	0	4

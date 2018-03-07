@@ -1329,7 +1329,8 @@ public class VRPDRTSD implements Metaheuristic {
                 currentIteration++;
                 buildRandomSolution();
             }
-            outputForBestSolutions.saveBestSolutionFoundInTxtFile(initialSolution);
+//            outputForBestSolutions.saveBestSolutionFoundInTxtFile(initialSolution);
+            outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolutionFound);
             //System.out.println("final solution");
 //            System.out.println(initialSolution);
             System.out.println(bestSolutionFound);
@@ -1609,22 +1610,67 @@ public class VRPDRTSD implements Metaheuristic {
             DataOutput output = new DataOutput(algorithmName, instanceName, execution);
             buildGreedySolution();
             Solution bestSolution = new Solution(solution);
+            Solution bestSolutionFound = new Solution();
             while (currentIteration < numberOfIterations) {
                 currentNeighborhood = 1;
 
                 while (currentNeighborhood <= lastNeighborhood) {
-                    perturbation(2, 2);
+                    perturbation(2, 1);
                     //solution.setSolution(vndForLocalSearchInVnsFirstImprovement(excludedNeighborhood));
                     vndForLocalSearchInVNS(excludedNeighborhood);
                     if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                         bestSolution.setSolution(solution);
+                        bestSolutionFound.setSolution(solution);
+                        System.out.println(bestSolution);
                         currentNeighborhood = 1;
                     } else {
                         currentNeighborhood++;
                     }
 
                 }
-                output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
+                output.saveBestSolutionInTxtFile(bestSolutionFound, currentIteration);
+                currentIteration++;
+            }
+            outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
+        }
+    }
+    
+    public void vnsTest() {
+        int numberOfExecutions = 30;
+        int numberOfIterations = 100;
+        String algorithmName = "VNS";
+        DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
+
+        int numberOfNeighborhoods = 6;
+        int excludedNeighborhood = 4;
+        int currentNeighborhood;
+        List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType, excludedNeighborhood);
+        int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
+
+        for (int execution = 0; execution < numberOfExecutions; execution++) {
+            refreshInstanceData();
+            int currentIteration = 0;
+            DataOutput output = new DataOutput(algorithmName, instanceName, execution);
+            buildGreedySolution();
+            Solution bestSolution = new Solution(solution);
+            Solution bestSolutionFound = new Solution();
+            while (currentIteration < numberOfIterations) {
+                currentNeighborhood = 1;
+
+                while (currentNeighborhood <= lastNeighborhood) {
+                    perturbation(2, 1);
+                    //solution.setSolution(vndForLocalSearchInVnsFirstImprovement(excludedNeighborhood));
+                    vndForLocalSearchInVNS(excludedNeighborhood);
+                    if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
+                        bestSolution.setSolution(solution);
+                        bestSolutionFound.setSolution(solution);
+                        System.out.println(bestSolution);
+                        currentNeighborhood = 1;
+                    } else {
+                        currentNeighborhood++;
+                    }
+                }
+                output.saveBestSolutionInTxtFile(bestSolutionFound, currentIteration);
                 currentIteration++;
             }
             outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);

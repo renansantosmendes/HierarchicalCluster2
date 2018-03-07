@@ -125,9 +125,9 @@ public class GeneticAlgorithmTest {
 //        list.add(10);
 //        list.add(5);
         
-        algorithm.getProblem().getSolution().removeSequenceFromAllSolution(list,0, algorithm.getProblem().getData());
-        Route route = new Route(algorithm.getProblem().getSolution().getRoute(0));
-        System.out.println("Route test = " + route.getIntegerSequenceOfAttendedRequests());
-        algorithm.getProblem().getSolution().printAllInformations();
+//        algorithm.getProblem().getSolution().removeSequenceFromAllSolution(list,0, algorithm.getProblem().getData());
+//        Route route = new Route(algorithm.getProblem().getSolution().getRoute(0));
+//        System.out.println("Route test = " + route.getIntegerSequenceOfAttendedRequests());
+//        algorithm.getProblem().getSolution().printAllInformations();
     }
 }

@@ -33,11 +33,11 @@ public class ReallocationTest {
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         problem.buildGreedySolution();
         problem.printSolutionInformations();
-        problem.vnd();
+        //problem.vnd();
         //problem.localSearch(3);
 //        problem.localSearch(2);j
-        problem.printSolutionInformations();
-        problem.getSolution().getRoutes().forEach(System.out::println);
+        //problem.printSolutionInformations();
+        //problem.getSolution().getRoutes().forEach(System.out::println);
     }
 
     @Test

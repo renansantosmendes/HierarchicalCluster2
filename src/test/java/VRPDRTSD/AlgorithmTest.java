@@ -5,7 +5,9 @@
  */
 package VRPDRTSD;
 
-import InstanceReader.Instance;
+import InstanceReader.*;
+import java.io.*;
+import jxl.read.biff.BiffException;
 import org.junit.Test;
 
 /**
@@ -13,28 +15,25 @@ import org.junit.Test;
  * @author renansantos
  */
 public class AlgorithmTest {
+
     @Test
-    public void algorithmTests() {
-        int requestsNumber = 10;
+    public void algorithmTests() throws IOException, FileNotFoundException, BiffException {
+//        int requestsNumber = 10;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
-
-        Instance instance = new Instance();
-        instance.setNumberOfRequests(requestsNumber)
-                .setRequestTimeWindows(10)
-                .setInstanceSize("s")
-                .setNumberOfNodes(12)
-                .setNumberOfVehicles(250)
-                .setVehicleCapacity(4);
-
-        VRPDRTSD problem = new VRPDRTSD(instance, path);
-//        problem.simulatedAnnealingForExperiment();
-        problem.buildRandomSolution();
-        problem.printSolutionInformations();
-        for (int i = 0; i < 100; i++) {
-            //problem.perturbation(1, 1);
-            problem.buildRandomSolution();
-            System.out.println(problem.getSolution());
-        }
-
+//
+//        Instance instance = new Instance();
+//        instance.setNumberOfRequests(requestsNumber)
+//                .setRequestTimeWindows(10)
+//                .setInstanceSize("s")
+//                .setNumberOfNodes(12)
+//                .setNumberOfVehicles(250)
+//                .setVehicleCapacity(4);
+//
+//        VRPDRTSD problem = new VRPDRTSD(instance, path);
+////        problem.simulatedAnnealingForExperiment();
+//        problem.multiStartForExperiment();
+//        String path = "/home/rmendes/VRPDRT/";
+//        new ScriptGenerator("SimulatedAnnealing", "1d", "medium");
+//        new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData(path);
     }
 }

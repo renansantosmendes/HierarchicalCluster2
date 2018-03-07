@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
-    private List<SolutionForEA> population;
+    private List<EvolutionarySolution> population;
     private List<Integer> parents;
     private double mutationProbabilty;
     private double crossOverProbability;
@@ -20,7 +20,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     private Instance instance;
     private VRPDRTSD problem;
     private long currentIteration = 0;
-    private SolutionForEA bestIndividual;
+    private EvolutionarySolution bestIndividual;
 
     public GeneticAlgorithm(Instance instance) {
         this.population = new ArrayList<>();
@@ -44,7 +44,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         this.problem = new VRPDRTSD(instance, path);
     }
 
-    public List<SolutionForEA> getPopulation() {
+    public List<EvolutionarySolution> getPopulation() {
         return population;
     }
 
@@ -121,7 +121,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     public void initializePopulation() {
         for (int i = 0; i < this.populationSize; i++) {
             this.problem.buildRandomSolution();
-            this.population.add(new SolutionForEA(this.problem.getSolution()));
+            this.population.add(new EvolutionarySolution(this.problem.getSolution()));
         }
     }
 
@@ -140,10 +140,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     @Override
     public void crossOver() {
-        SolutionForEA firstParent = new SolutionForEA();
-        SolutionForEA secondParent = new SolutionForEA();
-        SolutionForEA firstChild = new SolutionForEA();
-        SolutionForEA secondChild = new SolutionForEA();
+        EvolutionarySolution firstParent = new EvolutionarySolution();
+        EvolutionarySolution secondParent = new EvolutionarySolution();
+        EvolutionarySolution firstChild = new EvolutionarySolution();
+        EvolutionarySolution secondChild = new EvolutionarySolution();
         List<Integer> firstIdSequence = new ArrayList<>();
         List<Integer> secondIdSequence = new ArrayList<>();
 
@@ -159,18 +159,22 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             firstIdSequence.addAll(firstChild.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
             secondIdSequence.addAll(secondChild.getRoute(secondRouteIndex).getUsedIds());
 
-            firstChild.removeSequenceFromAllSolution(firstChild.getRoute(firstRouteIndex).getUsedIds(), 
-                    firstRouteIndex, problem.getData());
-            
+//            firstChild.removeSequenceFromAllSolution(firstChild.getRoute(firstRouteIndex).getUsedIds(), 
+//                    firstRouteIndex, problem.getData());
+            firstChild.removeSequenceFromAllSolution(secondIdSequence, firstRouteIndex, problem.getData());
+            System.out.println("before");
+            firstChild.printAllInformations();
             for (Integer id : secondIdSequence) {
                 List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(firstIdSequence);
                 insertIdInNewSequence(firstIdSequence, indexesToInsert.get(0), id, indexesToInsert.get(1));
             }
-            
+
             firstChild.getRoute(firstRouteIndex).rebuild(firstIdSequence, problem.getData());
-            
+
             firstIdSequence.clear();
             secondIdSequence.clear();
+            System.out.println("after");
+            firstChild.evaluateSolution();
             firstChild.printAllInformations();
         }
     }
@@ -185,7 +189,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             newIdSequence.addAll(idSequenceToInsertRequest.subList(m - 1, idSequenceToInsertRequest.size()));
         } catch (IllegalArgumentException e) {
             System.out.println("Sequence = " + idSequenceToInsertRequest);
-            System.out.println("first position "  + l);
+            System.out.println("first position " + l);
             System.out.println("second position " + m);
             System.out.println();
         }
@@ -194,7 +198,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     }
 
     private List<Integer> generateTwoDiffentRequestsToOneRoute(List<Integer> idSequence) {
-         Random rnd = new Random();
+        Random rnd = new Random();
         List<Integer> indexes = new ArrayList<>();
         int routeSize = idSequence.size();
         int firstRequest, secondRequest;

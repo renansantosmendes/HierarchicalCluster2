@@ -98,15 +98,15 @@ public class Solution implements Cloneable {
     public void removeSequenceFromAllSolution(List<Integer> idSequence, int indexOfAlteratedRoute, ProblemData data) {
         int currentRouteIndex = 0;
         for (Integer id : idSequence) {
-            if (currentRouteIndex != indexOfAlteratedRoute) {
+            //if (currentRouteIndex != indexOfAlteratedRoute) {
                 for (Route route : routes) {
                     route.removeRequest(id, data);
                 }
                 calculateEvaluationFunction(data);
-            }
+            //}
             currentRouteIndex++;
         }
-        this.removeEmptyRoutes();
+        //this.removeEmptyRoutes();
     }
 
     public long getEvaluationFunction() {
@@ -158,7 +158,7 @@ public class Solution implements Cloneable {
         penalizeSolution();
     }
 
-    private void evaluateSolution() {
+    public void evaluateSolution() {
         if (this.totalTimeWindowDelay > 0) {
             this.evaluationFunction = this.totalDistanceTraveled + this.totalTravelTime * this.totalTimeWindowDelay
                     + this.totalTimeWindowAnticipation * this.numberOfVehicles;//+ 50* this.numberOfVehicles
@@ -258,27 +258,27 @@ public class Solution implements Cloneable {
         StringBuilder idSequence = new StringBuilder();
 
         for (Route route : this.routes) {
-            idSequence.append("Id = ")
-                    .append(route.getIntegerRouteRepresetation().stream().filter(r -> r >= 0)
-                            .collect(Collectors.toCollection(ArrayList::new)))
-                    .append("\n");
-            integerRepresentation.append("InR = ")
-                    .append(route.getIntegerRouteRepresetation())
-                    .append("\n");
-            nodesSequence.append("Nodes = ")
-                    .append(route.getNodesVisitationInIntegerRepresentation())
-                    .append("\n");
+//            idSequence.append("Id = ")
+//                    .append(route.getIntegerRouteRepresetation().stream().filter(r -> r >= 0)
+//                            .collect(Collectors.toCollection(ArrayList::new)))
+//                    .append("\n");
+//            integerRepresentation.append("InR = ")
+//                    .append(route.getIntegerRouteRepresetation())
+//                    .append("\n");
+//            nodesSequence.append("Nodes = ")
+//                    .append(route.getNodesVisitationInIntegerRepresentation())
+//                    .append("\n");
 
         }
-        System.out.println("Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t"
-                + this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t"
-                + this.routes.size());
-        System.out.println(nodesSequence);
-        System.out.println(integerRepresentation);
-        System.out.println(idSequence);
-        System.out.println(this.integerRepresentation);
-        System.out.println(this.integerRepresentation.stream().filter(u -> u.intValue() >= 0)
-                .collect(Collectors.toCollection(ArrayList::new)));
+//        System.out.println("Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t"
+//                + this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t"
+//                + this.routes.size());
+//        System.out.println(nodesSequence);
+//        System.out.println(integerRepresentation);
+//        System.out.println(idSequence);
+//        System.out.println(this.integerRepresentation);
+//        System.out.println(this.integerRepresentation.stream().filter(u -> u.intValue() >= 0)
+//                .collect(Collectors.toCollection(ArrayList::new)));
     }
 
     public void removeEmptyRoutes() {

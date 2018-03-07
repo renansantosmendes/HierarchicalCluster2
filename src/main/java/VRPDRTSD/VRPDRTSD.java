@@ -1314,10 +1314,11 @@ public class VRPDRTSD implements Metaheuristic {
             Solution bestSolution = new Solution();
             buildRandomSolution();
             bestSolution.setSolution(this.getSolution());
-
+            System.out.println("initial solution " + bestSolution);
             while (currentIteration < numberOfIterations) {
                 initialSolution.setSolution(this.getSolution());
-                vnd();
+//                vnd();
+                localSearch(1);
                 keepBestSolutionFound(initialSolution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
@@ -1329,10 +1330,10 @@ public class VRPDRTSD implements Metaheuristic {
                 buildRandomSolution();
             }
             outputForBestSolutions.saveBestSolutionFoundInTxtFile(initialSolution);
-            System.out.println("final solution");
+            //System.out.println("final solution");
 //            System.out.println(initialSolution);
             System.out.println(bestSolutionFound);
-            bestSolutionFound.printAllInformations();
+            //bestSolutionFound.printAllInformations();
         }
 
     }
@@ -1405,7 +1406,8 @@ public class VRPDRTSD implements Metaheuristic {
                     Solution solutionBefore = new Solution(solution);
                     generateRandomNeighborhood(rnd, numberOfMovements);
                     long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
-                    localSearch(2);
+                    localSearch(1);
+                    //localSearch(2);
                     //vnd();
                     //System.out.println(currentTemperature);
                     keepBestSolutionFound(bestSolutionFound);
@@ -1595,7 +1597,7 @@ public class VRPDRTSD implements Metaheuristic {
         String algorithmName = "VNS";
         DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
 
-        int numberOfNeighborhoods = 8;
+        int numberOfNeighborhoods = 6;
         int excludedNeighborhood = 4;
         int currentNeighborhood;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType, excludedNeighborhood);

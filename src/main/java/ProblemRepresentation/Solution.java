@@ -258,27 +258,27 @@ public class Solution implements Cloneable {
         StringBuilder idSequence = new StringBuilder();
 
         for (Route route : this.routes) {
-//            idSequence.append("Id = ")
-//                    .append(route.getIntegerRouteRepresetation().stream().filter(r -> r >= 0)
-//                            .collect(Collectors.toCollection(ArrayList::new)))
-//                    .append("\n");
-//            integerRepresentation.append("InR = ")
-//                    .append(route.getIntegerRouteRepresetation())
-//                    .append("\n");
-//            nodesSequence.append("Nodes = ")
-//                    .append(route.getNodesVisitationInIntegerRepresentation())
-//                    .append("\n");
+            idSequence.append("Id = ")
+                    .append(route.getIntegerRouteRepresetation().stream().filter(r -> r >= 0)
+                            .collect(Collectors.toCollection(ArrayList::new)))
+                    .append("\n");
+            integerRepresentation.append("InR = ")
+                    .append(route.getIntegerRouteRepresetation())
+                    .append("\n");
+            nodesSequence.append("Nodes = ")
+                    .append(route.getNodesVisitationInIntegerRepresentation())
+                    .append("\n");
 
         }
-//        System.out.println("Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t"
-//                + this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t"
-//                + this.routes.size());
-//        System.out.println(nodesSequence);
-//        System.out.println(integerRepresentation);
-//        System.out.println(idSequence);
-//        System.out.println(this.integerRepresentation);
-//        System.out.println(this.integerRepresentation.stream().filter(u -> u.intValue() >= 0)
-//                .collect(Collectors.toCollection(ArrayList::new)));
+        System.out.println("Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t"
+                + this.totalTravelTime + "\t" + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t"
+                + this.routes.size());
+        System.out.println(nodesSequence);
+        System.out.println(integerRepresentation);
+        System.out.println(idSequence);
+        System.out.println(this.integerRepresentation);
+        System.out.println(this.integerRepresentation.stream().filter(u -> u.intValue() >= 0)
+                .collect(Collectors.toCollection(ArrayList::new)));
     }
 
     public void removeEmptyRoutes() {

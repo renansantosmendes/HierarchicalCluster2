@@ -1314,7 +1314,7 @@ public class VRPDRTSD implements Metaheuristic {
             Solution bestSolution = new Solution();
             buildRandomSolution();
             bestSolution.setSolution(this.getSolution());
-            System.out.println("initial solution " + bestSolution);
+            //System.out.println("initial solution " + bestSolution);
             while (currentIteration < numberOfIterations) {
                 initialSolution.setSolution(this.getSolution());
 //                vnd();

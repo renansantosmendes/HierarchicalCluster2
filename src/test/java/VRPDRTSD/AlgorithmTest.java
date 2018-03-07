@@ -18,7 +18,7 @@ public class AlgorithmTest {
 
     @Test
     public void algorithmTests() throws IOException, FileNotFoundException, BiffException {
-        int requestsNumber = 10;
+        int requestsNumber = 50;
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 //
         Instance instance = new Instance();
@@ -31,9 +31,9 @@ public class AlgorithmTest {
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
 //        problem.vnsForExperiment();
-        problem.multiStartForExperiment();
+//        problem.multiStartForExperiment();
 //        String path = "/home/rmendes/VRPDRT/";
 //        new ScriptGenerator("SimulatedAnnealing", "1d", "medium");
-//        new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData(path);
+        new ExperimentalDesign().runMultiStartExperimentWithExcelData(path);
     }
 }

@@ -1,11 +1,11 @@
-0	Solution - 231	34	147	10	0	5
-1	Solution - 201	31	130	10	0	4
+0	Solution - 201	31	130	10	0	4
+1	Solution - 189	27	114	16	0	3
 2	Solution - 189	27	114	16	0	3
 3	Solution - 189	27	114	16	0	3
 4	Solution - 189	27	114	16	0	3
 5	Solution - 189	27	114	16	0	3
-6	Solution - 175	30	129	4	0	4
-7	Solution - 175	30	129	4	0	4
+6	Solution - 189	27	114	16	0	3
+7	Solution - 189	27	114	16	0	3
 8	Solution - 175	30	129	4	0	4
 9	Solution - 175	30	129	4	0	4
 10	Solution - 175	30	129	4	0	4

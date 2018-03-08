@@ -87,11 +87,11 @@ public class VRPDRTSD implements Metaheuristic {
     public Solution getSolution() {
         return solution;
     }
-    
-    public void setSolution(Solution solution){
+
+    public void setSolution(Solution solution) {
         this.solution.setSolution(solution);
     }
-    
+
     public void printSolutionInformations() {
         this.solution.printAllInformations();
     }
@@ -1170,7 +1170,7 @@ public class VRPDRTSD implements Metaheuristic {
     private Solution reallocateRequestPerturbation(int intensity) {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < intensity; i++) {
-
+            solution.removeEmptyRoutes();
             List<Integer> routeIndexes = generateTwoDiffentRouteIndexes(solution);
             int firstRouteIndex = routeIndexes.get(0);
             int secondRouteIndex = routeIndexes.get(1);
@@ -1182,8 +1182,15 @@ public class VRPDRTSD implements Metaheuristic {
             idSequenceToInsertRequest.addAll(solution.getRoute(secondRouteIndex).getIntegerSequenceOfAttendedRequests());
 
             List<Integer> newIdSequence = new ArrayList<>();
-            List<Integer> indexesToRemove = generateTwoDiffentRequestsToOneRoute(idSequenceToRemoveRequest);
-            List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(idSequenceToInsertRequest);
+            List<Integer> indexesToRemove = null;
+            List<Integer> indexesToInsert = null;
+            try {
+                indexesToRemove = generateTwoDiffentRequestsToOneRoute(idSequenceToRemoveRequest);
+                indexesToInsert = generateTwoDiffentRequestsToOneRoute(idSequenceToInsertRequest);
+            } catch (IndexOutOfBoundsException e) {
+                solution.printAllInformations();
+                e.printStackTrace();
+            }
             int firstIndex = indexesToInsert.get(0);
             int secondIndex = indexesToInsert.get(1);
             int requestId = idSequenceToRemoveRequest.get(indexesToRemove.get(0));
@@ -1481,7 +1488,7 @@ public class VRPDRTSD implements Metaheuristic {
 
     public void vndForLocalSearchInVNS(Integer excludedNeighborhood) {
         Solution initialSolution = new Solution(this.getSolution());
-        int numberOfNeighborhoods = 8;
+        int numberOfNeighborhoods = 6;
         List<Integer> neighborhoods = generateNeighborhoodListWithout(numberOfNeighborhoods, localSearchType, excludedNeighborhood);
         int currentIndex = 0;
         int currentNeighborhood = neighborhoods.get(currentIndex);
@@ -1499,6 +1506,7 @@ public class VRPDRTSD implements Metaheuristic {
         }
 
         solution.setSolution(initialSolution);
+        solution.removeEmptyRoutes();
     }
 
     public Solution vndForLocalSearchInVnsFirstImprovement(Integer excludedNeighborhood) {
@@ -1561,8 +1569,8 @@ public class VRPDRTSD implements Metaheuristic {
     public void vns() {
         int numberOfIterations = 100;
         int currentIteration = 0;
-        int numberOfNeighborhoods = 8;
-        int excludedNeighborhood = 4;
+        int numberOfNeighborhoods = 6;
+        int excludedNeighborhood = 5;
         int currentNeighborhood;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType, excludedNeighborhood);
         int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
@@ -1570,18 +1578,17 @@ public class VRPDRTSD implements Metaheuristic {
         Solution bestSolution = new Solution(solution);
         while (currentIteration < numberOfIterations) {
             currentNeighborhood = 1;
-
             //System.out.println(solution.getIntegerRepresentation());
             while (currentNeighborhood <= lastNeighborhood) {
-                perturbation(2, 2);
+                perturbation(5, 1);
                 vndForLocalSearchInVNS(excludedNeighborhood);
-                //VND();
                 //System.out.println(solution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
                     currentNeighborhood = 1;
                 } else {
                     currentNeighborhood = currentNeighborhood + 2;
+                    solution.setSolution(bestSolution);
                 }
             }
             currentIteration++;
@@ -1599,7 +1606,7 @@ public class VRPDRTSD implements Metaheuristic {
         DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
 
         int numberOfNeighborhoods = 6;
-        int excludedNeighborhood = 4;
+        int excludedNeighborhood = 5;
         int currentNeighborhood;
         List<Integer> neighborhoods = generateNeighborhoodList(numberOfNeighborhoods, localSearchType, excludedNeighborhood);
         int lastNeighborhood = neighborhoods.get(neighborhoods.size() - 1);
@@ -1615,26 +1622,29 @@ public class VRPDRTSD implements Metaheuristic {
                 currentNeighborhood = 1;
 
                 while (currentNeighborhood <= lastNeighborhood) {
-                    perturbation(2, 1);
+                    perturbation(5, 1);
                     //solution.setSolution(vndForLocalSearchInVnsFirstImprovement(excludedNeighborhood));
                     vndForLocalSearchInVNS(excludedNeighborhood);
+                    //System.out.println(solution);
                     if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                         bestSolution.setSolution(solution);
                         bestSolutionFound.setSolution(solution);
-                        System.out.println(bestSolution);
+                        //System.out.println(bestSolution);
                         currentNeighborhood = 1;
                     } else {
-                        currentNeighborhood++;
+                        currentNeighborhood = currentNeighborhood + 2;
+                        solution.setSolution(bestSolution);
                     }
 
                 }
                 output.saveBestSolutionInTxtFile(bestSolutionFound, currentIteration);
                 currentIteration++;
             }
+            System.out.println(bestSolution);
             outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
         }
     }
-    
+
     public void vnsTest() {
         int numberOfExecutions = 30;
         int numberOfIterations = 100;

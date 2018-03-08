@@ -30,10 +30,11 @@ public class AlgorithmTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
+//        problem.vns();
 //        problem.vnsForExperiment();
 //        problem.multiStartForExperiment();
 //        String path = "/home/rmendes/VRPDRT/";
 //        new ScriptGenerator("SimulatedAnnealing", "1d", "medium");
-        new ExperimentalDesign().runMultiStartExperimentWithExcelData(path);
+        new ExperimentalDesign().runVnsExperimentWithExcelData(path);
     }
 }

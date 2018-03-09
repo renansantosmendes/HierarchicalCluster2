@@ -137,9 +137,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             saveData();
         }
     }
-    
+
     public void runExperiment() {
         for (int execution = 0; execution < numberOfExecutions; execution++) {
+            printExecutionInformations(execution);
             initializeFilesToSaveData(execution);
             initializePopulation();
             while (stopCriterionIsNotSatisfied()) {
@@ -153,7 +154,14 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 incrementsCurrentIteration();
                 saveData();
             }
+            finalizeIteration();
         }
+    }
+
+    private void finalizeIteration() {
+        currentGeneration = 0;
+        this.population.clear();
+        this.parents.clear();
     }
 
     private void initializeFilesToSaveData() {
@@ -173,7 +181,11 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     }
 
     private void printInformations() {
-        System.out.println("Current Iteration = " + currentGeneration + "\t" + this.bestIndividual);
+        System.out.println("Current Generation = " + currentGeneration + "\t" + this.bestIndividual);
+    }
+    
+    private void printExecutionInformations(int execution) {
+        System.out.println("\nExecution = " + execution);
     }
 
     private void incrementsCurrentIteration() {
@@ -332,7 +344,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             double probability = rnd.nextDouble();
             if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
-                problem.perturbation(5, 1);
+                problem.perturbation(1, 1);
 //                problem.setLocalSearchType(1);
                 //problem.localSearch(7);
 //                problem.vns();
@@ -356,7 +368,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         if (this.currentGeneration % 25 == 0 && this.currentGeneration != 0) {
             problem.setSolution(bestIndividual);
 //            problem.vns();
-            problem.localSearch(2);
+            problem.localSearch(1);
             bestIndividual.setSolution(problem.getSolution());
         }
     }

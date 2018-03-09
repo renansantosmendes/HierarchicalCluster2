@@ -99,10 +99,10 @@ public class Solution implements Cloneable {
         int currentRouteIndex = 0;
         for (Integer id : idSequence) {
             //if (currentRouteIndex != indexOfAlteratedRoute) {
-                for (Route route : routes) {
-                    route.removeRequest(id, data);
-                }
-                calculateEvaluationFunction(data);
+            for (Route route : routes) {
+                route.removeRequest(id, data);
+            }
+            calculateEvaluationFunction(data);
             //}
             currentRouteIndex++;
         }
@@ -296,7 +296,10 @@ public class Solution implements Cloneable {
     @Override
     public String toString() {
         return "Solution - " + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t"
-                + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t" + this.numberOfVehicles;
+                + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t" + this.numberOfVehicles
+                + "\t" + this.integerRepresentation.stream()
+                        .filter(u -> u.intValue() >= 0)
+                        .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Object clone() {

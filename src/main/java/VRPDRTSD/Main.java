@@ -12,8 +12,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, FileNotFoundException, BiffException {
         String path = "/home/rmendes/VRPDRT/";
-        new ScriptGenerator("VNS", "3d", "small");
-        new ExperimentalDesign().runVnsExperimentWithExcelData(path);
+        new ScriptGenerator("MultiStart", "3d", "medium");
+        new ExperimentalDesign().runSimulatedAnnealingExperimentWithExcelData(path);
 
 //        int requestsNumber = 10;
 //        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";

@@ -11,15 +11,15 @@ import java.util.stream.Collectors;
  */
 public class Solution implements Cloneable {
 
-    private long totalDistanceTraveled;
-    private long totalTravelTime;
-    private long totalTimeWindowAnticipation;
-    private long totalTimeWindowDelay;
-    private long evaluationFunction;
-    private long numberOfVehicles;
-    private List<Route> routes;
-    private Set<Request> nonAttendedRequests;
-    private List<Integer> integerRepresentation = new ArrayList<>();
+    protected long totalDistanceTraveled;
+    protected long totalTravelTime;
+    protected long totalTimeWindowAnticipation;
+    protected long totalTimeWindowDelay;
+    protected long evaluationFunction;
+    protected long numberOfVehicles;
+    protected List<Route> routes;
+    protected Set<Request> nonAttendedRequests;
+    protected List<Integer> integerRepresentation = new ArrayList<>();
 
     public Solution() {
         initializeAttributesWithEmptyLists();

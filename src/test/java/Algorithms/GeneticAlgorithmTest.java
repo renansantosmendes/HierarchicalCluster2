@@ -7,6 +7,7 @@ package Algorithms;
 
 import InstanceReader.Instance;
 import ProblemRepresentation.Route;
+import ProblemRepresentation.Solution;
 import java.util.*;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -93,6 +94,7 @@ public class GeneticAlgorithmTest {
         //algorithm.mutation();
         algorithm.crossOver();
         algorithm.printPopulation();
+        Solution s = new Solution();
         
     }
     
@@ -100,36 +102,4 @@ public class GeneticAlgorithmTest {
     public void testMutation() {
     
     }
-
-//    @Test
-//    public void testingSolutionsMethods(){
-//        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
-//
-//        Instance instance = new Instance();
-//        instance.setNumberOfRequests(10)
-//                .setRequestTimeWindows(10)
-//                .setInstanceSize("s")
-//                .setNumberOfNodes(12)
-//                .setNumberOfVehicles(250)
-//                .setVehicleCapacity(4);
-//
-//        GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
-//        algorithm.setCrossOverProbability(0.7)
-//                .setMutationProbabilty(0.02)
-//                .setNumberOfIterations(1000)
-//                .setPopulationSize(100);
-//        
-//        algorithm.getProblem().buildGreedySolution();
-//        
-//        List<Integer> list = new ArrayList<>();
-//        list.add(3);
-//        list.add(4);
-//        list.add(10);
-//        list.add(5);
-        
-//        algorithm.getProblem().getSolution().removeSequenceFromAllSolution(list,0, algorithm.getProblem().getData());
-//        Route route = new Route(algorithm.getProblem().getSolution().getRoute(0));
-//        System.out.println("Route test = " + route.getIntegerSequenceOfAttendedRequests());
-//        algorithm.getProblem().getSolution().printAllInformations();
-//    }
 }

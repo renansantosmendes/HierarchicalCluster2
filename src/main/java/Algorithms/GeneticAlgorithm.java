@@ -146,7 +146,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         List<Integer> firstIdSequence = new ArrayList<>();
         List<Integer> secondIdSequence = new ArrayList<>();
 
-        for (int i = 0; i < this.parents.size(); i = i + 2) {
+        for (int i = 0; i < 2*this.population.size(); i = i + 2) {
             firstParent.setSolution(this.population.get(parents.get(i)));
             secondParent.setSolution(this.population.get(parents.get(i + 1)));
             firstChild.setSolution(firstParent);
@@ -170,13 +170,14 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             secondIdSequence.clear();
             firstChild.removeEmptyRoutes();
             firstChild.calculateEvaluationFunction(problem.getData());
-            offspring.add(firstChild);
+            offspring.add((EvolutionarySolution) firstChild.clone());
         }
         this.population.clear();
         this.population.addAll(offspring);
     }
 
     public void printPopulation() {
+        System.out.println();
         this.population.forEach(System.out::println);
     }
 

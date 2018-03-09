@@ -37,7 +37,7 @@ public class GeneticAlgorithmTest {
         GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
-                .setNumberOfIterations(1000)
+                .setNumberOfGenerations(1000)
                 .setNumberOfExecutions(30)
                 .setPopulationSize(20);
 
@@ -61,7 +61,7 @@ public class GeneticAlgorithmTest {
         GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
-                .setNumberOfIterations(1000)
+                .setNumberOfGenerations(1000)
                 .setNumberOfExecutions(30)
                 .setPopulationSize(10);
 
@@ -87,7 +87,7 @@ public class GeneticAlgorithmTest {
         GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
-                .setNumberOfIterations(1000)
+                .setNumberOfGenerations(1000)
                 .setNumberOfExecutions(30)
                 .setPopulationSize(100);
 
@@ -106,7 +106,7 @@ public class GeneticAlgorithmTest {
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
-        instance.setNumberOfRequests(10)
+        instance.setNumberOfRequests(50)
                 .setRequestTimeWindows(10)
                 .setInstanceSize("s")
                 .setNumberOfNodes(12)
@@ -116,10 +116,10 @@ public class GeneticAlgorithmTest {
         GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
-                .setNumberOfIterations(100)
+                .setNumberOfGenerations(500)
                 .setNumberOfExecutions(3)
                 .setPopulationSize(100);
 
-        algorithm.runExperiment();
+        algorithm.runWithLocalSearch();
     }
 }

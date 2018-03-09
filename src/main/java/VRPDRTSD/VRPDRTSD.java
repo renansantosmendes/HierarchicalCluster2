@@ -92,6 +92,9 @@ public class VRPDRTSD implements Metaheuristic {
         this.solution.setSolution(solution);
     }
 
+    public void setLocalSearchType(int searchType){
+        this.localSearchType = searchType;
+    }
     public void printSolutionInformations() {
         this.solution.printAllInformations();
     }
@@ -1477,7 +1480,7 @@ public class VRPDRTSD implements Metaheuristic {
             localSearch(currentNeighborhood);
             if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
-                System.out.println(initialSolution);
+                //System.out.println(initialSolution);
                 currentIndex = 0;
                 currentNeighborhood = neighborhoods.get(0);
             } else {
@@ -1568,7 +1571,7 @@ public class VRPDRTSD implements Metaheuristic {
 
     @Override
     public void vns() {
-        int numberOfIterations = 100;
+        int numberOfIterations = 10;
         int currentIteration = 0;
         int numberOfNeighborhoods = 6;
         int excludedNeighborhood = 3;
@@ -1595,10 +1598,10 @@ public class VRPDRTSD implements Metaheuristic {
             }
             currentIteration++;
         }
-        System.out.println();
-        System.out.println(bestSolution);
+        //System.out.println();
+        //System.out.println(bestSolution);
         this.solution.setSolution(bestSolution);
-        bestSolution.printAllInformations();
+        //bestSolution.printAllInformations();
     }
 
     public void vnsForExperiment() {

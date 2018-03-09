@@ -17,10 +17,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     private double mutationProbabilty;
     private double crossOverProbability;
     private long populationSize;
-    private long numberOfIterations;
+    private long numberOfGenerations;
     private Instance instance;
     private VRPDRTSD problem;
-    private int currentIteration = 0;
+    private int currentGeneration = 0;
     private int numberOfExecutions = 1;
     private EvolutionarySolution bestIndividual = new EvolutionarySolution();
     private DataOutput output;
@@ -63,8 +63,8 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         return populationSize;
     }
 
-    public long getNumberOfIterations() {
-        return numberOfIterations;
+    public long getNumberOfGenerations() {
+        return numberOfGenerations;
     }
 
     public Instance getInstance() {
@@ -94,8 +94,8 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         return this;
     }
 
-    public GeneticAlgorithm setNumberOfIterations(int numberOfIterations) {
-        this.numberOfIterations = numberOfIterations;
+    public GeneticAlgorithm setNumberOfGenerations(int numberOfGenerations) {
+        this.numberOfGenerations = numberOfGenerations;
         return this;
     }
 
@@ -121,6 +121,23 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         }
     }
 
+    public void runWithLocalSearch() {
+        initializeFilesToSaveData();
+        initializePopulation();
+        while (stopCriterionIsNotSatisfied()) {
+            printInformations();
+            calculateFitness();
+            storeBestIndividual();
+            selection();
+            crossOver();
+            mutation();
+            localSeach();
+            insertBestIndividual();
+            incrementsCurrentIteration();
+            saveData();
+        }
+    }
+    
     public void runExperiment() {
         for (int execution = 0; execution < numberOfExecutions; execution++) {
             initializeFilesToSaveData(execution);
@@ -144,27 +161,27 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         String instanceName = problem.getData().getInstanceName();
         output = new DataOutput(algorithmName, instanceName);
     }
-    
-     private void initializeFilesToSaveData(int execution) {
+
+    private void initializeFilesToSaveData(int execution) {
         String algorithmName = "GeneticAlgorithm";
         String instanceName = problem.getData().getInstanceName();
         output = new DataOutput(algorithmName, instanceName, execution);
     }
-    
+
     private void saveData() {
-        output.saveBestSolutionFoundInTxtFile(bestIndividual, currentIteration);
+        output.saveBestSolutionFoundInTxtFile(bestIndividual, currentGeneration);
     }
 
     private void printInformations() {
-        System.out.println("Current Iteration = " + currentIteration + "\t" + this.bestIndividual);
+        System.out.println("Current Iteration = " + currentGeneration + "\t" + this.bestIndividual);
     }
 
     private void incrementsCurrentIteration() {
-        currentIteration++;
+        currentGeneration++;
     }
 
     private boolean stopCriterionIsNotSatisfied() {
-        return currentIteration < numberOfIterations;
+        return currentGeneration < numberOfGenerations;
     }
 
     @Override
@@ -315,8 +332,12 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             double probability = rnd.nextDouble();
             if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
-                problem.perturbation(1, 1);
-                problem.localSearch(1);
+                problem.perturbation(5, 1);
+//                problem.setLocalSearchType(1);
+                //problem.localSearch(7);
+//                problem.vns();
+
+                this.population.get(i).setSolution(problem.getSolution());
             }
         }
     }
@@ -329,6 +350,15 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     @Override
     public void insertBestIndividual() {
         this.population.get(this.population.size() - 1).setSolution(bestIndividual);
+    }
+
+    public void localSeach() {
+        if (this.currentGeneration % 25 == 0 && this.currentGeneration != 0) {
+            problem.setSolution(bestIndividual);
+//            problem.vns();
+            problem.localSearch(2);
+            bestIndividual.setSolution(problem.getSolution());
+        }
     }
 
 }

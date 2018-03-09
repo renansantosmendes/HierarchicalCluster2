@@ -11,6 +11,7 @@ import ProblemRepresentation.Solution;
 import java.util.*;
 import junit.framework.Assert;
 import org.junit.Test;
+
 /**
  *
  * @author renansantos
@@ -37,12 +38,12 @@ public class GeneticAlgorithmTest {
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
                 .setNumberOfIterations(1000)
+                .setNumberOfExecutions(30)
                 .setPopulationSize(20);
-        
-        algorithm.initializePopulation();
+
+        //algorithm.initializePopulation();
 //        algorithm.getPopulation().forEach(System.out::println);
-        
-        Assert.assertEquals(algorithm.getPopulationSize(), algorithm.getPopulation().size());
+//        Assert.assertEquals(algorithm.getPopulationSize(), algorithm.getPopulation().size());
     }
 
     @Test
@@ -50,7 +51,7 @@ public class GeneticAlgorithmTest {
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
-        instance.setNumberOfRequests(100)
+        instance.setNumberOfRequests(10)
                 .setRequestTimeWindows(10)
                 .setInstanceSize("s")
                 .setNumberOfNodes(12)
@@ -61,12 +62,13 @@ public class GeneticAlgorithmTest {
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
                 .setNumberOfIterations(1000)
+                .setNumberOfExecutions(30)
                 .setPopulationSize(10);
-        
-        algorithm.initializePopulation();
-        algorithm.selection();
-        algorithm.mutation();
-        System.out.println(algorithm.getParents());
+
+//        algorithm.initializePopulation();
+//        algorithm.selection();
+//        algorithm.mutation();
+        //System.out.println(algorithm.getParents());
         //Assert.assertEquals(algorithm.getParents().size(), algorithm.getPopulationSize());
     }
 
@@ -86,20 +88,38 @@ public class GeneticAlgorithmTest {
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
                 .setNumberOfIterations(1000)
-                .setPopulationSize(10);
-        
-        algorithm.initializePopulation();
-        algorithm.selection();
-        algorithm.printPopulation();
+                .setNumberOfExecutions(30)
+                .setPopulationSize(100);
+
+        //algorithm.initializePopulation();
+        //algorithm.selection();
+        //algorithm.printPopulation();
         //algorithm.mutation();
-        algorithm.crossOver();
-        algorithm.printPopulation();
-        Solution s = new Solution();
-        
+        //algorithm.crossOver();
+        //algorithm.mutation();
+        //algorithm.calculateFitness();
+        //algorithm.printPopulation();
     }
-    
+
     @Test
-    public void testMutation() {
-    
+    public void geneticAlgorithmTest() {
+        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
+
+        Instance instance = new Instance();
+        instance.setNumberOfRequests(10)
+                .setRequestTimeWindows(10)
+                .setInstanceSize("s")
+                .setNumberOfNodes(12)
+                .setNumberOfVehicles(250)
+                .setVehicleCapacity(4);
+
+        GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
+        algorithm.setCrossOverProbability(0.7)
+                .setMutationProbabilty(0.02)
+                .setNumberOfIterations(100)
+                .setNumberOfExecutions(3)
+                .setPopulationSize(100);
+
+        algorithm.runExperiment();
     }
 }

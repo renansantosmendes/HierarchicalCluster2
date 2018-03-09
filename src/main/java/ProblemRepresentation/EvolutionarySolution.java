@@ -1,5 +1,6 @@
 package ProblemRepresentation;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -106,13 +107,19 @@ public class EvolutionarySolution extends Solution {
                 integerRepresentation, objectiveFunctions, fitness, numberOfDominatedSolutions, numberOfSolutionsThatDominate,
                 dominatedSolutions, solutionsThatDominate);
     }
-    
+
     @Override
     public String toString() {
-        return "Individual - "+ this.fitness + "\t" + this.evaluationFunction + "\t" + this.totalDistanceTraveled + "\t" + this.totalTravelTime + "\t"
-                + this.totalTimeWindowAnticipation + "\t" + this.totalTimeWindowDelay + "\t" + this.numberOfVehicles
-                + "\t" + this.integerRepresentation.stream()
-                        .filter(u -> u.intValue() >= 0)
-                        .collect(Collectors.toCollection(ArrayList::new));
+        DecimalFormat df = new DecimalFormat("0.0000000000");
+        return "Individual - " + /*df.format(this.fitness).replace(",", ".") +*/ "\t" 
+                + this.evaluationFunction + "\t" 
+                + this.totalDistanceTraveled + "\t" 
+                + this.totalTravelTime + "\t"
+                + this.totalTimeWindowAnticipation + "\t" 
+                + this.totalTimeWindowDelay + "\t" 
+                + this.numberOfVehicles + "\t" 
+                + this.integerRepresentation.stream()
+                .filter(u -> u.intValue() >= 0)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

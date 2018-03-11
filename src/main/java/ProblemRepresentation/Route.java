@@ -519,7 +519,9 @@ public class Route implements Cloneable {
         addDepotInPickupAndDeliverySequences(idSequence, idSequence);
         setIntegerRepresentation(idSequence, times, data);
         capacityAnalysis(data);
+
         improveSchedule(data);
+
     }
 
     public void improveSchedule(ProblemData data) {
@@ -534,8 +536,12 @@ public class Route implements Cloneable {
                 times.add((int) -request.getDelay().getSeconds() / 60);
             }
         }
-
-        tryToInsertTimesInRoute(times, data);
+        try {
+            tryToInsertTimesInRoute(times, data);
+        } catch (DateTimeException e) {
+            e.printStackTrace();
+            System.out.println("List of times = " + times);
+        }
     }
 
     private void tryToInsertTimesInRoute(Set<Integer> times, ProblemData data) {
@@ -910,8 +916,8 @@ public class Route implements Cloneable {
     public boolean isPenalized() {
         return this.violatedSomeConstraint == true;
     }
-    
-    public List<Integer> getUsedIds(){
+
+    public List<Integer> getUsedIds() {
         Set<Integer> setOfIds = this.getIntegerRouteRepresetation()
                 .stream()
                 .filter(u -> u.intValue() > 0)
@@ -923,9 +929,9 @@ public class Route implements Cloneable {
         }
         return usedIds;
     }
-    
-    public void addOtherRouteInRandomPosition(List<Integer> idSequence){
-        
+
+    public void addOtherRouteInRandomPosition(List<Integer> idSequence) {
+
     }
 
     @Override

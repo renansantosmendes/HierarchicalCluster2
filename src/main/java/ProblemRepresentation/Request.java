@@ -92,7 +92,13 @@ public class Request implements Cloneable {
             int hour = pickUpTime / 60;
             int minute = pickUpTime % 60;
             this.pickUpTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
-        } else {
+        } else if (pickUpTime > 1380) {
+            int hour = 0;
+            int minute = pickUpTime % 60;
+            this.pickUpTime = LocalDateTime.of(dayRequestWasMade.toLocalDate().plusDays(1), LocalTime.of(hour, minute));
+            this.anticipation = Duration.between(this.deliveryTime, this.deliveryTimeWindowLower);
+            this.delay = Duration.between(this.deliveryTime, this.deliveryTimeWindowUpper);
+        }else {
             int hour = pickUpTime / 60;
             int minute = pickUpTime % 60;
             this.pickUpTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
@@ -112,6 +118,12 @@ public class Request implements Cloneable {
             int minute = deliveryTime % 60;
 
             this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate(), LocalTime.of(hour, minute));
+            this.anticipation = Duration.between(this.deliveryTime, this.deliveryTimeWindowLower);
+            this.delay = Duration.between(this.deliveryTime, this.deliveryTimeWindowUpper);
+        } else if (deliveryTime > 1380) {
+            int hour = 0;
+            int minute = deliveryTime % 60;
+            this.deliveryTime = LocalDateTime.of(dayRequestWasMade.toLocalDate().plusDays(1), LocalTime.of(hour, minute));
             this.anticipation = Duration.between(this.deliveryTime, this.deliveryTimeWindowLower);
             this.delay = Duration.between(this.deliveryTime, this.deliveryTimeWindowUpper);
         } else {

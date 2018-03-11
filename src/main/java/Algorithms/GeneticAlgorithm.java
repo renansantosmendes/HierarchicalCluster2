@@ -5,6 +5,7 @@ import InstanceReader.Instance;
 import ProblemRepresentation.*;
 import VRPDRTSD.VRPDRTSD;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -148,7 +149,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 calculateFitness();
                 storeBestIndividual();
                 selection();
-                crossOver();
+                crossOver2();
                 mutation();
                 insertBestIndividual();
                 incrementsCurrentIteration();
@@ -160,8 +161,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     private void finalizeIteration() {
         currentGeneration = 0;
-        this.population.clear();
+        //this.population.clear();
         this.parents.clear();
+        this.printPopulation();
+        this.bestIndividual.printAllInformations();
     }
 
     private void initializeFilesToSaveData() {
@@ -183,7 +186,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     private void printInformations() {
         System.out.println("Current Generation = " + currentGeneration + "\t" + this.bestIndividual);
     }
-    
+
     private void printExecutionInformations(int execution) {
         System.out.println("\nExecution = " + execution);
     }
@@ -267,6 +270,11 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             int firstRouteIndex = firstChild.getRandomRoutePosition();
             int secondRouteIndex = secondChild.getRandomRoutePosition();
 
+            //testing
+            if (firstChild.getRoutes().size() >= secondChild.getRoutes().size()) {
+                firstRouteIndex = secondRouteIndex;
+            }
+
             secondIdSequence.addAll(secondChild.getRoute(secondRouteIndex).getUsedIds());
             firstChild.removeSequenceFromAllSolution(secondIdSequence, firstRouteIndex, problem.getData());
             firstIdSequence.addAll(firstChild.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
@@ -275,6 +283,52 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 List<Integer> indexesToInsert = generateTwoDiffentRequestsToOneRoute(firstIdSequence);
                 insertIdInNewSequence(firstIdSequence, indexesToInsert.get(0), id, indexesToInsert.get(1));
             }
+
+            firstChild.getRoute(firstRouteIndex).rebuild(firstIdSequence, problem.getData());
+
+            firstIdSequence.clear();
+            secondIdSequence.clear();
+            firstChild.removeEmptyRoutes();
+            firstChild.calculateEvaluationFunction(problem.getData());
+            offspring.add((EvolutionarySolution) firstChild.clone());
+        }
+        this.population.clear();
+        this.population.addAll(offspring);
+    }
+
+    public void crossOver2() {
+        List<EvolutionarySolution> offspring = new ArrayList<>();
+        EvolutionarySolution firstParent = new EvolutionarySolution();
+        EvolutionarySolution secondParent = new EvolutionarySolution();
+        EvolutionarySolution firstChild = new EvolutionarySolution();
+        EvolutionarySolution secondChild = new EvolutionarySolution();
+        List<Integer> firstIdSequence = new ArrayList<>();
+        List<Integer> secondIdSequence = new ArrayList<>();
+
+        for (int i = 0; i < 2 * this.population.size(); i = i + 2) {
+            firstParent.setSolution(this.population.get(parents.get(i)));
+            secondParent.setSolution(this.population.get(parents.get(i + 1)));
+            firstChild.setSolution(firstParent);
+            secondChild.setSolution(secondParent);
+
+            int firstRouteIndex = firstChild.getRandomRoutePosition();
+            int secondRouteIndex = secondChild.getRandomRoutePosition();
+
+            //testing
+            if (firstChild.getRoutes().size() >= secondChild.getRoutes().size()) {
+                firstRouteIndex = secondRouteIndex;
+            }
+
+            secondIdSequence.addAll(secondChild.getRoute(secondRouteIndex).getUsedIds());
+            firstChild.removeSequenceFromAllSolution(secondIdSequence, firstRouteIndex, problem.getData());
+            firstIdSequence.add(0);
+            firstIdSequence.addAll(firstChild.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests()
+                    .stream().filter(u -> u.intValue() > 0)
+                    .collect(Collectors.toCollection(ArrayList::new)));
+            firstIdSequence.addAll(secondChild.getRoute(secondRouteIndex).getIntegerSequenceOfAttendedRequests()
+                    .stream().filter(u -> u.intValue() > 0)
+                    .collect(Collectors.toCollection(ArrayList::new)));
+            firstIdSequence.add(0);
 
             firstChild.getRoute(firstRouteIndex).rebuild(firstIdSequence, problem.getData());
 
@@ -344,9 +398,9 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             double probability = rnd.nextDouble();
             if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
-                problem.perturbation(1, 1);
+                problem.perturbation(5, 1);
 //                problem.setLocalSearchType(1);
-                //problem.localSearch(7);
+                problem.localSearch(1);
 //                problem.vns();
 
                 this.population.get(i).setSolution(problem.getSolution());

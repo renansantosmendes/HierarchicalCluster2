@@ -399,7 +399,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
                 problem.perturbation(5, 1);
-//                problem.setLocalSearchType(1);
+                problem.setLocalSearchType(1);
                 problem.localSearch(1);
 //                problem.vns();
 
@@ -415,7 +415,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     @Override
     public void insertBestIndividual() {
-        this.population.get(this.population.size() - 1).setSolution(bestIndividual);
+        if (bestIndividual.getEvaluationFunction() < this.population.get(0).getEvaluationFunction()) {
+            this.population.get(this.population.size() - 1).setSolution(bestIndividual);
+        }
+
     }
 
     public void localSeach() {

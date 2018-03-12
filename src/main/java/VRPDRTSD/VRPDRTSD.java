@@ -92,9 +92,10 @@ public class VRPDRTSD implements Metaheuristic {
         this.solution.setSolution(solution);
     }
 
-    public void setLocalSearchType(int searchType){
+    public void setLocalSearchType(int searchType) {
         this.localSearchType = searchType;
     }
+
     public void printSolutionInformations() {
         this.solution.printAllInformations();
     }
@@ -530,18 +531,24 @@ public class VRPDRTSD implements Metaheuristic {
             case 6:
                 this.solution = requestReallocationBestImprovement();
                 break;
-            case 7://
-                this.solution = addMinutesInSolutionScheduleFirstImprovement();
+            case 7:
+                this.solution = optFirstImprovement();
                 break;
             case 8:
-                this.solution = addMinutesInSolutionScheduleBestImprovement();
+                this.solution = optBestImprovement();
                 break;
-            case 9:
-                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
-                break;
-            case 10:
-                this.solution = removeMinutesInSolutionScheduleBestImprovement();
-                break;
+//            case 7://
+//                this.solution = addMinutesInSolutionScheduleFirstImprovement();
+//                break;
+//            case 8:
+//                this.solution = addMinutesInSolutionScheduleBestImprovement();
+//                break;
+//            case 9:
+//                this.solution = removeMinutesInSolutionScheduleFirstImprovement();
+//                break;
+//            case 10:
+//                this.solution = removeMinutesInSolutionScheduleBestImprovement();
+//                break;
 
         }
         this.solution.buildIntegerRepresentation();
@@ -1054,6 +1061,88 @@ public class VRPDRTSD implements Metaheuristic {
                 this.solution = (Solution) bestSolution.clone();
             } else {
                 canContinue = false;
+            }
+        }
+        return (Solution) this.solution.clone();
+    }
+
+    private Solution optFirstImprovement() {
+
+        Solution solution = new Solution((Solution) this.solution.clone());
+        for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
+            Route route = new Route(solution.getRoute(i));
+            Route initialRoute = new Route(solution.getRoute(i));
+            long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+            for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
+                for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
+                    List<Integer> reversedSequence = new ArrayList<>();
+                    List<Integer> idSequence = new ArrayList<>();
+                    idSequence.addAll(route.getIntegerSequenceOfAttendedRequests().subList(0, j));
+                    reversedSequence.addAll(route.getIntegerSequenceOfAttendedRequests().subList(j, k));
+                    Collections.reverse(reversedSequence);
+                    idSequence.addAll(reversedSequence);
+                    idSequence.addAll(route.getIntegerSequenceOfAttendedRequests().subList(k, route.getIntegerSequenceOfAttendedRequests().size()));
+
+                    route.rebuild(idSequence, data);
+                    actualizeSolution(solution, i, route);
+                    System.out.println(solution);
+                    long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                    if (evaluationFunctionAfterMovement >= evaluationFunctionBeforeMovement) {
+                        route.setRoute(initialRoute);
+                        actualizeSolution(solution, i, initialRoute);
+                    } else {
+                        return (Solution) solution.clone();
+//                            route.setRoute(initialRoute);
+//                            actualizeSolution(solution, i, initialRoute);
+//                            evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
+                    }
+                }
+            }
+        }
+        if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
+            return solution;
+        } else {
+            return this.solution;
+        }
+    }
+
+    private Solution optBestImprovement() {
+        boolean canContinue = true;
+        while (canContinue) {
+            Solution solution = new Solution((Solution) this.solution.clone());
+            for (int i = 0; i < solution.getNumberOfRoutes(); i++) {
+                Route route = new Route(solution.getRoute(i));
+                Route initialRoute = new Route(solution.getRoute(i));
+                long evaluationFunctionBeforeMovement = solution.getEvaluationFunction();
+                for (int j = 1; j < route.getIntegerSequenceOfAttendedRequests().size() - 1; j++) {
+                    for (int k = j + 1; k < route.getIntegerSequenceOfAttendedRequests().size(); k++) {
+                        List<Integer> reversedSequence = new ArrayList<>();
+                        List<Integer> idSequence = new ArrayList<>();
+                        idSequence.addAll(route.getIntegerSequenceOfAttendedRequests().subList(0, j));
+                        reversedSequence.addAll(route.getIntegerSequenceOfAttendedRequests().subList(j, k));
+                        Collections.reverse(reversedSequence);
+                        idSequence.addAll(reversedSequence);
+                        idSequence.addAll(route.getIntegerSequenceOfAttendedRequests().subList(k, route.getIntegerSequenceOfAttendedRequests().size()));
+
+                        route.rebuild(idSequence, data);
+                        actualizeSolution(solution, i, route);
+                        System.out.println(solution);
+                        long evaluationFunctionAfterMovement = solution.getEvaluationFunction();
+                        if (evaluationFunctionAfterMovement > evaluationFunctionBeforeMovement) {
+                            route.setRoute(initialRoute);
+                            actualizeSolution(solution, i, initialRoute);
+                        } else {
+                            route.setRoute(initialRoute);
+                            actualizeSolution(solution, i, initialRoute);
+                            evaluationFunctionBeforeMovement = evaluationFunctionAfterMovement;
+                        }
+                    }
+                }
+            }
+            if (solution.getEvaluationFunction() < this.solution.getEvaluationFunction()) {
+                return solution;
+            } else {
+                return this.solution;
             }
         }
         return (Solution) this.solution.clone();

@@ -130,4 +130,22 @@ public class ExperimentalDesign {
         }
     }
     
+    public void runIlsExperimentWithExcelData(String path) throws FileNotFoundException, IOException, BiffException {
+        for (int i = 0; i < requestNumber.length; i++) {
+            for (int j = 0; j < timeWindows.length; j++) {
+                instance = new Instance();
+                instance.setNumberOfRequests(requestNumber[i])
+                        .setRequestTimeWindows(timeWindows[j])
+                        .setInstanceSize("s")
+                        .setNumberOfNodes(12)
+                        .setNumberOfVehicles(250)
+                        .setVehicleCapacity(4);
+
+                VRPDRTSD problem = new VRPDRTSD(instance, path);
+                System.out.println(instance);
+                problem.ilsForExperiment();
+            }
+        }
+    }
+    
 }

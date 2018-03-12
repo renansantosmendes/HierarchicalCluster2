@@ -6,6 +6,9 @@
 package VRPDRTSD;
 
 import InstanceReader.Instance;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import jxl.read.biff.BiffException;
 import org.junit.Test;
 
 /**
@@ -15,7 +18,7 @@ import org.junit.Test;
 public class localSearchTest {
 
     @Test
-    public void ilsTest() {
+    public void ilsTest() throws IOException, FileNotFoundException, BiffException {
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
@@ -25,10 +28,11 @@ public class localSearchTest {
                 .setNumberOfNodes(12)
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
- 
+
         VRPDRTSD problem = new VRPDRTSD(instance, path);
-        problem.buildGreedySolution();
-        problem.printSolutionInformations();
+//        problem.buildGreedySolution();
+//        problem.printSolutionInformations();
         problem.ilsForExperiment();
+        //new ExperimentalDesign().runIlsExperimentWithExcelData(path);
     }
 }

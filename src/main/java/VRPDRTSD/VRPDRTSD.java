@@ -1569,7 +1569,7 @@ public class VRPDRTSD implements Metaheuristic {
             localSearch(currentNeighborhood);
             if (solution.getEvaluationFunction() < initialSolution.getEvaluationFunction()) {
                 initialSolution.setSolution(solution);
-                //System.out.println(initialSolution);
+                System.out.println(initialSolution);
                 currentIndex = 0;
                 currentNeighborhood = neighborhoods.get(0);
             } else {
@@ -1788,6 +1788,80 @@ public class VRPDRTSD implements Metaheuristic {
 
     @Override
     public void ils() {
+        int numberOfIterations = 400;
+        int currentIteration = 0;
+        int excludedNeighborhood = 6;
+        int intensity = 1;
+        int MAX_INTENSITY = 5;
+        int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 10;
+        int numberOfIterationsWithoutImprovement = 0;
+        buildGreedySolution();
+        //localSearch(2);
+        vndForLocalSearchInVNS(excludedNeighborhood);
+        System.out.println(solution);
+        Solution bestSolution = new Solution(solution);
+        while (currentIteration < numberOfIterations) {
+            perturbation(5, 1);
+            //localSearch(2);
+            vndForLocalSearchInVNS(excludedNeighborhood);
+            if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
+                bestSolution.setSolution(solution);
+                numberOfIterationsWithoutImprovement = 0;
+            } else {
+                solution.setSolution(bestSolution);
+                numberOfIterationsWithoutImprovement++;
+            }
+
+            if (numberOfIterationsWithoutImprovement == MAX_ITERATIONS_WITHOUT_IMPROVEMENT && intensity <= MAX_INTENSITY) {
+                intensity++;
+            }
+            currentIteration++;
+        }
+        System.out.println();
+        System.out.println(bestSolution);
+        this.solution.setSolution(bestSolution);
+        //bestSolution.printAllInformations();
+    }
+
+    public void ilsForExperiment() {
+        int numberOfExecutions = 30;
+        String algorithmName = "ILS";
+        int numberOfIterations = 100;
+        
+        int excludedNeighborhood = 6;
+
+        DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
+
+        for (int execution = 0; execution < numberOfExecutions; execution++) {
+            int currentIteration = 0;
+            int intensity = 1;
+            int MAX_INTENSITY = 5;
+            int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 10;
+            int numberOfIterationsWithoutImprovement = 0;
+            refreshInstanceData();
+            buildGreedySolution();
+            vndForLocalSearchInVNS(excludedNeighborhood);
+            Solution bestSolution = new Solution(solution);
+
+            DataOutput output = new DataOutput(algorithmName, instanceName, execution);
+            while (currentIteration < numberOfIterations) {
+                perturbation(5, intensity);
+                vndForLocalSearchInVNS(excludedNeighborhood);
+                //System.out.println(solution);
+                if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
+                    bestSolution.setSolution(solution);
+                    numberOfIterationsWithoutImprovement = 0;
+                } else {
+                    solution.setSolution(bestSolution);
+                    numberOfIterationsWithoutImprovement++;
+                }
+                if (numberOfIterationsWithoutImprovement == MAX_ITERATIONS_WITHOUT_IMPROVEMENT && intensity <= MAX_INTENSITY) {
+                    intensity++;
+                }
+                currentIteration++;
+            }
+            System.out.println(bestSolution);
+        }
 
     }
 

@@ -13,22 +13,22 @@ import org.junit.Test;
  * @author renansantos
  */
 public class localSearchTest {
-    
+
     @Test
-    public void optTest(){
-         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
+    public void ilsTest() {
+        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
-        instance.setNumberOfRequests(250)
+        instance.setNumberOfRequests(10)
                 .setRequestTimeWindows(10)
                 .setInstanceSize("s")
                 .setNumberOfNodes(12)
                 .setNumberOfVehicles(250)
                 .setVehicleCapacity(4);
-        
+ 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
         problem.buildGreedySolution();
         problem.printSolutionInformations();
-        problem.localSearch(7);
+        problem.ilsForExperiment();
     }
 }

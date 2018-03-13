@@ -32,7 +32,9 @@ public class localSearchTest {
         VRPDRTSD problem = new VRPDRTSD(instance, path);
 //        problem.buildGreedySolution();
 //        problem.printSolutionInformations();
-        problem.ilsForExperiment();
+//        problem.localSearch(6);
+//        problem.printSolutionInformations();
+//        problem.ilsForExperiment();
         //new ExperimentalDesign().runIlsExperimentWithExcelData(path);
     }
 }

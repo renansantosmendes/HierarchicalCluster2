@@ -121,6 +121,6 @@ public class GeneticAlgorithmTest {
                 .setPopulationSize(100);
 
 //        algorithm.runWithLocalSearch(); 
-        algorithm.runExperiment();
+//        algorithm.runExperiment();
     }
 }

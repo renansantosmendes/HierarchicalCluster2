@@ -1328,6 +1328,8 @@ public class VRPDRTSD implements Metaheuristic {
                 firstRequest = rnd.nextInt(routeSize);
                 secondRequest = rnd.nextInt(routeSize);
             }
+            
+            //System.out.println(idSequence + "\t" +firstRequest + "\t" + secondRequest);
         } while (firstRequest == secondRequest);
         indexes.add(firstRequest);
         indexes.add(secondRequest);
@@ -1846,7 +1848,7 @@ public class VRPDRTSD implements Metaheuristic {
     public void ilsForExperiment() {
         int numberOfExecutions = 30;
         String algorithmName = "ILS";
-        int numberOfIterations = 100;
+        int numberOfIterations = 200;
 
         int excludedNeighborhood = 6;
 
@@ -1855,8 +1857,8 @@ public class VRPDRTSD implements Metaheuristic {
         for (int execution = 0; execution < numberOfExecutions; execution++) {
             int currentIteration = 0;
             int intensity = 1;
-            int MAX_INTENSITY = 5;
-            int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 10;
+            int MAX_INTENSITY = 3;
+            int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 20;
             int numberOfIterationsWithoutImprovement = 0;
             refreshInstanceData();
             buildGreedySolution();
@@ -1865,7 +1867,11 @@ public class VRPDRTSD implements Metaheuristic {
 
             DataOutput output = new DataOutput(algorithmName, instanceName, execution);
             while (currentIteration < numberOfIterations) {
-                perturbation(5, intensity);
+                //System.out.println("\nintensity = "+intensity);
+                //System.out.println("before perturbation " + solution);
+                perturbation(5, 1);
+                //System.out.println("after perturbation " + solution);
+                //localSearch(2);
                 vndForLocalSearchInIls(excludedNeighborhood);
                 //System.out.println(solution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
@@ -1878,9 +1884,11 @@ public class VRPDRTSD implements Metaheuristic {
                 if (numberOfIterationsWithoutImprovement == MAX_ITERATIONS_WITHOUT_IMPROVEMENT && intensity <= MAX_INTENSITY) {
                     intensity++;
                 }
+                output.saveBestSolutionInTxtFile(bestSolution, currentIteration);
                 currentIteration++;
             }
             System.out.println("exec = " + execution + "\t" + bestSolution);
+            outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestSolution);
         }
 
     }

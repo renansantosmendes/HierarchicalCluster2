@@ -22,7 +22,7 @@ public class localSearchTest {
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
-        instance.setNumberOfRequests(10)
+        instance.setNumberOfRequests(50)
                 .setRequestTimeWindows(10)
                 .setInstanceSize("s")
                 .setNumberOfNodes(12)
@@ -30,6 +30,7 @@ public class localSearchTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
+        problem.simulatedAnnealingForExperiment();
 //        problem.buildGreedySolution();
 //        problem.printSolutionInformations();
 //        problem.localSearch(6);

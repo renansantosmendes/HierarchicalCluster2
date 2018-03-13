@@ -1328,7 +1328,7 @@ public class VRPDRTSD implements Metaheuristic {
                 firstRequest = rnd.nextInt(routeSize);
                 secondRequest = rnd.nextInt(routeSize);
             }
-            
+
             //System.out.println(idSequence + "\t" +firstRequest + "\t" + secondRequest);
         } while (firstRequest == secondRequest);
         indexes.add(firstRequest);
@@ -1404,6 +1404,7 @@ public class VRPDRTSD implements Metaheuristic {
         String algorithmName = "MultiStart";
         Solution bestSolutionFound = new Solution();
         DataOutput outputForBestSolutions = new DataOutput(algorithmName, instanceName);
+        int excludedNeighborhood = 6;
         for (int execution = 0; execution < numberOfExecutions; execution++) {
 
             DataOutput output = new DataOutput(algorithmName, instanceName, execution);
@@ -1416,7 +1417,8 @@ public class VRPDRTSD implements Metaheuristic {
             while (currentIteration < numberOfIterations) {
                 initialSolution.setSolution(this.getSolution());
 //                vnd();
-                localSearch(6);
+                localSearch(2);
+                //vndForLocalSearchInIls(excludedNeighborhood);
                 keepBestSolutionFound(initialSolution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
@@ -1482,7 +1484,7 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     public void simulatedAnnealingForExperiment() {
-        int numberOfExecutions = 30;
+        int numberOfExecutions = 3;
         int numberOfIterations = 100;
         int numberOfMovements = 4;
         String algorithmName = "SimulatedAnnealing";
@@ -1505,10 +1507,10 @@ public class VRPDRTSD implements Metaheuristic {
                     Solution solutionBefore = new Solution(solution);
                     generateRandomNeighborhood(rnd, numberOfMovements);
                     long delta = solution.getEvaluationFunction() - solutionBefore.getEvaluationFunction();
-                    localSearch(6);
-                    //localSearch(2);
+                    //localSearch(6);
+                    localSearch(2);
                     //vnd();
-                    //System.out.println(currentTemperature);
+                    System.out.println(currentTemperature + "\t" + solution);
                     keepBestSolutionFound(bestSolutionFound);
 
                     if (delta < 0) {
@@ -1550,9 +1552,10 @@ public class VRPDRTSD implements Metaheuristic {
     }
 
     private void generateRandomNeighborhood(Random rnd, int numberOfMovements) {
-        int type = rnd.nextInt(numberOfMovements) + 1;
-        int intensity = rnd.nextInt(3) + 1;
-        perturbation(type, intensity);
+//        int type = rnd.nextInt(numberOfMovements) + 1;
+//        int intensity = rnd.nextInt(3) + 1;
+//        perturbation(type, intensity);
+          perturbation(5, 1);  
     }
 
     @Override
@@ -1810,22 +1813,19 @@ public class VRPDRTSD implements Metaheuristic {
 
     @Override
     public void ils() {
-        int numberOfIterations = 400;
+        int numberOfIterations = 200;
         int currentIteration = 0;
         int excludedNeighborhood = 6;
         int intensity = 1;
-        int MAX_INTENSITY = 5;
+        int MAX_INTENSITY = 3;
         int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 10;
         int numberOfIterationsWithoutImprovement = 0;
         buildGreedySolution();
-        //localSearch(2);
         vndForLocalSearchInVns(excludedNeighborhood);
-        System.out.println(solution);
         Solution bestSolution = new Solution(solution);
         while (currentIteration < numberOfIterations) {
             perturbation(5, 1);
-            //localSearch(2);
-            vndForLocalSearchInVns(excludedNeighborhood);
+            vndForLocalSearchInIls(excludedNeighborhood);
             if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                 bestSolution.setSolution(solution);
                 numberOfIterationsWithoutImprovement = 0;
@@ -1839,10 +1839,9 @@ public class VRPDRTSD implements Metaheuristic {
             }
             currentIteration++;
         }
-        System.out.println();
-        System.out.println(bestSolution);
+//        System.out.println();
+//        System.out.println(bestSolution);
         this.solution.setSolution(bestSolution);
-        //bestSolution.printAllInformations();
     }
 
     public void ilsForExperiment() {
@@ -1867,13 +1866,8 @@ public class VRPDRTSD implements Metaheuristic {
 
             DataOutput output = new DataOutput(algorithmName, instanceName, execution);
             while (currentIteration < numberOfIterations) {
-                //System.out.println("\nintensity = "+intensity);
-                //System.out.println("before perturbation " + solution);
                 perturbation(5, 1);
-                //System.out.println("after perturbation " + solution);
-                //localSearch(2);
                 vndForLocalSearchInIls(excludedNeighborhood);
-                //System.out.println(solution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
                     numberOfIterationsWithoutImprovement = 0;

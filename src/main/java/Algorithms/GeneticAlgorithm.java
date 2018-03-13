@@ -25,6 +25,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     private int numberOfExecutions = 1;
     private EvolutionarySolution bestIndividual = new EvolutionarySolution();
     private DataOutput output;
+    DataOutput outputForBestSolutions;
 
     public GeneticAlgorithm(Instance instance) {
         this.population = new ArrayList<>();
@@ -48,6 +49,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         this.problem = new VRPDRTSD(instance, path);
     }
 
+    public EvolutionarySolution getBestIndividual(){
+        return this.bestIndividual;
+    }
+    
     public List<EvolutionarySolution> getPopulation() {
         return population;
     }
@@ -149,22 +154,26 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 calculateFitness();
                 storeBestIndividual();
                 selection();
-                crossOver2();
+                crossOverAddRoute();
                 mutation();
                 insertBestIndividual();
                 incrementsCurrentIteration();
                 saveData();
             }
-            finalizeIteration();
+            finalizeExecution();
         }
     }
 
-    private void finalizeIteration() {
+    private void finalizeExecution() {
         currentGeneration = 0;
         //this.population.clear();
         this.parents.clear();
         this.printPopulation();
+        
+        saveExecutionData();
         this.bestIndividual.printAllInformations();
+        this.bestIndividual = new EvolutionarySolution();
+        this.population.clear();
     }
 
     private void initializeFilesToSaveData() {
@@ -177,10 +186,15 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         String algorithmName = "GeneticAlgorithm";
         String instanceName = problem.getData().getInstanceName();
         output = new DataOutput(algorithmName, instanceName, execution);
+        outputForBestSolutions = new DataOutput(algorithmName, instanceName);
     }
 
     private void saveData() {
         output.saveBestSolutionFoundInTxtFile(bestIndividual, currentGeneration);
+    }
+    
+    private void saveExecutionData(){
+        outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestIndividual);
     }
 
     private void printInformations() {
@@ -296,7 +310,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         this.population.addAll(offspring);
     }
 
-    public void crossOver2() {
+    public void crossOverAddRoute() {
         List<EvolutionarySolution> offspring = new ArrayList<>();
         EvolutionarySolution firstParent = new EvolutionarySolution();
         EvolutionarySolution secondParent = new EvolutionarySolution();
@@ -314,7 +328,6 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             int firstRouteIndex = firstChild.getRandomRoutePosition();
             int secondRouteIndex = secondChild.getRandomRoutePosition();
 
-            //testing
             if (firstChild.getRoutes().size() >= secondChild.getRoutes().size()) {
                 firstRouteIndex = secondRouteIndex;
             }
@@ -398,9 +411,16 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             double probability = rnd.nextDouble();
             if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
-                problem.perturbation(5, 1);
-                problem.setLocalSearchType(1);
-                problem.localSearch(1);
+                double localSeachProbability = rnd.nextDouble();
+                if (localSeachProbability < 0.95) {
+                    problem.perturbation(5, 1);
+                } else {
+                    System.out.println("ILS");
+                    problem.ils();
+                }
+//                problem.perturbation(5, 1);
+//                problem.setLocalSearchType(1);
+//                problem.localSearch(1);
 //                problem.vns();
 
                 this.population.get(i).setSolution(problem.getSolution());

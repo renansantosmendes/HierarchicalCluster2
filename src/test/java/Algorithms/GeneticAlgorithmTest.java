@@ -106,7 +106,7 @@ public class GeneticAlgorithmTest {
         String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
 
         Instance instance = new Instance();
-        instance.setNumberOfRequests(50)
+        instance.setNumberOfRequests(10)
                 .setRequestTimeWindows(10)
                 .setInstanceSize("s")
                 .setNumberOfNodes(12)
@@ -116,11 +116,13 @@ public class GeneticAlgorithmTest {
         GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
-                .setNumberOfGenerations(300)
-                .setNumberOfExecutions(1)
+                .setNumberOfGenerations(10)
+                .setNumberOfExecutions(2)
                 .setPopulationSize(100);
 
 //        algorithm.runWithLocalSearch(); 
-//        algorithm.runExperiment();
+        algorithm.runExperiment();
+        algorithm.printPopulation();
+        algorithm.getBestIndividual().printAllInformations();
     }
 }

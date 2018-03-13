@@ -49,10 +49,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         this.problem = new VRPDRTSD(instance, path);
     }
 
-    public EvolutionarySolution getBestIndividual(){
+    public EvolutionarySolution getBestIndividual() {
         return this.bestIndividual;
     }
-    
+
     public List<EvolutionarySolution> getPopulation() {
         return population;
     }
@@ -145,6 +145,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     }
 
     public void runExperiment() {
+        initializeFileToSaveBestSolutions();
         for (int execution = 0; execution < numberOfExecutions; execution++) {
             printExecutionInformations(execution);
             initializeFilesToSaveData(execution);
@@ -169,7 +170,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         //this.population.clear();
         this.parents.clear();
         this.printPopulation();
-        
+
         saveExecutionData();
         this.bestIndividual.printAllInformations();
         this.bestIndividual = new EvolutionarySolution();
@@ -186,14 +187,20 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         String algorithmName = "GeneticAlgorithm";
         String instanceName = problem.getData().getInstanceName();
         output = new DataOutput(algorithmName, instanceName, execution);
+        
+    }
+    
+    private void initializeFileToSaveBestSolutions(){
+        String algorithmName = "GeneticAlgorithm";
+        String instanceName = problem.getData().getInstanceName();
         outputForBestSolutions = new DataOutput(algorithmName, instanceName);
     }
 
     private void saveData() {
         output.saveBestSolutionFoundInTxtFile(bestIndividual, currentGeneration);
     }
-    
-    private void saveExecutionData(){
+
+    private void saveExecutionData() {
         outputForBestSolutions.saveBestSolutionFoundInTxtFile(bestIndividual);
     }
 
@@ -220,6 +227,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             this.population.add(new EvolutionarySolution(this.problem.getSolution()));
         }
         calculateFitness();
+        this.bestIndividual.setSolution(population.get(0));
     }
 
     public void calculateFitness() {
@@ -411,8 +419,8 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             double probability = rnd.nextDouble();
             if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
-                double localSeachProbability = rnd.nextDouble();
-                if (localSeachProbability < 0.95) {
+                double localSearchProbability = rnd.nextDouble();
+                if (localSearchProbability < 0.95) {
                     problem.perturbation(5, 1);
                 } else {
                     System.out.println("ILS");
@@ -424,13 +432,16 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 //                problem.vns();
 
                 this.population.get(i).setSolution(problem.getSolution());
+//                System.out.println("after mutation = " + problem.getSolution());
             }
         }
     }
 
     @Override
     public void storeBestIndividual() {
-        this.bestIndividual.setSolution(population.get(0));
+        if (bestIndividual.getEvaluationFunction() > this.population.get(0).getEvaluationFunction()) {
+            this.bestIndividual.setSolution(population.get(0));
+        }
     }
 
     @Override

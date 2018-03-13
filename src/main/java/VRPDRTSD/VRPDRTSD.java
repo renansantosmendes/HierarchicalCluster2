@@ -1834,9 +1834,9 @@ public class VRPDRTSD implements Metaheuristic {
                 numberOfIterationsWithoutImprovement++;
             }
 
-            if (numberOfIterationsWithoutImprovement == MAX_ITERATIONS_WITHOUT_IMPROVEMENT && intensity <= MAX_INTENSITY) {
-                intensity++;
-            }
+//            if (numberOfIterationsWithoutImprovement == MAX_ITERATIONS_WITHOUT_IMPROVEMENT && intensity <= MAX_INTENSITY) {
+//                intensity++;
+//            }
             currentIteration++;
         }
 //        System.out.println();

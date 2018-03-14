@@ -11,9 +11,9 @@ import jxl.read.biff.BiffException;
 public class Main {
 
     public static void main(String[] args) throws IOException, FileNotFoundException, BiffException {
-//        String path = "/home/rmendes/VRPDRT/";
-        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
-        new ScriptGenerator("SimulatedAnnealing", "3d", "large");
+        String path = "/home/rmendes/VRPDRT/";
+//        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
+        new ScriptGenerator("GeneticAlgorithm", "3d", "large");
         new ExperimentalDesign().runGeneticAlgorithmnExperimentWithExcelData(path);
 
 //        int requestsNumber = 10;

@@ -419,6 +419,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             double probability = rnd.nextDouble();
             if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
+//                System.out.println("before mutation = " + problem.getSolution());
                 double localSearchProbability = rnd.nextDouble();
                 if (localSearchProbability < 0.95) {
                     problem.perturbation(5, 1);

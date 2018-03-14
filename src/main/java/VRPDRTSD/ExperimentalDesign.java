@@ -165,7 +165,7 @@ public class ExperimentalDesign {
                 GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
                 algorithm.setCrossOverProbability(0.7)
                         .setMutationProbabilty(0.02)
-                        .setNumberOfGenerations(100)
+                        .setNumberOfGenerations(200)
                         .setNumberOfExecutions(30)
                         .setPopulationSize(100);
                 

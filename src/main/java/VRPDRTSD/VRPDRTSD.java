@@ -1241,11 +1241,13 @@ public class VRPDRTSD implements Metaheuristic {
         Random rnd = new Random();
         List<Integer> indexes = new ArrayList<>();
         int totalRoutes = solution.getNumberOfRoutes();
-        int firstRoute, secondRoute;
-        firstRoute = rnd.nextInt(totalRoutes);
-        do {
-            secondRoute = rnd.nextInt(totalRoutes);
-        } while (firstRoute == secondRoute);
+        int firstRoute = 0, secondRoute = 0;
+        if (totalRoutes > 1) {
+            firstRoute = rnd.nextInt(totalRoutes);
+            do {
+                secondRoute = rnd.nextInt(totalRoutes);
+            } while (firstRoute == secondRoute);
+        }
         indexes.add(firstRoute);
         indexes.add(secondRoute);
 
@@ -1260,6 +1262,7 @@ public class VRPDRTSD implements Metaheuristic {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < intensity; i++) {
             solution.removeEmptyRoutes();
+            //System.out.println("numero de rotas = " + solution.getRoutes().size());
             List<Integer> routeIndexes = generateTwoDiffentRouteIndexes(solution);
             int firstRouteIndex = routeIndexes.get(0);
             int secondRouteIndex = routeIndexes.get(1);
@@ -1270,6 +1273,7 @@ public class VRPDRTSD implements Metaheuristic {
             idSequenceToRemoveRequest.addAll(solution.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
             idSequenceToInsertRequest.addAll(solution.getRoute(secondRouteIndex).getIntegerSequenceOfAttendedRequests());
 
+//            System.out.println(idSequenceToRemoveRequest + "\t" + idSequenceToInsertRequest);
             List<Integer> newIdSequence = new ArrayList<>();
             List<Integer> indexesToRemove = null;
             List<Integer> indexesToInsert = null;
@@ -1555,7 +1559,7 @@ public class VRPDRTSD implements Metaheuristic {
 //        int type = rnd.nextInt(numberOfMovements) + 1;
 //        int intensity = rnd.nextInt(3) + 1;
 //        perturbation(type, intensity);
-          perturbation(5, 1);  
+        perturbation(5, 1);
     }
 
     @Override

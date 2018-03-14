@@ -30,7 +30,7 @@ public class localSearchTest {
                 .setVehicleCapacity(4);
 
         VRPDRTSD problem = new VRPDRTSD(instance, path);
-        problem.simulatedAnnealingForExperiment();
+//        problem.simulatedAnnealingForExperiment();
 //        problem.buildGreedySolution();
 //        problem.printSolutionInformations();
 //        problem.localSearch(6);

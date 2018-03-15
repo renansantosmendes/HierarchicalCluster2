@@ -156,6 +156,11 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 storeBestIndividual();
                 selection();
                 crossOverAddRoute();
+                
+                if(this.bestIndividual.getEvaluationFunction() < 400){
+                    this.printPopulation();
+                }
+                //crossOver();
                 mutation();
                 insertBestIndividual();
                 incrementsCurrentIteration();
@@ -170,7 +175,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         currentGeneration = 0;
         //this.population.clear();
         this.parents.clear();
-        this.printPopulation();
+        //this.printPopulation();
 
         saveExecutionData();
         this.bestIndividual.printAllInformations();
@@ -245,7 +250,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
     @Override
     public void initializePopulation() {
         for (int i = 0; i < this.populationSize; i++) {
-            this.problem.buildRandomSolution();
+            this.problem.buildRandomSolutionWithSeed(12345);
             this.population.add(new EvolutionarySolution(this.problem.getSolution()));
         }
         calculateFitness();
@@ -307,6 +312,9 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         for (int i = 0; i < 2 * this.population.size(); i = i + 2) {
             firstParent.setSolution(this.population.get(parents.get(i)));
             secondParent.setSolution(this.population.get(parents.get(i + 1)));
+//            System.out.println("P1 = " + firstParent.getIdsIntegerRepresentation() +
+//                    "\nP2 = " + secondParent.getIdsIntegerRepresentation());
+            
             firstChild.setSolution(firstParent);
             secondChild.setSolution(secondParent);
 
@@ -445,8 +453,12 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 if (localSearchProbability < 0.95) {
                     problem.perturbation(5, 1);
                 } else {
-                    System.out.println("ILS");
-                    System.out.println(problem.getSolution());
+                    System.out.println("Local Search");
+//                    problem.localSearch(5);
+                    //System.out.println(problem.getSolution());
+                    //problem.vns();
+                    //problem.setLocalSearchType(1);
+                    //problem.vndForLocalSearchInIls(6);
                     problem.ils();
                 }
 //                problem.perturbation(5, 1);

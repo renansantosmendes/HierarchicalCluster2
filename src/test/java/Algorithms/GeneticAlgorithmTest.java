@@ -107,7 +107,7 @@ public class GeneticAlgorithmTest {
 
         Instance instance = new Instance();
         instance.setNumberOfRequests(50)
-                .setRequestTimeWindows(5)
+                .setRequestTimeWindows(10)
                 .setInstanceSize("s")
                 .setNumberOfNodes(12)
                 .setNumberOfVehicles(250)
@@ -121,7 +121,8 @@ public class GeneticAlgorithmTest {
                 .setPopulationSize(100);
 
 //        algorithm.runWithLocalSearch(); 
-//        algorithm.runExperiment();
-//        algorithm.printPopulation();
+        algorithm.runExperiment();
+        //algorithm.initializePopulation();
+        //algorithm.printPopulation();
     }
 }

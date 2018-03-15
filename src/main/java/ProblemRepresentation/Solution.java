@@ -144,6 +144,12 @@ public class Solution implements Cloneable {
     public List<Integer> getIntegerRepresentation() {
         return integerRepresentation;
     }
+    
+    public List<Integer> getIdsIntegerRepresentation(){
+        return this.integerRepresentation.stream()
+                        .filter(u -> u.intValue() >= 0)
+                        .collect(Collectors.toCollection(ArrayList::new));
+    }
 
     public void addRoute(Route route) {
         this.routes.add(route);

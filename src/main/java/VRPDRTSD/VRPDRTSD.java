@@ -480,6 +480,27 @@ public class VRPDRTSD implements Metaheuristic {
         }
         finalizeSolution();
     }
+    
+    public void buildRandomSolutionWithSeed(int seed) {
+        initializeSolution();
+        initializeRandomCandidatesSetWithSeed(seed);
+        while (stoppingCriterionIsFalse()) {
+            startNewRoute();
+            requestsFeasibilityAnalysis();
+            while (hasFeasibleRequests() && hasEmptySeatInVehicle()) {
+                findBestCandidateUsingRRF();
+                addCandidateIntoRoute();
+                actualizeRequestsData();
+                if (hasEmptySeatInVehicle()) {
+                    findOtherRequestsThatCanBeAttended();
+                }
+                requestsFeasibilityAnalysisInConstructionFase();
+            }
+            finalizeRoute();
+            addRouteInSolution();
+        }
+        finalizeSolution();
+    }
 
     public void buildSelfishSolution() throws BiffException, IOException {
         if (this.excelDataFilesPath != null) {
@@ -501,9 +522,25 @@ public class VRPDRTSD implements Metaheuristic {
         initializeCandidates();
         data.startVehiclesData();
     }
+    
+    public void initializeRandomCandidatesSetWithSeed(int seed) {
+        originalRequestsFeasibilityAnalysis();
+        prepareAndSetRequestsData();
+        setRequestRandomParameters(seed);
+        initializeCandidates();
+        data.startVehiclesData();
+    }
 
     public void setRequestRandomParameters() {
         Random rnd = new Random();
+        for (Request request : data.getRequests()) {
+            Double RRF = rnd.nextDouble();
+            request.setRequestRankingFunction(RRF);
+        }
+    }
+    
+    public void setRequestRandomParameters(int seed) {
+        Random rnd = new Random(seed);
         for (Request request : data.getRequests()) {
             Double RRF = rnd.nextDouble();
             request.setRequestRankingFunction(RRF);

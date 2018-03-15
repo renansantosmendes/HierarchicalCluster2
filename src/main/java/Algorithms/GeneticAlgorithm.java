@@ -157,9 +157,9 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 selection();
                 crossOverAddRoute();
                 
-                if(this.bestIndividual.getEvaluationFunction() < 400){
-                    this.printPopulation();
-                }
+//                if(this.bestIndividual.getEvaluationFunction() < 400){
+//                    this.printPopulation();
+//                }
                 //crossOver();
                 mutation();
                 insertBestIndividual();
@@ -453,13 +453,13 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 if (localSearchProbability < 0.95) {
                     problem.perturbation(5, 1);
                 } else {
-                    System.out.println("Local Search");
-//                    problem.localSearch(5);
+                    //System.out.println("Local Search");
+                    problem.localSearch(2);
                     //System.out.println(problem.getSolution());
                     //problem.vns();
                     //problem.setLocalSearchType(1);
                     //problem.vndForLocalSearchInIls(6);
-                    problem.ils();
+                    //problem.ils();
                 }
 //                problem.perturbation(5, 1);
 //                problem.setLocalSearchType(1);

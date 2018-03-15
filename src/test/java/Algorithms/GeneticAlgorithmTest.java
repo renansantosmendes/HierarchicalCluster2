@@ -116,12 +116,12 @@ public class GeneticAlgorithmTest {
         GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
-                .setNumberOfGenerations(200)
-                .setNumberOfExecutions(4)
+                .setNumberOfGenerations(500)
+                .setNumberOfExecutions(1)
                 .setPopulationSize(100);
 
 //        algorithm.runWithLocalSearch(); 
-        algorithm.runExperiment();
+//        algorithm.runExperiment();
         //algorithm.initializePopulation();
         //algorithm.printPopulation();
     }

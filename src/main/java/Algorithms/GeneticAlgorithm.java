@@ -448,26 +448,19 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
             double probability = rnd.nextDouble();
             if (probability < this.mutationProbabilty) {
                 problem.setSolution(this.population.get(i));
-//                System.out.println("before mutation = " + problem.getSolution());
                 double localSearchProbability = rnd.nextDouble();
                 if (localSearchProbability < 0.95) {
                     problem.perturbation(5, 1);
                 } else {
                     //System.out.println("Local Search");
-                    problem.localSearch(2);
+                    //problem.localSearch(2);
                     //System.out.println(problem.getSolution());
                     //problem.vns();
                     //problem.setLocalSearchType(1);
                     //problem.vndForLocalSearchInIls(6);
-                    //problem.ils();
+                    problem.ils();
                 }
-//                problem.perturbation(5, 1);
-//                problem.setLocalSearchType(1);
-//                problem.localSearch(1);
-//                problem.vns();
-
                 this.population.get(i).setSolution(problem.getSolution());
-//                System.out.println("after mutation = " + problem.getSolution());
             }
         }
     }

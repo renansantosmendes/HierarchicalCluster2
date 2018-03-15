@@ -95,6 +95,13 @@ public class EvolutionarySolution extends Solution {
         this.objectiveFunctions = objectiveFunctions;
     }
 
+    public boolean isEmpty(){
+        return this.evaluationFunction == 0;
+    }
+    
+    public boolean isNotEmpty(){
+        return this.evaluationFunction != 0;
+    }
     @Override
     public Object clone() {
         List<Route> routesClone = new ArrayList<>();
@@ -111,7 +118,7 @@ public class EvolutionarySolution extends Solution {
     @Override
     public String toString() {
         DecimalFormat df = new DecimalFormat("0.0000000000");
-        return "Individual - " + /*df.format(this.fitness).replace(",", ".") +*/ "\t" 
+        return "Solution - " + /*df.format(this.fitness).replace(",", ".") +*/ "\t" 
                 + this.evaluationFunction + "\t" 
                 + this.totalDistanceTraveled + "\t" 
                 + this.totalTravelTime + "\t"

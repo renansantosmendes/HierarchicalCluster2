@@ -160,6 +160,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                 insertBestIndividual();
                 incrementsCurrentIteration();
                 saveData();
+                removeEmptySolutions();
             }
             finalizeExecution();
         }
@@ -187,10 +188,10 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         String algorithmName = "GeneticAlgorithm";
         String instanceName = problem.getData().getInstanceName();
         output = new DataOutput(algorithmName, instanceName, execution);
-        
+
     }
-    
-    private void initializeFileToSaveBestSolutions(){
+
+    private void initializeFileToSaveBestSolutions() {
         String algorithmName = "GeneticAlgorithm";
         String instanceName = problem.getData().getInstanceName();
         outputForBestSolutions = new DataOutput(algorithmName, instanceName);
@@ -214,6 +215,27 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
 
     private void incrementsCurrentIteration() {
         currentGeneration++;
+
+    }
+
+    private void removeEmptySolutions() {
+        List<EvolutionarySolution> newPopulation = new ArrayList<>();
+        newPopulation = this.population
+                .stream()
+                .filter(EvolutionarySolution::isNotEmpty)
+                .collect(Collectors.toCollection(ArrayList::new));
+        this.population.clear();
+        this.population.addAll(newPopulation);
+        if (newPopulation.size() != this.populationSize) {
+            int numberOfSolutions = (int) (this.populationSize - newPopulation.size());
+            for (int i = 0; i < numberOfSolutions; i++) {
+                this.problem.buildRandomSolution();
+                EvolutionarySolution solution = new EvolutionarySolution(this.problem.getSolution());
+                this.population.add(solution);
+            }
+            System.out.println("number of solutions empty = " + numberOfSolutions);
+        }
+
     }
 
     private boolean stopCriterionIsNotSatisfied() {
@@ -248,7 +270,6 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         Random rnd = new Random();
         double cursor;
         double currentSum;
-        int positsion;
         this.parents.clear();
         for (int i = 0; i < 2 * this.populationSize; i++) {
             currentSum = 0;
@@ -327,7 +348,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
         List<Integer> firstIdSequence = new ArrayList<>();
         List<Integer> secondIdSequence = new ArrayList<>();
 
-        for (int i = 0; i < 2 * this.population.size(); i = i + 2) {
+        for (int i = 0; i < 2 * this.populationSize; i = i + 2) {
             firstParent.setSolution(this.population.get(parents.get(i)));
             secondParent.setSolution(this.population.get(parents.get(i + 1)));
             firstChild.setSolution(firstParent);
@@ -425,6 +446,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithms {
                     problem.perturbation(5, 1);
                 } else {
                     System.out.println("ILS");
+                    System.out.println(problem.getSolution());
                     problem.ils();
                 }
 //                problem.perturbation(5, 1);

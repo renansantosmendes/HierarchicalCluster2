@@ -1262,45 +1262,47 @@ public class VRPDRTSD implements Metaheuristic {
         Solution solution = new Solution(this.solution);
         for (int i = 0; i < intensity; i++) {
             solution.removeEmptyRoutes();
-            //System.out.println("numero de rotas = " + solution.getRoutes().size());
-            List<Integer> routeIndexes = generateTwoDiffentRouteIndexes(solution);
-            int firstRouteIndex = routeIndexes.get(0);
-            int secondRouteIndex = routeIndexes.get(1);
+            if (solution.getRoutes().size() > 0) {
+                //System.out.println("numero de rotas = " + solution.getRoutes().size());
+                List<Integer> routeIndexes = generateTwoDiffentRouteIndexes(solution);
+                int firstRouteIndex = routeIndexes.get(0);
+                int secondRouteIndex = routeIndexes.get(1);
 
-            List<Integer> idSequenceToRemoveRequest = new ArrayList<>();
-            List<Integer> idSequenceToInsertRequest = new ArrayList<>();
+                List<Integer> idSequenceToRemoveRequest = new ArrayList<>();
+                List<Integer> idSequenceToInsertRequest = new ArrayList<>();
 
-            idSequenceToRemoveRequest.addAll(solution.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
-            idSequenceToInsertRequest.addAll(solution.getRoute(secondRouteIndex).getIntegerSequenceOfAttendedRequests());
+                idSequenceToRemoveRequest.addAll(solution.getRoute(firstRouteIndex).getIntegerSequenceOfAttendedRequests());
+                idSequenceToInsertRequest.addAll(solution.getRoute(secondRouteIndex).getIntegerSequenceOfAttendedRequests());
 
 //            System.out.println(idSequenceToRemoveRequest + "\t" + idSequenceToInsertRequest);
-            List<Integer> newIdSequence = new ArrayList<>();
-            List<Integer> indexesToRemove = null;
-            List<Integer> indexesToInsert = null;
-            try {
-                indexesToRemove = generateTwoDiffentRequestsToOneRoute(idSequenceToRemoveRequest);
-                indexesToInsert = generateTwoDiffentRequestsToOneRoute(idSequenceToInsertRequest);
-            } catch (IndexOutOfBoundsException e) {
-                solution.printAllInformations();
-                e.printStackTrace();
+                List<Integer> newIdSequence = new ArrayList<>();
+                List<Integer> indexesToRemove = null;
+                List<Integer> indexesToInsert = null;
+                try {
+                    indexesToRemove = generateTwoDiffentRequestsToOneRoute(idSequenceToRemoveRequest);
+                    indexesToInsert = generateTwoDiffentRequestsToOneRoute(idSequenceToInsertRequest);
+                } catch (IndexOutOfBoundsException e) {
+                    solution.printAllInformations();
+                    e.printStackTrace();
+                }
+                int firstIndex = indexesToInsert.get(0);
+                int secondIndex = indexesToInsert.get(1);
+                int requestId = idSequenceToRemoveRequest.get(indexesToRemove.get(0));
+
+                insertRequestInRoute(newIdSequence, idSequenceToInsertRequest, firstIndex, requestId, secondIndex);
+
+                Route firstRoute = solution.getRoute(firstRouteIndex);
+                Route secondRoute = solution.getRoute(secondRouteIndex);
+
+                firstRoute.removeRequest(requestId, data);
+                secondRoute.rebuild(newIdSequence, data);
+
+                actualizeSolution(solution, firstRouteIndex, firstRoute);
+                actualizeSolution(solution, secondRouteIndex, secondRoute);
+
+                evaluateSolution(solution);
+                solution.removeEmptyRoutes();
             }
-            int firstIndex = indexesToInsert.get(0);
-            int secondIndex = indexesToInsert.get(1);
-            int requestId = idSequenceToRemoveRequest.get(indexesToRemove.get(0));
-
-            insertRequestInRoute(newIdSequence, idSequenceToInsertRequest, firstIndex, requestId, secondIndex);
-
-            Route firstRoute = solution.getRoute(firstRouteIndex);
-            Route secondRoute = solution.getRoute(secondRouteIndex);
-
-            firstRoute.removeRequest(requestId, data);
-            secondRoute.rebuild(newIdSequence, data);
-
-            actualizeSolution(solution, firstRouteIndex, firstRoute);
-            actualizeSolution(solution, secondRouteIndex, secondRoute);
-
-            evaluateSolution(solution);
-            solution.removeEmptyRoutes();
         }
         return solution;
     }
@@ -1838,9 +1840,9 @@ public class VRPDRTSD implements Metaheuristic {
                 numberOfIterationsWithoutImprovement++;
             }
 
-//            if (numberOfIterationsWithoutImprovement == MAX_ITERATIONS_WITHOUT_IMPROVEMENT && intensity <= MAX_INTENSITY) {
-//                intensity++;
-//            }
+            if (numberOfIterationsWithoutImprovement == MAX_ITERATIONS_WITHOUT_IMPROVEMENT && intensity <= MAX_INTENSITY) {
+                intensity++;
+            }
             currentIteration++;
         }
 //        System.out.println();

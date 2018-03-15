@@ -288,6 +288,7 @@ public class Solution implements Cloneable {
 
         if (newRoutes.isEmpty()) {
             System.out.println("has no routes problem!!!");
+            
         }
         this.routes.clear();
         this.routes = newRoutes;

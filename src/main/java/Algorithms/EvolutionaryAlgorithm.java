@@ -9,7 +9,7 @@ package Algorithms;
  *
  * @author renansantos
  */
-public interface EvolutionaryAlgorithms {
+public interface EvolutionaryAlgorithm {
 
     public void run();
 

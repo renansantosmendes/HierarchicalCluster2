@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author renansantos
  */
-public class GeneticAlgorithm implements EvolutionaryAlgorithms {
+public class GeneticAlgorithm implements EvolutionaryAlgorithm {
 
     private List<EvolutionarySolution> population;
     private List<Integer> parents;

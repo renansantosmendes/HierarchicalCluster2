@@ -116,7 +116,7 @@ public class GeneticAlgorithmTest {
         GeneticAlgorithm algorithm = new GeneticAlgorithm(instance, path);
         algorithm.setCrossOverProbability(0.7)
                 .setMutationProbabilty(0.02)
-                .setNumberOfGenerations(500)
+                .setNumberOfGenerations(200)
                 .setNumberOfExecutions(1)
                 .setPopulationSize(100);
 

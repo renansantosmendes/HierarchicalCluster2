@@ -32,7 +32,7 @@ public class ExperimentalDesign {
                         .setInstanceSize("s")
                         .setNumberOfNodes(12)
                         .setNumberOfVehicles(250)
-                        .setVehicleCapacity(4);
+                        .setVehicleCapacity(11);
 
                 VRPDRTSD problem = new VRPDRTSD(instance);
                 System.out.println(instance);
@@ -50,7 +50,7 @@ public class ExperimentalDesign {
                         .setInstanceSize("s")
                         .setNumberOfNodes(12)
                         .setNumberOfVehicles(250)
-                        .setVehicleCapacity(4);
+                        .setVehicleCapacity(11);
 
                 VRPDRTSD problem = new VRPDRTSD(instance, path);
                 System.out.println(instance);
@@ -68,7 +68,7 @@ public class ExperimentalDesign {
                         .setInstanceSize("s")
                         .setNumberOfNodes(12)
                         .setNumberOfVehicles(250)
-                        .setVehicleCapacity(4);
+                        .setVehicleCapacity(11);
 
                 VRPDRTSD problem = new VRPDRTSD(instance);
                 System.out.println(instance);
@@ -86,7 +86,7 @@ public class ExperimentalDesign {
                         .setInstanceSize("s")
                         .setNumberOfNodes(12)
                         .setNumberOfVehicles(250)
-                        .setVehicleCapacity(4);
+                        .setVehicleCapacity(11);
 
                 VRPDRTSD problem = new VRPDRTSD(instance, path);
                 System.out.println(instance);
@@ -104,7 +104,7 @@ public class ExperimentalDesign {
                         .setInstanceSize("s")
                         .setNumberOfNodes(12)
                         .setNumberOfVehicles(250)
-                        .setVehicleCapacity(4);
+                        .setVehicleCapacity(11);
 
                 VRPDRTSD problem = new VRPDRTSD(instance);
                 System.out.println(instance);
@@ -122,7 +122,7 @@ public class ExperimentalDesign {
                         .setInstanceSize("s")
                         .setNumberOfNodes(12)
                         .setNumberOfVehicles(250)
-                        .setVehicleCapacity(4);
+                        .setVehicleCapacity(11);
 
                 VRPDRTSD problem = new VRPDRTSD(instance, path);
                 System.out.println(instance);
@@ -140,7 +140,7 @@ public class ExperimentalDesign {
                         .setInstanceSize("s")
                         .setNumberOfNodes(12)
                         .setNumberOfVehicles(250)
-                        .setVehicleCapacity(4);
+                        .setVehicleCapacity(11);
 
                 VRPDRTSD problem = new VRPDRTSD(instance, path);
                 System.out.println(instance);
@@ -149,7 +149,7 @@ public class ExperimentalDesign {
         }
     }
 
-    public void runGeneticAlgorithmnExperimentWithExcelData(String path) throws FileNotFoundException, IOException, BiffException {
+    public void runGeneticAlgorithmExperimentWithExcelData(String path) throws FileNotFoundException, IOException, BiffException {
         for (int i = 0; i < requestNumber.length; i++) {
             for (int j = 0; j < timeWindows.length; j++) {
                 instance = new Instance();
@@ -158,7 +158,7 @@ public class ExperimentalDesign {
                         .setInstanceSize("s")
                         .setNumberOfNodes(12)
                         .setNumberOfVehicles(250)
-                        .setVehicleCapacity(4);
+                        .setVehicleCapacity(11);
                 
                 System.out.println(instance);
                 

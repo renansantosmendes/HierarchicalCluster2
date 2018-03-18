@@ -14,7 +14,7 @@ public class Main {
         String path = "/home/rmendes/VRPDRT/";
 //        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";
         new ScriptGenerator("GeneticAlgorithm", "3d", "large");
-        new ExperimentalDesign().runGeneticAlgorithmnExperimentWithExcelData(path);
+        new ExperimentalDesign().runGeneticAlgorithmExperimentWithExcelData(path);
 
 //        int requestsNumber = 10;
 //        String path = "/home/renansantos/Área de Trabalho/Excel Instances/";

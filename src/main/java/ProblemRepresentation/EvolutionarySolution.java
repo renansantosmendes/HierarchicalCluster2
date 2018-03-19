@@ -118,7 +118,7 @@ public class EvolutionarySolution extends Solution {
     @Override
     public String toString() {
         DecimalFormat df = new DecimalFormat("0.0000000000");
-        return "Solution - " + /*df.format(this.fitness).replace(",", ".") +*/ "\t" 
+        return "Solution - " /*df.format(this.fitness).replace(",", ".") +*/  
                 + this.evaluationFunction + "\t" 
                 + this.totalDistanceTraveled + "\t" 
                 + this.totalTravelTime + "\t"

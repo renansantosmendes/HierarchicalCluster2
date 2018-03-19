@@ -415,7 +415,6 @@ public class Route implements Cloneable {
             int a = 0;
         }
 
-        //setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);
     }
 
@@ -437,7 +436,6 @@ public class Route implements Cloneable {
             request.setDeliveryTime(request.getDeliveryTimeInMinutes() - timeInterval);
             int a = 0;
         }
-        //setPickupAndDeliveryTimeForEachAttendedRequest(data);
         this.evaluateRoute(data);
     }
 

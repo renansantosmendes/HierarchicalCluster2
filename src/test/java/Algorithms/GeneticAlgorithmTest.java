@@ -120,6 +120,7 @@ public class GeneticAlgorithmTest {
                 .setNumberOfExecutions(1)
                 .setPopulationSize(100);
 
+        algorithm.run();
 //        algorithm.runWithLocalSearch(); 
 //        algorithm.runExperiment();
         //algorithm.initializePopulation();

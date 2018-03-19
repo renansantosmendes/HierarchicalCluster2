@@ -1010,6 +1010,7 @@ public class VRPDRTSD implements Metaheuristic {
 
                                         if (evaluationFunctionAfterMovement < bestSolution.getEvaluationFunction()) {
                                             bestSolution.setSolution((Solution) solution.clone());
+//                                            System.out.println(solution);
                                         }
                                         actualizeSolution(solution, i, firstRouteOriginal);
                                         actualizeSolution(solution, j, secondRoute);
@@ -1739,11 +1740,11 @@ public class VRPDRTSD implements Metaheuristic {
         Solution bestSolution = new Solution(solution);
         while (currentIteration < numberOfIterations) {
             currentNeighborhood = 1;
-            //System.out.println(solution.getIntegerRepresentation());
+            //System.out.println(solution);
             while (currentNeighborhood <= lastNeighborhood) {
                 perturbation(2, 1);
                 vndForLocalSearchInVns(excludedNeighborhood);
-                //System.out.println(solution);
+//                System.out.println(solution);
                 if (bestSolution.getEvaluationFunction() > solution.getEvaluationFunction()) {
                     bestSolution.setSolution(solution);
                     currentNeighborhood = 1;

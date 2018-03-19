@@ -114,14 +114,18 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithm {
     public void run() {
         initializeFilesToSaveData();
         initializePopulation();
+        printPopulation();
         while (stopCriterionIsNotSatisfied()) {
             printInformations();
             calculateFitness();
-            storeBestIndividual();
-            selection();
-            crossOver();
-            mutation();
             insertBestIndividual();
+            selection();
+            printPopulation();
+            crossOverAddRoute();
+            printPopulation();
+            mutation();
+            calculateFitness();
+            storeBestIndividual();
             incrementsCurrentIteration();
             saveData();
         }
@@ -156,11 +160,6 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithm {
                 storeBestIndividual();
                 selection();
                 crossOverAddRoute();
-
-//                if(this.bestIndividual.getEvaluationFunction() < 400){
-//                    this.printPopulation();
-//                }
-                //crossOver();
                 mutation();
                 insertBestIndividual();
                 incrementsCurrentIteration();
@@ -258,6 +257,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithm {
     }
 
     public void calculateFitness() {
+        population.sort(Comparator.comparing(EvolutionarySolution::getEvaluationFunction));
         double sum = population.stream().mapToDouble(EvolutionarySolution::getEvaluationFunction).sum();
         population.forEach(u -> u.setFitness(u.getEvaluationFunction() / sum));
 
@@ -267,7 +267,7 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithm {
 
         double fitnessSum = population.stream().mapToDouble(EvolutionarySolution::getFitness).sum();
         population.forEach(u -> u.setFitness(u.getFitness() / fitnessSum));
-        population.sort(Comparator.comparing(EvolutionarySolution::getFitness).reversed());
+        //population.sort(Comparator.comparing(EvolutionarySolution::getFitness).reversed());
     }
 
     @Override
@@ -458,10 +458,11 @@ public class GeneticAlgorithm implements EvolutionaryAlgorithm {
                     problem.perturbation(5, 1);
                 } else {
                     //System.out.println("Local Search");
-                    problem.localSearch(2);
+                    //problem.localSearch(2);
+                    //problem.localSearch(6);
                     //System.out.println(problem.getSolution());
-                    //problem.vns();
                     //problem.setLocalSearchType(1);
+                    problem.vns();
                     //problem.vndForLocalSearchInIls(6);
                     //problem.ils();
                 }
